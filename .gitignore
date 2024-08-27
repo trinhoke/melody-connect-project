@@ -1,0 +1,35 @@
+# Bỏ qua môi trường ảo (virtual environment)
+melody-connect-env/
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Cấu hình môi trường (Environment Variables)
+.env
+
+# Django stuff:
+*.log
+*.pot
+*.pyc
+*.pyo
+*.sqlite3
+db.sqlite3
+
+# Migrations
+*/migrations/
+
+# Static files
+staticfiles/
+media/
+
+# VS Code files
+.vscode/
+
+# PyCharm files
+.idea/
+
+# Các thư mục của hệ điều hành
+.DS_Store
+Thumbs.db
