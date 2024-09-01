@@ -17,7 +17,9 @@ def format_date(date_string):
 
 # Create your views here.
 def blog(request):
-    context = {}
+    context = {
+        'user': request.user
+    }
     return render(request,'blog/post.html',context)
 
 def create_new_post(request):

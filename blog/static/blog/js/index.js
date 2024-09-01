@@ -5,6 +5,42 @@ const btnShowModel = $(".show-model-create-post");
 const btnCloseModel = $(".btn-close-model");
 const createPostModel = $(".create-post-model");
 
+// create toast
+
+const toastsIcon = {
+    success: {
+        icon: '<i class="fas fa-check-circle"></i>',
+    },
+    error: {
+        icon: '<i class="fas fa-exclamation-triangle"></i>',
+    },
+    warning: {
+        icon: '<i class="fas fa-exclamation-circle"></i>',
+    },
+}
+
+//toast
+function createToast(status, mess) {
+    let toast = document.createElement('div')
+    toast.className = `toast ${status}`
+
+    toast.innerHTML = `
+    ${toastsIcon[status].icon}
+    <span class="msg">${mess}</span>
+    <span class="countdown"></span>
+    `
+    document.querySelector('#toasts').appendChild(toast)
+
+    setTimeout(() => {
+        toast.style.animation = 'hide_slide 1s ease forwards'
+    }, 4000)
+    setTimeout(() => {
+        toast.remove()
+    }, 6000)
+}
+
+// create new post
+
 const createNewPost = {
     content: '',
     audioFiles: [],
@@ -15,8 +51,13 @@ const createNewPost = {
         const _this = this;
 
         btnShowModel.onclick = function () {
-            _this.isShowModel = true;
-            _this.showModel();
+            if (isAuthenticated) {
+                _this.isShowModel = true;
+                _this.showModel();
+            }
+            else {
+                createToast('error', 'Vui lòng đăng nhập để thực hiện chức năng này')
+            }
         }
 
         btnCloseModel.onclick = function () {
@@ -56,6 +97,9 @@ const createNewPost = {
         }
 
         $(".btn-submit").onclick = function () {
+            if (!isAuthenticated) {
+                return
+            }
             _this.createNewPost()
         }
     },
@@ -102,6 +146,9 @@ const createNewPost = {
     },
 
     createNewPost: async function () {
+        if (!this.content && this.audioFiles.length == 0) {
+            return
+        }
         const formData = new FormData();
         formData.append('content', this.content);
         if (this.audioFiles.length > 0) {
@@ -131,7 +178,7 @@ const createNewPost = {
                     </audio>
                     `
                 })
-                const post = ` <div class="post shadow"  data-id = ${e.id}>
+                const post = ` <div class="post shadow"  data-id = ${data.post.id}>
                                 <div class="header-post">
                                     <div class="avatar">
                                         <img src="https://yt3.ggpht.com/H_spDtAzuKhbWLEFZo66W5uHSG-uKY-Uhv5wCns_4jMNNi36cNz2xzmsBdcfx3mhzS3vKx_4=s48-c-k-c0x00ffffff-no-rj"
@@ -154,21 +201,20 @@ const createNewPost = {
                                         ${audios.join('')}
                                     </div>
                                     <div class="comment-post">
-                                        <div class="btn-show-comment">${data.comments_count} Comment</div>
+                                        <div class="btn-show-comment">${data.post.comments_count} Comment</div>
                                     </div>
                                 </div>
                             </div>
                     `
                 container.insertAdjacentHTML('afterbegin', post);
+                createToast('success', 'Tạo bài viết mới thành công')
                 this.resetModel()
             } else {
-                alert("Error creating post: " + data.message);
+                createToast('error', data.message)
             }
         } catch (error) {
-            console.error("Error:", error);
-            alert("An unexpected error occurred.");
+            console.log(error);
         }
-
     },
 
     resetModel: function () {
@@ -187,6 +233,8 @@ const createNewPost = {
 }
 createNewPost.start();
 
+// get post
+
 const getPost = {
     id: 'all',
     page: 1,
@@ -197,23 +245,27 @@ const getPost = {
 
     handleEvent: function () {
         const _this = this
-        document.addEventListener('scroll', async () => {
-            const scrollTop = window.scrollY || window.pageYOffset;
-            const scrollHeight = document.documentElement.scrollHeight;
-            const windowHeight = window.innerHeight;
-            if (scrollTop + windowHeight >= scrollHeight - 100) {
-                if (!_this.loading && _this.hasMore) {
-                    _this.page++;
-                    _this.loading = true;
-                    await _this.getPost().then(() => {
-                        _this.showPost();
-                        _this.loading = false;
-                    }).catch(() => {
-                        _this.loading = false;
-                    });
-                }
-            }
+        document.addEventListener('scroll', function () {
+            _this.loadPost();
         })
+    },
+
+    loadPost: async function () {
+        const scrollTop = window.scrollY || window.pageYOffset;
+        const scrollHeight = document.documentElement.scrollHeight;
+        const windowHeight = window.innerHeight;
+        if (scrollTop + windowHeight >= scrollHeight - 100) {
+            if (!this.loading && this.hasMore) {
+                this.page++;
+                this.loading = true;
+                await this.getPost().then(() => {
+                    this.showPost();
+                    this.loading = false;
+                }).catch(() => {
+                    this.loading = false;
+                });
+            }
+        }
     },
 
     showPost: function () {
@@ -284,11 +336,14 @@ const getPost = {
 
     start: async function () {
         await this.getPost()
+        await this.loadPost()
         this.showPost()
         this.handleEvent()
     }
 }
 getPost.start()
+
+// comment
 
 const commentPost = {
     isShowModelComment: false,
@@ -296,6 +351,7 @@ const commentPost = {
     postId: null,
     parentId: null,
     post: null,
+
     handleEvent: function () {
         const _this = this;
         document.querySelector('.main-container').addEventListener('click', async function (event) {
@@ -303,80 +359,96 @@ const commentPost = {
                 let postElement = event.target.closest('.post');
                 if (postElement) {
                     let postId = postElement.getAttribute('data-id');
-                    _this.postId = postId
-                    await _this.getPost()
+                    _this.postId = postId;
+                    await _this.getPost();
                     _this.isShowModelComment = true;
                     _this.showModelComment();
+                    _this.bindEvents();  // Gọi hàm bindEvents sau khi model được hiển thị
                 }
-                _this.start()
             }
         });
 
-        $(".btn-close-comment").onclick = function () {
-            _this.isShowModelComment = false
-            _this.showModelComment()
-        }
-
-        $('.comment-post-model').onclick = function (e) {
+        document.querySelector('.comment-post-model').onclick = function (e) {
             if (e.target.classList.contains('btn-close-comment') || e.target.classList.contains('fa-xmark')) {
-                _this.isShowModelComment = false
-                _this.showModelComment()
+                _this.isShowModelComment = false;
+                _this.showModelComment();
             }
-        }
-        $(".input-comment").oninput = function (e) {
-            const value = e.target.value.trim();
-            if (value || _this.comment.length > 0) {
-                _this.comment = value;
-            }
-            _this.animationIconSender()
-            _this.updatePaddingListComment()
+        };
+    },
+
+    bindEvents: function () {
+        const _this = this;
+        const inputComment = document.querySelector(".input-comment");
+        if (inputComment) {  // Kiểm tra xem phần tử input-comment có tồn tại không
+            inputComment.oninput = function (e) {
+                if (isAuthenticated) {
+                    const value = e.target.value.trim();
+                    if (value || _this.comment.length > 0) {
+                        _this.comment = value;
+                    }
+                    else {
+                        this.value = ''
+                    }
+                    _this.animationIconSender();
+                    _this.updatePaddingListComment();
+                }
+                else {
+                    this.value = ''
+                    createToast('error', 'Vui lòng đăng nhập để thực hiện chức năng này')
+                }
+            };
         }
 
-        $('.icon-sender').onclick = function () {
-            console.log($('.model-comment-post-container').querySelector('.comment-post'));
-            if (!_this.comment || !_this.postId) {
-                console.log('missing');
-                return
-            }
-            _this.commentPost()
+        const iconSender = document.querySelector('.icon-sender');
+        if (iconSender) {  // Kiểm tra xem phần tử icon-sender có tồn tại không
+            iconSender.onclick = function () {
+                if (!isAuthenticated) {
+                    createToast('error', 'Vui lòng đăng nhập để thực hiện chức năng này')
+                    return
+                }
+                if (!_this.comment || !_this.postId) {
+                    createToast('error', 'Vui lòng nhập comment')
+                    return;
+                }
+                _this.commentPost();
+            };
         }
     },
 
     showModelComment: function () {
         if (this.isShowModelComment) {
-            $(".comment-post-model").classList.remove('hidden')
-        }
-        else {
-            $(".comment-post-model").innerHTML = ''
-            $(".comment-post-model").classList.add('hidden')
+            document.querySelector(".comment-post-model").classList.remove('hidden');
+        } else {
+            document.querySelector(".comment-post-model").innerHTML = '';
+            document.querySelector(".comment-post-model").classList.add('hidden');
         }
     },
 
     updatePaddingListComment: function () {
-        const x = $(".box-sender-comment").offsetHeight
-        $(".list-comment").style.paddingBottom = x + 10 + "px"
+        const x = document.querySelector(".box-sender-comment").offsetHeight;
+        document.querySelector(".list-comment").style.paddingBottom = x + 10 + "px";
     },
 
     getPost: async function () {
         try {
-            const response = await fetch(`get_post/${this.postId}`)
-                .then(res => res.json())
+            const response = await fetch(`get_post/${this.postId}`);
+            const data = await response.json();
 
-            const post = response.post;
+            const post = data.post;
 
             const audios = post.audio_files.map(e => {
                 return `
-                <audio controls>
-                    <source src=${e.file_url} type="audio/mpeg">
-                    Your browser does not support the audio element.
-                </audio>
-                `
-            })
+                    <audio controls>
+                        <source src=${e.file_url} type="audio/mpeg">
+                        Your browser does not support the audio element.
+                    </audio>
+                `;
+            });
 
             const comments = post.comments.map(e => {
                 return `
                     <div class="comment-item" comment-id=${e.id}>
-                            <div class="avatar">
+                        <div class="avatar">
                             <img src="https://yt3.ggpht.com/H_spDtAzuKhbWLEFZo66W5uHSG-uKY-Uhv5wCns_4jMNNi36cNz2xzmsBdcfx3mhzS3vKx_4=s48-c-k-c0x00ffffff-no-rj"
                                 alt="avatar" />
                         </div>
@@ -394,69 +466,65 @@ const commentPost = {
                             </div>
                         </div>
                     </div>
-                `
-            })
+                `;
+            });
 
-            $(".comment-post-model").innerHTML = `
-                                                <div class="model-comment-post-container">
-                                                    <div class="header-model">
-                                                        <div class="header-model-title">
-                                                            Bài viết của ${post.author}
-                                                        </div>
-                                                        <div class="btn-close-comment">
-                                                            <i class="fa-solid fa-xmark"></i>
-                                                        </div>
-                                                    </div>
-                                                    <div class="line"></div>
-                                                    <div class="comment-post-container">
-                                                        <div class="post">
-                                                            <div class="header-post">
-                                                                <div class="avatar">
-                                                                    <img src="https://yt3.ggpht.com/H_spDtAzuKhbWLEFZo66W5uHSG-uKY-Uhv5wCns_4jMNNi36cNz2xzmsBdcfx3mhzS3vKx_4=s48-c-k-c0x00ffffff-no-rj"
-                                                                        alt="avatar" />
-                                                                </div>
-                                                                <div class="post-info">
-                                                                    <div class="author-name">
-                                                                        ${post.author}
-                                                                    </div>
-                                                                    <div class="time-created">
-                                                                        ${post.created_at}
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                            <div class="content-post">
-                                                                <div class="content">
-                                                                    ${post.content}
-                                                                </div>
-                                                                <div>
-                                                                    ${audios.join('')}
-                                                                </div>
-                                                            </div>
-                                                            <div class="comment-post">
-                                                                <p>${post.comments.length} comment</p>
-                                                            </div>
-                                                        </div>
-                                                        <div class="line"></div>
-                                                        <div class="list-comment">
-                                                            ${comments.join('')}
-                                                        </div>
-                                                        <div class="box-sender-comment">
-                                                            <div class="avatar">
-                                                                <img src="https://yt3.ggpht.com/H_spDtAzuKhbWLEFZo66W5uHSG-uKY-Uhv5wCns_4jMNNi36cNz2xzmsBdcfx3mhzS3vKx_4=s48-c-k-c0x00ffffff-no-rj"
-                                                                    alt="avatar" />
-                                                            </div>
-                                                            <div class="box-comment">
-                                                                <textarea placeholder="Nhập comment..." class="input-comment" rows="2"></textarea>
-                                                                <div class="box-sender">
-                                                                    <div class="icon-sender">
-                                                                        <i class="fa-solid fa-paper-plane"></i>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-            `
+            document.querySelector(".comment-post-model").innerHTML = `
+                <div class="model-comment-post-container">
+                    <div class="header-model">
+                        <div class="header-model-title">
+                            Bài viết của ${post.author}
+                        </div>
+                        <div class="btn-close-comment">
+                            <i class="fa-solid fa-xmark"></i>
+                        </div>
+                    </div>
+                    <div class="line"></div>
+                    <div class="comment-post-container">
+                        <div class="post">
+                            <div class="header-post">
+                                <div class="avatar">
+                                    <img src="https://yt3.ggpht.com/H_spDtAzuKhbWLEFZo66W5uHSG-uKY-Uhv5wCns_4jMNNi36cNz2xzmsBdcfx3mhzS3vKx_4=s48-c-k-c0x00ffffff-no-rj"
+                                        alt="avatar" />
+                                </div>
+                                <div class="post-info">
+                                    <div class="author-name">
+                                        ${post.author}
+                                    </div>
+                                    <div class="time-created">
+                                        ${post.created_at}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="content-post">
+                                <div class="content">
+                                    ${post.content}
+                                </div>
+                                <div>
+                                    ${audios.join('')}
+                                </div>
+                            </div>
+                            <div class="comment-post">
+                                <p>${post.comments.length} comment</p>
+                            </div>
+                        </div>
+                        <div class="line"></div>
+                        <div class="list-comment">
+                            ${comments.join('')}
+                        </div>
+                        <div class="box-sender-comment">
+                            <div class="box-comment">
+                                <textarea placeholder="Nhập comment..." class="input-comment" rows="2"></textarea>
+                                <div class="box-sender">
+                                    <div class="icon-sender">
+                                        <i class="fa-solid fa-paper-plane"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
 
         } catch (error) {
             console.log(error);
@@ -465,72 +533,81 @@ const commentPost = {
 
     animationIconSender: function () {
         if (this.comment.length == 0) {
-            $(".icon-sender").style.color = 'black'
-        }
-        else {
-            $(".icon-sender").style.color = '#0866ff'
+            document.querySelector(".icon-sender").style.color = 'black';
+        } else {
+            document.querySelector(".icon-sender").style.color = '#0866ff';
         }
     },
+
     commentPost: async function () {
-        const _this = this
-        const formData = new FormData()
-        formData.append('content', this.comment)
-        formData.append('post_id', this.postId)
+        const _this = this;
+        const formData = new FormData();
+        formData.append('content', this.comment);
+        formData.append('post_id', this.postId);
 
         try {
-            const data = await fetch('/blog/comment_post', {
+            const response = await fetch('/blog/comment_post', {
                 method: 'POST',
                 body: formData,
                 headers: {
                     "X-CSRFToken": document.querySelector("[name=csrfmiddlewaretoken]").value
                 }
-            })
-                .then(response => response.json())
+            });
+
+            const data = await response.json();
 
             if (data.success) {
                 const comment = `
-                                <div class="comment-item" comment-id=${data.comment.id}>
-                                        <div class="avatar">
-                                        <img src="https://yt3.ggpht.com/H_spDtAzuKhbWLEFZo66W5uHSG-uKY-Uhv5wCns_4jMNNi36cNz2xzmsBdcfx3mhzS3vKx_4=s48-c-k-c0x00ffffff-no-rj"
-                                            alt="avatar" />
-                                    </div>
-                                    <div class='comment-data'>
-                                        <div class="content-comment-box">
-                                            <div class="username-comment">
-                                                ${data.comment.author}
-                                            </div>
-                                            <div class="comment-content">
-                                                ${data.comment.content}
-                                            </div>
-                                        </div>
-                                        <div class="time-created">
-                                            ${data.comment.created_at}
-                                        </div>
-                                    </div>
+                    <div class="comment-item" comment-id=${data.comment.id}>
+                        <div class="avatar">
+                            <img src="https://yt3.ggpht.com/H_spDtAzuKhbWLEFZo66W5uHSG-uKY-Uhv5wCns_4jMNNi36cNz2xzmsBdcfx3mhzS3vKx_4=s48-c-k-c0x00ffffff-no-rj"
+                                alt="avatar" />
+                        </div>
+                        <div class='comment-data'>
+                            <div class="content-comment-box">
+                                <div class="username-comment">
+                                    ${data.comment.author}
                                 </div>
-                                `
+                                <div class="comment-content">
+                                    ${data.comment.content}
+                                </div>
+                            </div>
+                            <div class="time-created">
+                                ${data.comment.created_at}
+                            </div>
+                        </div>
+                    </div>
+                `;
 
-                $('.list-comment').insertAdjacentHTML('afterbegin', comment);
-                _this.updateLengthComment()
+                document.querySelector('.list-comment').insertAdjacentHTML('afterbegin', comment);
+                _this.updateLengthComment();
+                _this.resetInput();
             }
         } catch (error) {
             console.log(error);
         }
     },
 
-    updateLengthComment : function () {
-        const comments_count = $('.list-comment').querySelectorAll('.comment-item').length
-        $('.model-comment-post-container').querySelector('.comment-post').innerHTML = comments_count + " comment"
-        $(`div.post[data-id="${this.postId}"]`).querySelector('.btn-show-comment').innerHTML = comments_count + " Comment"
+    resetInput: function () {
+        this.comment = '';
+        document.querySelector(".input-comment").value = '';
+        this.animationIconSender();
+    },
+
+    updateLengthComment: function () {
+        const comments_count = document.querySelector('.list-comment').querySelectorAll('.comment-item').length;
+        document.querySelector('.model-comment-post-container').querySelector('.comment-post').innerHTML = comments_count + " comment";
+        document.querySelector(`div.post[data-id="${this.postId}"]`).querySelector('.btn-show-comment').innerHTML = comments_count + " Comment";
     },
 
     start: function () {
-        this.showModelComment()
-        this.handleEvent()
-        this.updatePaddingListComment()
+        this.handleEvent();
     }
-}
-commentPost.start()
+};
+commentPost.start();
+
+
+
 
 
 
