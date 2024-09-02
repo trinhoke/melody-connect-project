@@ -46,6 +46,7 @@ const createNewPost = {
     audioFiles: [],
     isShowModel: false,
     isShowAudioFiles: false,
+    isOpenEdit: false,
 
     handleEvent: function () {
         const _this = this;
@@ -94,6 +95,9 @@ const createNewPost = {
             _this.audioFiles = [..._this.audioFiles, ...e.target.files];
             _this.showContainerAudioFiles();
             _this.showContentContainer();
+            if (_this.isOpenEdit) {
+                _this.renderFileAudio()
+            }
         }
 
         $(".btn-submit").onclick = function () {
@@ -101,6 +105,19 @@ const createNewPost = {
                 return
             }
             _this.createNewPost()
+        }
+        document.addEventListener('click', function (event) {
+            if (event.target.matches('.btn-open-edit-audio')) {
+                _this.isOpenEdit = true;
+                _this.showModelEdit();
+                _this.renderFileAudio()
+            }
+        });
+
+        $(".back-form-create-post").onclick = function () {
+            _this.isOpenEdit = false;
+            _this.showModelEdit();
+            _this.showContentContainer();
         }
     },
 
@@ -127,7 +144,10 @@ const createNewPost = {
         if (this.audioFiles.length > 0) {
             container.innerHTML = `
                                     ${this.audioFiles.map(file => `<div>${file.name}</div>`).join('')}
+                                    <div>
                                     <label for='add-audio-files' class='btn-add-audio'>Thêm audio</label>
+                                    <div class='btn-open-edit-audio'>Chỉnh sửa</div>
+                                    </div>
                                     `
         } else {
             container.innerHTML = `<div>
@@ -147,6 +167,7 @@ const createNewPost = {
 
     createNewPost: async function () {
         if (!this.content && this.audioFiles.length == 0) {
+            createToast('warning', 'Vui lòng nhập nội dung bài viết');
             return
         }
         const formData = new FormData();
@@ -201,7 +222,10 @@ const createNewPost = {
                                         ${audios.join('')}
                                     </div>
                                     <div class="comment-post">
-                                        <div class="btn-show-comment">${data.post.comments_count} Comment</div>
+                                        <div class="comments-count">${data.post.comments_count} Comment</div>
+                                    </div>
+                                    <div class="btn-show-comment">
+                                        Show comment
                                     </div>
                                 </div>
                             </div>
@@ -225,6 +249,52 @@ const createNewPost = {
         this.showContentContainer()
         this.showContainerAudioFiles();
         this.showModel();
+    },
+
+    renderFileAudio: function () {
+        const _this = this
+        if (this.audioFiles.length == 0) {
+            $('.list-audio-edit').innerHTML = ''
+            return
+        }
+        const listItem = this.audioFiles.map((e) => {
+            return `
+                    <div class="audio-item-edit">
+                        <div class="file-audio-edit">
+                            <audio src="${URL.createObjectURL(e)}" controls></audio>
+                        </div>
+                        <div>${e.name}</div>
+                        <div class="description-audio">
+                            <textarea class="description-content" placeholder="Chú thích"></textarea>
+                        </div>
+                        <div class="delete-audio-file">
+                            <i class="fa-solid fa-xmark"></i>
+                        </div>
+                    </div>
+                    `
+        })
+        $('.list-audio-edit').innerHTML = listItem.join('')
+        $$(".delete-audio-file").forEach((e, idx) => {
+            e.onclick = function () {
+                _this.audioFiles.splice(idx, 1)
+                _this.renderFileAudio()
+            }
+        })
+    },
+
+    showModelEdit: function () {
+        if (this.isOpenEdit) {
+            $(".form-create-post").classList.remove('animation-show')
+            $(".form-create-post").classList.add('animation-hidden')
+            $(".form-edit-auido").classList.remove('animation-hidden')
+            $(".form-edit-auido").classList.add('animation-show')
+        }
+        else {
+            $(".form-create-post").classList.remove('animation-hidden')
+            $(".form-create-post").classList.add('animation-show')
+            $(".form-edit-auido").classList.remove('animation-show')
+            $(".form-edit-auido").classList.add('animation-hidden')
+        }
     },
 
     start: function () {
@@ -303,7 +373,10 @@ const getPost = {
                                 ${audios.join('')}
                             </div>
                             <div class="comment-post">
-                                <div class="btn-show-comment">${e.comments_count} Comment</div>
+                                <div class="comments-count">${e.comments_count} Comment</div>
+                            </div>
+                            <div class="btn-show-comment">
+                                Show comment
                             </div>
                         </div>
                     </div>
@@ -363,7 +436,8 @@ const commentPost = {
                     await _this.getPost();
                     _this.isShowModelComment = true;
                     _this.showModelComment();
-                    _this.bindEvents();  // Gọi hàm bindEvents sau khi model được hiển thị
+                    _this.updatePaddingListComment();
+                    _this.bindEvents(); // Gọi hàm bindEvents sau khi model được hiển thị
                 }
             }
         });
@@ -379,35 +453,29 @@ const commentPost = {
     bindEvents: function () {
         const _this = this;
         const inputComment = document.querySelector(".input-comment");
-        if (inputComment) {  // Kiểm tra xem phần tử input-comment có tồn tại không
+        if (inputComment) {
             inputComment.oninput = function (e) {
                 if (isAuthenticated) {
                     const value = e.target.value.trim();
-                    if (value || _this.comment.length > 0) {
-                        _this.comment = value;
-                    }
-                    else {
-                        this.value = ''
-                    }
+                    _this.comment = value || ''; // Cập nhật giá trị comment
                     _this.animationIconSender();
                     _this.updatePaddingListComment();
-                }
-                else {
-                    this.value = ''
-                    createToast('error', 'Vui lòng đăng nhập để thực hiện chức năng này')
+                } else {
+                    this.value = '';
+                    createToast('error', 'Vui lòng đăng nhập để thực hiện chức năng này');
                 }
             };
         }
 
         const iconSender = document.querySelector('.icon-sender');
-        if (iconSender) {  // Kiểm tra xem phần tử icon-sender có tồn tại không
+        if (iconSender) {
             iconSender.onclick = function () {
                 if (!isAuthenticated) {
-                    createToast('error', 'Vui lòng đăng nhập để thực hiện chức năng này')
-                    return
+                    createToast('error', 'Vui lòng đăng nhập để thực hiện chức năng này');
+                    return;
                 }
                 if (!_this.comment || !_this.postId) {
-                    createToast('error', 'Vui lòng nhập comment')
+                    createToast('error', 'Vui lòng nhập comment');
                     return;
                 }
                 _this.commentPost();
@@ -416,17 +484,22 @@ const commentPost = {
     },
 
     showModelComment: function () {
+        const commentModel = document.querySelector(".comment-post-model");
         if (this.isShowModelComment) {
-            document.querySelector(".comment-post-model").classList.remove('hidden');
+            commentModel.classList.remove('hidden');
         } else {
-            document.querySelector(".comment-post-model").innerHTML = '';
-            document.querySelector(".comment-post-model").classList.add('hidden');
+            commentModel.innerHTML = '';
+            commentModel.classList.add('hidden');
         }
     },
 
     updatePaddingListComment: function () {
-        const x = document.querySelector(".box-sender-comment").offsetHeight;
-        document.querySelector(".list-comment").style.paddingBottom = x + 10 + "px";
+        const boxSenderComment = document.querySelector(".box-sender-comment");
+        if (boxSenderComment) {
+            const x = boxSenderComment.offsetHeight;
+            document.querySelector(".list-comment").style.paddingBottom = x + 10 + "px";
+            console.log(x);
+        }
     },
 
     getPost: async function () {
@@ -525,17 +598,20 @@ const commentPost = {
                     </div>
                 </div>
             `;
-
+            this.updatePaddingListComment();
         } catch (error) {
             console.log(error);
         }
     },
 
     animationIconSender: function () {
-        if (this.comment.length == 0) {
-            document.querySelector(".icon-sender").style.color = 'black';
-        } else {
-            document.querySelector(".icon-sender").style.color = '#0866ff';
+        const iconSender = document.querySelector(".icon-sender");
+        if (iconSender) {
+            if (this.comment.length === 0) {
+                iconSender.style.color = 'black';
+            } else {
+                iconSender.style.color = '#0866ff';
+            }
         }
     },
 
@@ -578,8 +654,7 @@ const commentPost = {
                         </div>
                     </div>
                 `;
-
-                document.querySelector('.list-comment').insertAdjacentHTML('afterbegin', comment);
+                document.querySelector(".list-comment").insertAdjacentHTML('afterbegin', comment);
                 _this.updateLengthComment();
                 _this.resetInput();
             }
@@ -597,14 +672,16 @@ const commentPost = {
     updateLengthComment: function () {
         const comments_count = document.querySelector('.list-comment').querySelectorAll('.comment-item').length;
         document.querySelector('.model-comment-post-container').querySelector('.comment-post').innerHTML = comments_count + " comment";
-        document.querySelector(`div.post[data-id="${this.postId}"]`).querySelector('.btn-show-comment').innerHTML = comments_count + " Comment";
+        document.querySelector(`div.post[data-id="${this.postId}"]`).querySelector('.comments-count').innerHTML = comments_count + " Comment";
     },
 
     start: function () {
         this.handleEvent();
     }
 };
+
 commentPost.start();
+
 
 
 

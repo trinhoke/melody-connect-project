@@ -9,6 +9,7 @@
     <!-- CSS -->
     <link rel="stylesheet" href="{% static 'blog/css/style.css' %}">
     <link rel="stylesheet" href="{% static 'blog/css/toast.css' %}">
+    <link rel="stylesheet" href="{% static 'blog/css/form-edit-auido.css' %}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <title>Document</title>
 </head>
@@ -37,7 +38,7 @@
         </div> -->
     </div>
     <div class="model-overlay hidden create-post-model">
-        <div class="form-create-post">
+        <div class="form-create-post animation-show">
             <div class="header-model">
                 <div class="header-model-title">
                     Tạo bài viết mới
@@ -94,6 +95,38 @@
                     </div>
                 </div>
                 <button class="btn-submit">Đăng</button>
+            </div>
+        </div>
+        <div class="form-edit-auido animation-hidden">
+            <div class="header-model">
+                <div class="back-form-create-post">
+                    <i class="fa-solid fa-chevron-left"></i>
+                </div>
+                <div class="header-model-title">
+                    Chỉnh sửa audio
+                </div>
+            </div>
+            <div class="line"></div>
+            <div class="list-audio-edit">
+                <div class="audio-item-edit">
+                    <div class="file-audio-edit">
+                        <audio src="" controls></audio>
+                    </div>
+                    <div class="description-audio">
+                        <textarea class="description-content" placeholder="Chú thích"></textarea>
+                    </div>
+                    <div class="delete-audio-file">
+                        <i class="fa-solid fa-xmark"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="line"></div>
+            <div class="options-edit-audio">
+                <div>
+                    <label for="add-audio-files">
+                        Thêm audio
+                    </label>
+                </div>
             </div>
         </div>
     </div>
