@@ -9,6 +9,7 @@ __pycache__/
 # Cấu hình môi trường (Environment Variables)
 .env
 .venv
+venv
 
 # Django stuff:
 *.log

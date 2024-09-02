@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'music',
     'blog',
     'chat',
+    'channels',
 ]
 
 MIDDLEWARE = [
@@ -73,6 +74,8 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'melody_connect.wsgi.application'
+ASGI_APPLICATION = 'melody_connect.asgi.application'
+
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
