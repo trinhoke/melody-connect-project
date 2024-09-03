@@ -424,6 +424,7 @@ const commentPost = {
     postId: null,
     parentId: null,
     post: null,
+    socket: null,
 
     handleEvent: function () {
         const _this = this;
@@ -437,7 +438,8 @@ const commentPost = {
                     _this.isShowModelComment = true;
                     _this.showModelComment();
                     _this.updatePaddingListComment();
-                    _this.bindEvents(); // Gọi hàm bindEvents sau khi model được hiển thị
+                    _this.bindEvents();
+                    _this.connectWebSocket() // Gọi hàm bindEvents sau khi model được hiển thị
                 }
             }
         });
@@ -633,7 +635,29 @@ const commentPost = {
             const data = await response.json();
 
             if (data.success) {
-                const comment = `
+                this.socket.send(JSON.stringify({
+                    'data': data
+                }));
+                _this.resetInput();
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    },
+
+    connectWebSocket: function () {
+        const _this = this;
+        const host = window.location.hostname;
+        const port = 8001;
+        this.socket = new WebSocket(
+            `ws://${host}:${port}/ws/comments/${this.postId}/`
+        );
+
+        this.socket.onmessage = function (e) {
+            const response = JSON.parse(e.data);
+            const data = response.comment;
+
+            const comment = `
                     <div class="comment-item" comment-id=${data.comment.id}>
                         <div class="avatar">
                             <img src="https://yt3.ggpht.com/H_spDtAzuKhbWLEFZo66W5uHSG-uKY-Uhv5wCns_4jMNNi36cNz2xzmsBdcfx3mhzS3vKx_4=s48-c-k-c0x00ffffff-no-rj"
@@ -654,14 +678,15 @@ const commentPost = {
                         </div>
                     </div>
                 `;
-                document.querySelector(".list-comment").insertAdjacentHTML('afterbegin', comment);
-                _this.updateLengthComment();
-                _this.resetInput();
-            }
-        } catch (error) {
-            console.log(error);
-        }
+            document.querySelector(".list-comment").insertAdjacentHTML('afterbegin', comment);
+            _this.updateLengthComment();
+        };
+
+        this.socket.onclose = function (e) {
+            console.error('WebSocket connection closed unexpectedly');
+        };
     },
+
 
     resetInput: function () {
         this.comment = '';

@@ -1,7 +1,6 @@
 # blog/consumers.py
 import json
 from channels.generic.websocket import AsyncWebsocketConsumer
-from models import *
 
 class BlogConsumer(AsyncWebsocketConsumer):
     async def connect(self):
@@ -67,28 +66,16 @@ class CommentConsumer(AsyncWebsocketConsumer):
     # Receive message from WebSocket
     async def receive(self, text_data):
         text_data_json = json.loads(text_data)
-        content = text_data_json['content']
-        author = text_data_json['author']
+        data = text_data_json.get('data', 'No data provided')
 
-        # Save the comment
-        post = Post.objects.get(id=self.post_id)
-        comment = Comment.objects.create(
-            post=post,
-            author=author,
-            content=content
-        )
+        print(data)
 
         # Send message to room group
         await self.channel_layer.group_send(
             self.room_group_name,
             {
                 'type': 'comment_message',
-                'comment': {
-                    'id': comment.id,
-                    'author': comment.author,
-                    'content': comment.content,
-                    'created_at': format(comment.created_at, 'd/m/Y H:i')
-                }
+                'comment': data
             }
         )
 
