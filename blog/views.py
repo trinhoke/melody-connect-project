@@ -26,7 +26,7 @@ def create_new_post(request):
     if request.method == 'POST':
         if request.user.is_authenticated: 
             content = request.POST.get('content')
-            music_links = request.POST.get('music_link', None)
+            music_links = request.POST.get('music_links', None)
             audio_files = request.FILES.getlist('audioFiles') 
             post = Post.objects.create(
                 content=content.strip(),
@@ -49,6 +49,7 @@ def create_new_post(request):
                         'file_url': audio.audio_file.url
                     } for audio in AudioFile.objects.filter(post=post)
                 ],
+                'music_links': post.music_links.split('\r\n') if post.music_links else [],
                 'comments_count': 0
             }
             return JsonResponse({'success': True, 'post': post_dict})
@@ -82,6 +83,7 @@ def get_all_post(request,id,page=1):
                     'file_url': audio.audio_file.url
                 } for audio in AudioFile.objects.filter(post=post)
             ],
+            'music_links': post.music_links.split('\r\n') if post.music_links else [],
             'comments_count': post.comments.count()  
         }
         for post in posts_page
@@ -120,6 +122,7 @@ def get_post_by_id(request, id):
         'created_at': format_date(post.created_at.isoformat()),
         'author': post.author.username,
         'audio_files': audio_files_data,
+        'music_links': post.music_links.split('\r\n') if post.music_links else [],
         'comments':comments_data
     }
     
@@ -149,4 +152,3 @@ def comment_post(request):
 
         return JsonResponse({'success':True,'comment':response_data}, status=201)
 
-    return redirect('blog', post_id=post_id)

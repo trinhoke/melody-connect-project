@@ -1,3 +1,4 @@
+
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
@@ -7,6 +8,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!-- CSS -->
     <link rel="stylesheet" href="{% static 'chat/css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <title>Document</title>
 </head>
@@ -16,40 +18,19 @@
         <div class="sider-bar">
             <div class="title-sider-bar">
                 <h2> Đoạn chat </h2>
-                <div class="search-user">
-                    <i class="fa-solid fa-magnifying-glass"></i>
-                    <input class="search-user-input" placeholder="Tìm kiếm trên Messenger" />
+                <div class="box-search">
+                    <div class="icon-back hidden">
+                        <i class="fa-solid fa-arrow-left-long"></i>
+                    </div>
+                    <div class="search-user">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                        <input class="search-user-input" placeholder="Tìm kiếm trên Messenger" />
+                        <div class="search-result hidden">
+                        </div>
+                    </div>
                 </div>
             </div>
             <div class="list-room">
-                <div class="room">
-                    <div class="avatar-receiver">
-                        <img src="https://scontent.fhan2-5.fna.fbcdn.net/v/t39.30808-1/412989840_666942802277459_8721989347696234913_n.jpg?stp=dst-jpg_s100x100&_nc_cat=106&ccb=1-7&_nc_sid=0ecb9b&_nc_eui2=AeGnjhZ9rjFnulbjyOkEMYqigGoh4EjkFSSAaiHgSOQVJB6MaV-RFhqOr54XUFZD4iEP0P2ORsX6296E_8NJ084F&_nc_ohc=WAv7P6O3EW4Q7kNvgHQbJ2j&_nc_ad=z-m&_nc_cid=0&_nc_ht=scontent.fhan2-5.fna&oh=00_AYCGf6Wqo7gwA_woAteiu1GwlhCCKGB4uwvCkhVhLO5Rmg&oe=66DCFF4B"
-                            alt="avatar" />
-                    </div>
-                    <div class="info">
-                        <div class="name-receiver">
-                            Em Mùi
-                        </div>
-                        <div class="mess-new">
-                            OK
-                        </div>
-                    </div>
-                </div>
-                <div class="room active">
-                    <div class="avatar-receiver">
-                        <img src="https://scontent.fhan2-5.fna.fbcdn.net/v/t39.30808-1/412989840_666942802277459_8721989347696234913_n.jpg?stp=dst-jpg_s100x100&_nc_cat=106&ccb=1-7&_nc_sid=0ecb9b&_nc_eui2=AeGnjhZ9rjFnulbjyOkEMYqigGoh4EjkFSSAaiHgSOQVJB6MaV-RFhqOr54XUFZD4iEP0P2ORsX6296E_8NJ084F&_nc_ohc=WAv7P6O3EW4Q7kNvgHQbJ2j&_nc_ad=z-m&_nc_cid=0&_nc_ht=scontent.fhan2-5.fna&oh=00_AYCGf6Wqo7gwA_woAteiu1GwlhCCKGB4uwvCkhVhLO5Rmg&oe=66DCFF4B"
-                            alt="avatar" />
-                    </div>
-                    <div class="info">
-                        <div class="name-receiver">
-                            Em Mùi
-                        </div>
-                        <div class="mess-new">
-                            OK 9h
-                        </div>
-                    </div>
-                </div>
             </div>
         </div>
         <div class="room-chat">
@@ -57,6 +38,11 @@
         </div>
     </div>
 </body>
+<script>
+    const user = {
+        username: "{{ user.username }}",
+        email: "{{ user.email }}"
+    };
+</script>
 <script src="{% static 'chat/js/index.js' %}"></script>
-
 </html>

@@ -14,9 +14,12 @@ from channels.auth import AuthMiddlewareStack
 from channels.security.websocket import AllowedHostsOriginValidator
 # import melody_connect.routing
 import blog.routing  # Import routing của ứng dụng blog
+import chat.routing  # Import routing của ứng dụng blog
 
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'melody_connect.settings')
+
+websocket_urlpatterns = blog.routing.websocket_urlpatterns + chat.routing.websocket_urlpatterns
 
 
 application = ProtocolTypeRouter({
@@ -24,7 +27,7 @@ application = ProtocolTypeRouter({
     "websocket": AllowedHostsOriginValidator(
         AuthMiddlewareStack(
             URLRouter(
-                blog.routing.websocket_urlpatterns
+                websocket_urlpatterns
             )
         )
     ),
