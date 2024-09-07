@@ -47,6 +47,8 @@ const createNewPost = {
     isShowModel: false,
     isShowAudioFiles: false,
     isOpenEdit: false,
+    isOpenInputLinks: false,
+    linksAudio:"",
 
     handleEvent: function () {
         const _this = this;
@@ -91,6 +93,22 @@ const createNewPost = {
             _this.showContentContainer();
         }
 
+        $(".input-links").oninput = function(e){
+            const value = e.target.value.trim();
+            if (value || _this.linksAudio.length > 0) {
+                _this.linksAudio = value;
+            }
+        }
+
+        $(".open-label-links").onclick = function () {
+            _this.isOpenInputLinks = true
+            _this.showInputLink()
+        }
+        $(".btn-close-links-audio").onclick = function () {
+            _this.isOpenInputLinks = false
+            _this.showInputLink()
+        }
+
         $("#add-audio-files").onchange = function (e) {
             _this.audioFiles = [..._this.audioFiles, ...e.target.files];
             _this.showContainerAudioFiles();
@@ -118,6 +136,15 @@ const createNewPost = {
             _this.isOpenEdit = false;
             _this.showModelEdit();
             _this.showContentContainer();
+        }
+    },
+
+    showInputLink: function () {
+        if (this.isOpenInputLinks) {
+            $(".links-audio").classList.remove('hidden')
+        }
+        else {
+            $(".links-audio").classList.add('hidden')
         }
     },
 
@@ -166,12 +193,13 @@ const createNewPost = {
     },
 
     createNewPost: async function () {
-        if (!this.content && this.audioFiles.length == 0) {
+        if (!this.content && this.audioFiles.length == 0 && !this.linksAudio) {
             createToast('warning', 'Vui lòng nhập nội dung bài viết');
             return
         }
         const formData = new FormData();
         formData.append('content', this.content);
+        formData.append('music_links',this.linksAudio)
         if (this.audioFiles.length > 0) {
             this.audioFiles.forEach(e => {
                 formData.append('audioFiles', e)
@@ -349,6 +377,13 @@ const getPost = {
                 </audio>
                 `
             })
+            const links = e.music_links.map(e=>{
+                return `
+                    <div class='link-audio-item'>
+                        <a blank >${e}</a>
+                    </div>
+                `
+            })
             return `
                     <div class="post shadow" data-id = ${e.id}>
                         <div class="header-post">
@@ -369,7 +404,10 @@ const getPost = {
                             <div class="content">
                                 ${e.content}
                             </div>
-                            <div>
+                            <div class="list-links">
+                                ${links.join('')}
+                            </div>
+                            <div class="list-audios">
                                 ${audios.join('')}
                             </div>
                             <div class="comment-post">
@@ -520,6 +558,14 @@ const commentPost = {
                 `;
             });
 
+            const links = post.music_links.map(e=>{
+                return `
+                    <div class='link-audio-item'>
+                        <a blank >${e}</a>
+                    </div>
+                `
+            })
+
             const comments = post.comments.map(e => {
                 return `
                     <div class="comment-item" comment-id=${e.id}>
@@ -575,7 +621,10 @@ const commentPost = {
                                 <div class="content">
                                     ${post.content}
                                 </div>
-                                <div>
+                                <div class="list-links">
+                                    ${links.join('')}
+                                </div>
+                                <div class="list-audios">
                                     ${audios.join('')}
                                 </div>
                             </div>

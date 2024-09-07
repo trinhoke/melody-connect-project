@@ -222,7 +222,7 @@ img {
     min-height: 200px;
 }
 
-.btn-open-edit-audio{
+.btn-open-edit-audio {
     position: absolute;
     top: 10px;
     left: 120px;
@@ -232,7 +232,7 @@ img {
     font-weight: bold;
     border-radius: 5px;
     cursor: pointer;
-    visibility: hidden;   
+    visibility: hidden;
 }
 
 .btn-add-audio {
@@ -251,6 +251,7 @@ img {
 .form-container-content-files:hover .btn-add-audio {
     visibility: visible;
 }
+
 .form-container-content-files:hover .btn-open-edit-audio {
     visibility: visible;
 }
@@ -274,13 +275,63 @@ img {
     color: white;
 }
 
-.post-content {
+.post-content,
+.input-links {
     width: 100%;
     field-sizing: content;
     resize: none;
     outline: none;
     border: none;
     font-size: 16px;
+}
+
+.links-audio {
+    position: relative;
+    margin-top: 10px;
+    width: 100%;
+    gap: 10px;
+    padding: 10px;
+    background-color: #d1d1d1;
+    border-radius: 10px;
+}
+
+.btn-close-links-audio {
+    width: 20px;
+    height: 20px;
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background-color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+.btn-close-links-audio:hover {
+    background-color: rgb(139, 139, 139);
+    color: white;
+}
+
+.links-audio-input {
+    flex: 1;
+    overflow: hidden;
+    margin-top: 10px;
+}
+
+.links-audio small {
+    font-size: 12px;
+    color: red;
+    font-weight: 600;
+}
+
+.links-audio .input-links {
+    border: 1px solid black;
+    padding: 5px 10px;
+    border-radius: 5px;
+    max-height: 200px;
+    overflow-y: auto;
 }
 
 .options-post {
@@ -412,7 +463,23 @@ img {
 
 .content {
     width: 100%;
-    word-break: break-all;
+    overflow-wrap: break-word;
+}
+
+.list-links,.list-audios{
+    margin-top: 10px;
+}
+
+.link-audio-item{
+    display: flex;
+    color: rgb(18, 99, 248);
+    width: 100%;
+    overflow-wrap: break-word;
+}
+
+.link-audio-item a:hover{
+    cursor: pointer;
+    text-decoration: underline;
 }
 
 .card {
@@ -594,7 +661,7 @@ img {
     border: none;
     font-size: 16px;
     background-color: transparent;
-    word-break: break-all;
+    overflow-wrap: break-word;
     max-height: 200px;
     overflow-y: overlay;
 }

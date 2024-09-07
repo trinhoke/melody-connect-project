@@ -61,6 +61,16 @@
                 <form class="form-container-content">
                     {% csrf_token %}
                     <textarea class="post-content" rows="1" placeholder="Bạn đang nghĩ gì...?"></textarea>
+                    <div class="links-audio hidden">
+                        <label>Links audio:</label>
+                        <div class="links-audio-input">
+                            <textarea class="input-links" rows="1" placeholder="Nhập links..."></textarea>
+                            <small>Mỗi link điền trên 1 dòng</small>
+                        </div>
+                        <div class="btn-close-links-audio">
+                            <i class="fa-solid fa-xmark"></i>
+                        </div>
+                    </div>
                     <div class="form-container-content-files hidden">
                         <div class="container-content">
                             <label id="label-audio" class="" for="audio-files">
