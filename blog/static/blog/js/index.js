@@ -48,7 +48,7 @@ const createNewPost = {
     isShowAudioFiles: false,
     isOpenEdit: false,
     isOpenInputLinks: false,
-    linksAudio:"",
+    linksAudio: "",
 
     handleEvent: function () {
         const _this = this;
@@ -93,7 +93,7 @@ const createNewPost = {
             _this.showContentContainer();
         }
 
-        $(".input-links").oninput = function(e){
+        $(".input-links").oninput = function (e) {
             const value = e.target.value.trim();
             if (value || _this.linksAudio.length > 0) {
                 _this.linksAudio = value;
@@ -199,7 +199,7 @@ const createNewPost = {
         }
         const formData = new FormData();
         formData.append('content', this.content);
-        formData.append('music_links',this.linksAudio)
+        formData.append('music_links', this.linksAudio)
         if (this.audioFiles.length > 0) {
             this.audioFiles.forEach(e => {
                 formData.append('audioFiles', e)
@@ -216,7 +216,6 @@ const createNewPost = {
             });
 
             const data = await response.json();
-
             if (data.success) {
                 const container = $(".main-container")
                 const audios = data.post.audio_files.map(e => {
@@ -225,6 +224,13 @@ const createNewPost = {
                         <source src=${e.file_url} type="audio/mpeg">
                         Your browser does not support the audio element.
                     </audio>
+                    `
+                })
+                const links = data.post.music_links.map(e => {
+                    return `
+                        <div class='link-audio-item'>
+                            <a href="${e}" target="_blank" >${e}</a>
+                        </div>
                     `
                 })
                 const post = ` <div class="post shadow"  data-id = ${data.post.id}>
@@ -245,10 +251,13 @@ const createNewPost = {
                                 <div class="content-post">
                                     <div class="content">
                                         ${data.post.content}
-                                    </div>
-                                    <div>
-                                        ${audios.join('')}
-                                    </div>
+                                        </div>
+                                        <div class="list-links">
+                                            ${links.join('')}
+                                        </div>
+                                        <div class="list-audios">
+                                            ${audios.join('')}
+                                        </div>
                                     <div class="comment-post">
                                         <div class="comments-count">${data.post.comments_count} Comment</div>
                                     </div>
@@ -377,10 +386,10 @@ const getPost = {
                 </audio>
                 `
             })
-            const links = e.music_links.map(e=>{
+            const links = e.music_links.map(e => {
                 return `
                     <div class='link-audio-item'>
-                        <a blank >${e}</a>
+                        <a href="${e}" target="_blank" >${e}</a>
                     </div>
                 `
             })
@@ -558,10 +567,10 @@ const commentPost = {
                 `;
             });
 
-            const links = post.music_links.map(e=>{
+            const links = post.music_links.map(e => {
                 return `
                     <div class='link-audio-item'>
-                        <a blank >${e}</a>
+                        <a href="${e}" target="_blank" >${e}</a>
                     </div>
                 `
             })

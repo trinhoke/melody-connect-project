@@ -465,8 +465,7 @@ img {
     width: 100%;
     overflow-wrap: break-word;
 }
-
-.list-links,.list-audios{
+.list-audios{
     margin-top: 10px;
 }
 
