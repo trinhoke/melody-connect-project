@@ -1,0 +1,80 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}MelodyConnect{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <a href="{% url 'home' %}" class="logo">
+                <i class="fas fa-music"></i>
+                <span>MelodyConnect</span>
+            </a>
+            <nav>
+                <ul>
+                    <li><a href="{% url 'home' %}">Trang chủ</a></li>
+                    <li><a href="#">Khám phá</a></li>
+                    <li><a href="#">Thư viện</a></li>
+                    {% if user.is_authenticated %}
+                        <li><a href="{% url 'logout' %}">Đăng xuất</a></li>
+                    {% else %}
+                        <li><a href="{% url 'login' %}">Đăng nhập</a></li>
+                        <li><a href="{% url 'register' %}" class="btn-register">Đăng ký</a></li>
+                    {% endif %}
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        {% if messages %}
+        <div class="messages">
+            {% for message in messages %}
+            <div class="message {% if message.tags %}{{ message.tags }}{% endif %}">
+                {{ message }}
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        {% block content %}
+        {% endblock %}
+    </main>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>Về chúng tôi</h3>
+                    <p>MelodyConnect - Nơi kết nối âm nhạc và con người.</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Liên kết</h3>
+                    <ul>
+                        <li><a href="#">Điều khoản sử dụng</a></li>
+                        <li><a href="#">Chính sách bảo mật</a></li>
+                        <li><a href="#">Liên hệ</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>Theo dõi chúng tôi</h3>
+                    <div class="social-icons">
+                        <a href="#"><i class="fab fa-facebook"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2023 MelodyConnect. Tất cả quyền được bảo lưu.</p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
