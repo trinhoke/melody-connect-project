@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="auth-container">
+    <div class="auth-form">
+        <h2>Đăng ký</h2>
+        <form method="post">
+            {% csrf_token %}
+            {% for field in form %}
+                <div class="form-group">
+                    {{ field.label_tag }}
+                    {{ field }}
+                    {% if field.errors %}
+                        <div class="error-message">{{ field.errors|striptags }}</div>
+                    {% endif %}
+                </div>
+            {% endfor %}
+            <button type="submit" class="btn-submit">Đăng ký</button>
+        </form>
+        <p class="auth-link">Đã có tài khoản? <a href="{% url 'login' %}">Đăng nhập ngay</a></p>
+    </div>
+</div>
+{% endblock %}

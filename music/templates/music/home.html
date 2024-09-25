@@ -1,26 +1,96 @@
-<!-- music/templates/music/home.html -->
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MelodyConnect - Home</title>
-    {% load static %}
-    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
-</head>
-<body>
-    <header>
-        <h1>Welcome to MelodyConnect</h1>
-        <p>Your one-stop platform for online music streaming.</p>
-    </header>
-    <main>
-        <section id="latest-songs">
-            <h2>Latest Songs</h2>
-            <!-- Add code to list the latest songs here -->
-        </section>
-    </main>
-    <footer>
-        <p>&copy; 2024 MelodyConnect. All rights reserved.</p>
-    </footer>
-</body>
-</html>
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Trang chủ - MelodyConnect{% endblock %}
+
+{% block content %}
+<div class="home-container">
+    <section class="hero">
+        <div class="hero-content">
+            <h1>Khám phá thế giới âm nhạc</h1>
+            <p>Hàng triệu bài hát, podcast và playlist đang chờ bạn</p>
+            <a href="#" class="cta-button">Bắt đầu nghe</a>
+        </div>
+    </section>
+
+    <section class="featured-playlists">
+        <h2>Danh sách phát nổi bật</h2>
+        <div class="playlist-grid">
+            <div class="playlist-item">
+                <img src="{% static 'images/playlist1.jpg' %}" alt="Top Hits Việt Nam">
+                <div class="playlist-info">
+                    <h3>Top Hits Việt Nam</h3>
+                    <p>Những bài hát đang thịnh hành</p>
+                </div>
+            </div>
+            <div class="playlist-item">
+                <img src="{% static 'images/playlist2.jpg' %}" alt="Nhạc Trẻ Gây Nghiện">
+                <div class="playlist-info">
+                    <h3>Nhạc Trẻ Gây Nghiện</h3>
+                    <p>Playlist dành cho giới trẻ</p>
+                </div>
+            </div>
+            <div class="playlist-item">
+                <img src="{% static 'images/playlist3.jpg' %}" alt="Acoustic Chill">
+                <div class="playlist-info">
+                    <h3>Acoustic Chill</h3>
+                    <p>Thư giãn với những giai điệu nhẹ nhàng</p>
+                </div>
+            </div>
+            <div class="playlist-item">
+                <img src="{% static 'images/playlist4.jpg' %}" alt="EDM Party">
+                <div class="playlist-info">
+                    <h3>EDM Party</h3>
+                    <p>Bùng nổ với nhạc điện tử</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="new-releases">
+        <h2>Phát hành mới</h2>
+        <div class="song-list">
+            <div class="song-item">
+                <img src="{% static 'images/song1.jpg' %}" alt="Bài hát 1">
+                <div class="song-info">
+                    <h3>Tên bài hát 1</h3>
+                    <p>Ca sĩ 1</p>
+                </div>
+                <button class="play-button"><i class="fas fa-play"></i></button>
+            </div>
+            <div class="song-item">
+                <img src="{% static 'images/song2.jpg' %}" alt="Bài hát 2">
+                <div class="song-info">
+                    <h3>Tên bài hát 2</h3>
+                    <p>Ca sĩ 2</p>
+                </div>
+                <button class="play-button"><i class="fas fa-play"></i></button>
+            </div>
+            <!-- Thêm các bài hát khác tương tự -->
+        </div>
+    </section>
+
+    <section class="genres">
+        <h2>Khám phá theo thể loại</h2>
+        <div class="genre-grid">
+            <div class="genre-item">
+                <img src="{% static 'images/genre1.jpg' %}" alt="Nhạc Pop">
+                <h3>Nhạc Pop</h3>
+            </div>
+            <div class="genre-item">
+                <img src="{% static 'images/genre2.jpg' %}" alt="Nhạc Rock">
+                <h3>Nhạc Rock</h3>
+            </div>
+            <div class="genre-item">
+                <img src="{% static 'images/genre3.jpg' %}" alt="Nhạc Jazz">
+                <h3>Nhạc Jazz</h3>
+            </div>
+            <div class="genre-item">
+                <img src="{% static 'images/genre4.jpg' %}" alt="Nhạc Classical">
+                <h3>Nhạc Classical</h3>
+            </div>
+            <!-- Thêm các thể loại khác tương tự -->
+        </div>
+    </section>
+</div>
+{% endblock %}
