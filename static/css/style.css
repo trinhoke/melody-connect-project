@@ -1,0 +1,295 @@
+<<<<<<< Updated upstream
+=======
+/* General */
+:root {
+  --primary-color: #1e60dc;
+  --secondary-color: #ffdd57;
+  --text-color: #333;
+  --bg-color: #f4f4f4;
+  --header-bg: #1a1a1a;
+  --footer-bg: #282828;
+}
+.blue-text {
+  font-weight: bold;
+  background: linear-gradient(135deg, #3700ff, #00d9ff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Arial', sans-serif;
+  line-height: 1.6;
+  color: var(--text-color);
+  background-color: var(--bg-color);
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+/* Main content styles */
+.main-content {
+  padding: 2rem 0;
+}
+
+
+/* Buttons */
+.btn {
+  padding: 8px 16px;
+  border-radius: 20px;
+  text-decoration: none;
+  font-weight: bold;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.btn-login {
+  background-color: var(--primary-color);
+  color: white;
+  padding: 10px 20px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.btn-login:hover {
+  background-color: var(--secondary-color);
+}
+
+.btn-user {
+  background-color: rgba(255, 255, 255, 0.2);
+  color: white;
+}
+
+.btn-user:hover {
+  background-color: #1ed760;
+  color: #04619a;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.fade-in {
+  animation: fadeIn 0.5s ease-in;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .header__wrapper {
+    flex-direction: column;
+  }
+
+  .header__nav ul {
+    margin-top: 20px;
+  }
+
+  .footer__grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Header styles */
+.header {
+  background: linear-gradient(135deg, #000000, #0000008c);
+  padding: 1rem 0;
+  position: sticky; /* Thêm thuộc tính này */
+  top: 0; /* Thêm thuộc tính này */
+  z-index: 1000; /* Đảm bảo header nằm trên các phần tử khác */
+}
+
+.header__wrapper {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+
+.header__logo a {
+  font-family: 'Dancing Script', cursive;
+  font-size: 1.5rem;
+  text-decoration: none;
+  font-weight: bold;
+  background: linear-gradient(135deg, #3700ff, #00d9ff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+
+.header__logo img {
+  height: 70px;
+}
+
+.header__nav ul {
+  display: flex;
+  list-style: none;
+}
+
+.header__nav ul li {
+  margin-right: 20px;
+}
+
+.header__nav ul li a {
+  color: #b3b3b3;
+  font-size: 1.2rem;
+  transition: color 0.3s;
+}
+
+.header__nav ul li a:hover {
+  color: var(--primary-color);
+}
+
+.header__actions {
+  display: flex;
+  align-items: center;
+}
+
+.header__search {
+  display: flex;
+  margin-right: 20px;
+}
+
+.header__search input {
+  background-color: #282828;
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 20px;
+  width: 300px;
+}
+
+.header__search button {
+  background-color: transparent;
+  color: #b3b3b3;
+  border: none;
+  padding: 10px;
+  cursor: pointer;
+  position: absolute;
+  right: 5px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+/* Footer styles */
+.footer {
+  background-color: var(--footer-bg);
+  color: white;
+  padding: 3rem 0 1rem;
+}
+
+.footer__grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2rem;
+}
+
+.footer h3 {
+  margin-bottom: 1rem;
+  font-size: 1.2rem;
+}
+
+.footer ul {
+  list-style: none;
+}
+
+.footer ul li {
+  margin-bottom: 0.5rem;
+}
+
+.footer a {
+  color: #b3b3b3;
+  text-decoration: none;
+  transition: color 0.3s;
+}
+
+.footer a:hover {
+  color: var(--secondary-color);
+}
+
+.social-icons {
+  display: flex;
+}
+
+.social-icons a {
+  margin-right: 15px;
+  font-size: 1.5rem;
+  color: #b3b3b3;
+  transition: color 0.3s;
+}
+
+.social-icons a:hover {
+  color: var(--secondary-color);
+}
+
+.newsletter-form {
+  display: flex;
+}
+
+.newsletter-form input {
+  flex-grow: 1;
+  padding: 8px 12px;
+  border: none;
+  border-radius: 20px 0 0 20px;
+  outline: none;
+}
+
+.newsletter-form button {
+  padding: 8px 16px;
+  background-color: var(--primary-color);
+  color: white;
+  border: none;
+  border-radius: 0 20px 20px 0;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.newsletter-form button:hover {
+  background-color: var(--secondary-color);
+  color: var(--primary-color);
+}
+
+.footer__bottom {
+  margin-top: 2rem;
+  padding-top: 1rem;
+  border-top: 1px solid #3f3f3f;
+  text-align: center;
+  color: #b3b3b3;
+}
+
+.no-underline {
+  text-decoration: none;
+}
+
+/* Messages */
+.messages {
+  max-width: 600px;
+  margin: 0 auto 20px;
+}
+
+.message {
+  padding: 10px;
+  margin-bottom: 10px;
+  border-radius: 5px;
+  text-align: center;
+}
+
+.message.success {
+  background-color: #d4edda;
+  color: #155724;
+}
+
+.message.error {
+  background-color: #f8d7da;
+  color: #721c24;
+}
+
+>>>>>>> Stashed changes

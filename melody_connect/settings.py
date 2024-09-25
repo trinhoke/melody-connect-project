@@ -11,9 +11,16 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
 from pathlib import Path
+<<<<<<< Updated upstream
 import os 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
+=======
+from dotenv import load_dotenv
+import os
+load_dotenv()
+# Cài đặt cơ bản
+>>>>>>> Stashed changes
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
@@ -37,7 +44,9 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
+    'cloudinary_storage',  # Đặt trước django.contrib.staticfiles
     'django.contrib.staticfiles',
+    'cloudinary',
     'user',
     'music',
     'blog',
@@ -113,12 +122,17 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+<<<<<<< Updated upstream
 
 # Internationalization
 # https://docs.djangoproject.com/en/5.1/topics/i18n/
 
 LANGUAGE_CODE = 'en-us'
 
+=======
+# Cấu hình quốc tế hóa
+LANGUAGE_CODE = 'vi-us'
+>>>>>>> Stashed changes
 TIME_ZONE = 'UTC'
 
 USE_I18N = True
@@ -131,3 +145,26 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+<<<<<<< Updated upstream
+=======
+
+# Cấu hình Model
+AUTH_USER_MODEL = 'user.CustomUser'
+
+# Cấu hình đăng nhập và đăng xuất
+LOGIN_REDIRECT_URL = 'home'
+LOGOUT_REDIRECT_URL = 'home'
+
+# Cấu hình Cloudinary
+CLOUDINARY_STORAGE = {
+    'CLOUD_NAME': os.getenv('CLOUDINARY_CLOUD_NAME'),
+    'API_KEY': os.getenv('CLOUDINARY_API_KEY'),
+    'API_SECRET': os.getenv('CLOUDINARY_API_SECRET')
+}
+
+# Sử dụng Cloudinary làm storage mặc định cho media files
+DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+
+# Cấu hình cho static files
+STATICFILES_STORAGE = 'cloudinary_storage.storage.StaticHashedCloudinaryStorage'
+>>>>>>> Stashed changes

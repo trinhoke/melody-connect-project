@@ -1,6 +1,9 @@
 from django.urls import path
-from . import views
+from . import views as music_views
 
 urlpatterns = [
-    # Add your URL patterns here
+    path('', music_views.home, name='home'),  # Thêm dòng này
+    path('songs/', music_views.SongListView.as_view(), name='song_list'),
+    path('songs/<slug:slug>/', music_views.SongDetailView.as_view(), name='song-detail'),
+    
 ]

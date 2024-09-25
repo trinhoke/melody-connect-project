@@ -1,0 +1,99 @@
+    {% load static %}
+    <!DOCTYPE html>
+    <html lang="vi">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>{% block title %}Melody Stream{% endblock %}</title>
+        <link rel="stylesheet" href="{% static 'css/style.css' %}">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+        <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
+        {% block styles %}{% endblock %}
+    </head>
+    <body>
+        <header class="header">
+            <div class="container">
+                <div class="header__wrapper">
+                    <div class="header__logo">
+                        <a href="{% url 'home' %}">
+                            MelodyConnect
+                        </a>
+                    </div>
+                    <nav class="header__nav">
+                        <ul>
+                            <li><a class="no-underline" href="{% url 'home' %}"><i class="fas fa-home"></i></a></li>
+                            <li><a class="no-underline" href="#"><i class="fas fa-compass"></i> <span>Khám phá</span></a></li>
+                            <li><a class="no-underline" href="{% url 'song_list' %}"><i class="fas fa-music"></i> <span>Bài hát</span></a></li>
+                            <li><a class="no-underline" href="#"><i class="fas fa-list"></i> <span>Playlist</span></a></li>
+                            <li><a class="no-underline" href="#"><i class="fas fa-microphone-alt"></i> <span>Nghệ sĩ</span></a></li>
+                        </ul>
+                    </nav>
+                    <div class="header__actions">
+                        <div class="header__search">
+                            <input type="text" placeholder="Tìm kiếm...">
+                            <button type="submit"><i class="fas fa-search"></i></button>
+                        </div>
+                        <div class="header__user">
+                            {% if user.is_authenticated %}
+                                <a class="no-underline" href="#">
+                                    <i class="fas fa-user"></i>
+                                    <span>{{ user.name }}</span>
+                                </a>
+                            {% else %}
+                                <a class="btn btn-login" href="{% url 'login' %}">Đăng nhập</a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <main class="main-content">
+            <div class="container">
+                {% block content %}{% endblock %}
+            </div>
+        </main>
+
+        <footer class="footer">
+            <div class="container">
+                <div class="footer__grid">
+                    <div class="footer__column">
+                        <h3>Liên kết nhanh</h3>
+                        <ul>
+                            <li><a href="#">Về chúng tôi</a></li>
+                            <li><a href="#">Liên hệ</a></li>
+                            <li><a href="#">Điều khoản sử dụng</a></li>
+                            <li><a href="#">Chính sách bảo mật</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer__column">
+                        <h3>Kết nối với chúng tôi</h3>
+                        <div class="social-icons">
+                            <a href="#"><i class="fab fa-facebook"></i></a>
+                            <a href="#"><i class="fab fa-twitter"></i></a>
+                            <a href="#"><i class="fab fa-instagram"></i></a>
+                            <a href="#"><i class="fab fa-youtube"></i></a>
+                        </div>
+                    </div>
+                    <div class="footer__column">
+                        <h3>Đăng ký nhận bản tin</h3>
+                        <form class="newsletter-form" action="#" method="POST">
+                            {% csrf_token %}
+                            <input type="email" placeholder="Nhập email của bạn">
+                            <button class="btn btn-primary" type="submit">Đăng ký</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="footer__bottom">
+                <div class="container">
+                    <p>&copy; 2024 Melody Stream. Tất cả quyền được bảo lưu.</p>
+                </div>
+            </div>
+        </footer>
+
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/howler/2.2.3/howler.min.js"></script>
+        <script src="{% static 'js/script.js' %}"></script>
+        {% block scripts %}{% endblock %}
+    </body>
+    </html>

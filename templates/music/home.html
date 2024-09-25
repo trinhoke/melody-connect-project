@@ -1,0 +1,91 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Trang chủ - MelodyConnect{% endblock %}
+{% block styles %}
+    <link rel="stylesheet" href="{% static 'css/music/home.css' %}">
+{% endblock %}
+{% block content %}
+<div class="home-content">
+    <section class="featured-section">
+        <h2>Nổi bật</h2>
+        <div class="featured-grid">
+            {% for i in '12345'|make_list %}
+            <div class="featured-item">
+                <img src="https://picsum.photos/300/300?random={{ forloop.counter }}" alt="Bài hát {{ i }}">
+                <div class="content">
+                    <h3>Bài hát nổi bật {{ i }}</h3>
+                    <p>Ca sĩ {{ i }}</p>
+                </div>
+                <button class="play-button">
+                    <i class="fas fa-play"></i>
+                </button>
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+
+    <section class="new-releases-section">
+        <h2>Phát hành mới</h2>
+        <div class="new-releases-grid">
+            {% for i in '12345'|make_list %}
+            <div class="featured-item">
+                <img src="https://picsum.photos/300/300?random={{ forloop.counter|add:5 }}" alt="Bài hát mới {{ i }}">
+                <h3>Bài hát mới {{ i }}</h3>
+                <p>Ca sĩ mới {{ i }}</p>
+                <button class="play-button">
+                    <i class="fas fa-play"></i>
+                </button>
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+
+    <section class="top-100-section">
+        <h2>Top 100</h2>
+        <div class="top-100-list">
+            {% for i in '12345'|make_list %}
+            <div class="top-100-item">
+                <span class="rank">{{ forloop.counter }}</span>
+                <img src="https://picsum.photos/300/300?random={{ forloop.counter|add:10 }}" alt="Top {{ i }}">
+                <h3>Bài hát top {{ i }}</h3>
+                <p>Ca sĩ top {{ i }}</p>
+                <button class="play-button">
+                    <i class="fas fa-play"></i>
+                </button>
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+
+    <section class="topic-section">
+        <h2>Chủ đề hot</h2>
+        <div class="topic-grid">
+            {% for i in '1234'|make_list %}
+            <div class="topic-item">
+                <img src="https://picsum.photos/300/300?random={{ forloop.counter|add:15 }}" alt="Chủ đề {{ i }}">
+                <h3>Chủ đề {{ i }}</h3>
+                <button class="play-button">
+                    <i class="fas fa-play"></i>
+                </button>
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+
+    <section class="playlist-section">
+        <h2>Playlist</h2>
+        <div class="playlist-grid">
+            {% for i in '1234'|make_list %}
+            <div class="playlist-item">
+                <img src="https://picsum.photos/300/300?random={{ forloop.counter|add:19 }}" alt="Playlist {{ i }}">
+                <h3>Playlist {{ i }}</h3>
+                <button class="play-button">
+                    <i class="fas fa-play"></i>
+                </button>
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+</div>
+{% endblock %}
