@@ -3,8 +3,9 @@ Cài đặt Django cho dự án melody_connect.
 """
 
 from pathlib import Path
+from dotenv import load_dotenv
 import os
-
+load_dotenv()
 # Cài đặt cơ bản
 BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-0fectfijm=(1(r_)u^(r#4q!9qzru@m^h^$84qd)h%3=)8apfd'
@@ -18,7 +19,9 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
+    'cloudinary_storage',  # Đặt trước django.contrib.staticfiles
     'django.contrib.staticfiles',
+    'cloudinary',
     'user',
     'music',
     'blog',
@@ -72,7 +75,7 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 # Cấu hình quốc tế hóa
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'vi-us'
 TIME_ZONE = 'UTC'
 USE_I18N = True
 USE_TZ = True
@@ -95,3 +98,16 @@ AUTH_USER_MODEL = 'user.CustomUser'
 # Cấu hình đăng nhập và đăng xuất
 LOGIN_REDIRECT_URL = 'home'
 LOGOUT_REDIRECT_URL = 'home'
+
+# Cấu hình Cloudinary
+CLOUDINARY_STORAGE = {
+    'CLOUD_NAME': os.getenv('CLOUDINARY_CLOUD_NAME'),
+    'API_KEY': os.getenv('CLOUDINARY_API_KEY'),
+    'API_SECRET': os.getenv('CLOUDINARY_API_SECRET')
+}
+
+# Sử dụng Cloudinary làm storage mặc định cho media files
+DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+
+# Cấu hình cho static files
+STATICFILES_STORAGE = 'cloudinary_storage.storage.StaticHashedCloudinaryStorage'

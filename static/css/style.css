@@ -1,486 +1,292 @@
-/* Thiết lập cơ bản */
+/* General */
+:root {
+  --primary-color: #1e60dc;
+  --secondary-color: #ffdd57;
+  --text-color: #333;
+  --bg-color: #f4f4f4;
+  --header-bg: #1a1a1a;
+  --footer-bg: #282828;
+}
+.blue-text {
+  font-weight: bold;
+  background: linear-gradient(135deg, #3700ff, #00d9ff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
 * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
 body {
-    font-family: 'Poppins', sans-serif;
-    line-height: 1.6;
-    color: #333;
-    background-color: #f4f4f4;
+  font-family: 'Arial', sans-serif;
+  line-height: 1.6;
+  color: var(--text-color);
+  background-color: var(--bg-color);
+  transition: background-color 0.3s, color 0.3s;
 }
 
 .container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
 }
 
-/* Header */
-header {
-    background: #10467f; /* Đổi từ #1DB954 sang xanh lam */
-    padding: 20px 0;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+/* Main content styles */
+.main-content {
+  padding: 2rem 0;
 }
 
-header .container {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+
+/* Buttons */
+.btn {
+  padding: 8px 16px;
+  border-radius: 20px;
+  text-decoration: none;
+  font-weight: bold;
+  transition: background-color 0.3s, color 0.3s;
 }
 
-.logo {
-    display: flex;
-    align-items: center;
-    color: white;
-    text-decoration: none;
-    font-size: 1.5em;
-    font-weight: 700;
+.btn-login {
+  background-color: var(--primary-color);
+  color: white;
+  padding: 10px 20px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
 }
 
-.logo i {
-    margin-right: 10px;
+.btn-login:hover {
+  background-color: var(--secondary-color);
 }
 
-nav ul {
-    display: flex;
-    list-style: none;
+.btn-user {
+  background-color: rgba(255, 255, 255, 0.2);
+  color: white;
 }
 
-nav ul li {
-    margin-left: 20px;
+.btn-user:hover {
+  background-color: #1ed760;
+  color: #04619a;
 }
 
-nav ul li a {
-    color: white;
-    text-decoration: none;
-    font-weight: 600;
-    transition: color 0.3s ease;
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
-nav ul li a:hover {
-    color: #e0e0e0;
-}
-
-.btn-register {
-    background-color: white;
-    color: #1E90FF; /* Đổi từ #1DB954 sang xanh lam */
-    padding: 8px 16px;
-    border-radius: 20px;
-    transition: background-color 0.3s ease, color 0.3s ease;
-}
-
-.btn-register:hover {
-    background-color: #e0e0e0;
-    color: #1E90FF; /* Đổi từ #1DB954 sang xanh lam */
-}
-
-/* Main content */
-main {
-    padding: 40px 0;
-}
-
-/* Messages */
-.messages {
-    max-width: 600px;
-    margin: 0 auto 20px;
-}
-
-.message {
-    padding: 10px;
-    margin-bottom: 10px;
-    border-radius: 5px;
-    text-align: center;
-}
-
-.message.success {
-    background-color: #d4edda;
-    color: #155724;
-}
-
-.message.error {
-    background-color: #f8d7da;
-    color: #721c24;
-}
-
-/* Forms */
-form {
-    max-width: 400px;
-    margin: 0 auto;
-    background: white;
-    padding: 30px;
-    border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-}
-
-form h2 {
-    margin-bottom: 20px;
-    text-align: center;
-    color: #1E90FF; /* Đổi từ #1DB954 sang xanh lam */
-}
-
-form input[type="text"],
-form input[type="email"],
-form input[type="password"] {
-    width: 100%;
-    padding: 10px;
-    margin-bottom: 15px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    font-size: 1em;
-}
-
-form button {
-    width: 100%;
-    padding: 10px;
-    background: #1E90FF; /* Đổi từ #1DB954 sang xanh lam */
-    color: white;
-    border: none;
-    border-radius: 4px;
-    font-size: 1em;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-}
-
-form button:hover {
-    background: #1873CC; /* Màu xanh lam đậm hơn khi hover */
-}
-
-/* Styles cho form đăng ký và đăng nhập */
-.auth-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: calc(100vh - 100px);
-    background: linear-gradient(135deg, #1E90FF, #191414); /* Đổi từ #1DB954 sang xanh lam */
-    padding: 20px;
-}
-
-.auth-form {
-    background: white;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
-    width: 100%;
-    max-width: 600px; 
-}
-
-.auth-form h2 {
-    margin-bottom: 25px;
-    text-align: center;
-    color: #1E90FF; /* Đổi từ #1DB954 sang xanh lam */
-    font-size: 1.8em;
-}
-
-.form-group {
-    margin-bottom: 10px;
-}
-
-.form-group label {
-    display: block;
-    margin-bottom: 5px;
-    color: #333;
-    font-weight: 600;
-    font-size: 0.9em;
-}
-
-.form-group input {
-    width: 100%;
-    padding: 10px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    font-size: 1em;
-    transition: border-color 0.3s ease;
-}
-
-.form-group input:focus {
-    border-color: #1E90FF; /* Đổi từ #1DB954 sang xanh lam */
-    outline: none;
-}
-
-.error-message {
-    color: #dc3545;
-    font-size: 0.85em;
-    margin-top: 5px;
-}
-
-.btn-submit {
-    width: 100%;
-    padding: 12px;
-    background: #1E90FF; /* Đổi từ #1DB954 sang xanh lam */
-    color: white;
-    border: none;
-    border-radius: 4px;
-    font-size: 1em;
-    font-weight: 600;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-    margin-top: 10px;
-}
-
-.btn-submit:hover {
-    background: #1873CC; /* Màu xanh lam đậm hơn khi hover */
-}
-
-.auth-link {
-    text-align: center;
-    margin-top: 20px;
-    color: #666;
-    font-size: 0.9em;
-}
-
-.auth-link a {
-    color: #1E90FF; /* Đổi từ #1DB954 sang xanh lam */
-    text-decoration: none;
-    font-weight: 600;
-}
-
-.auth-link a:hover {
-    text-decoration: underline;
-}
-
-@media (max-width: 480px) {
-    .auth-form {
-        padding: 20px;
-        max-width: 100%; /* Đảm bảo form chiếm toàn bộ chiều rộng trên màn hình nhỏ */
-    }
-
-    .auth-form h2 {
-        font-size: 1.5em;
-    }
-
-    .form-group input {
-        font-size: 0.9em;
-    }
-
-    .btn-submit {
-        font-size: 0.9em;
-    }
-}
-
-/* Footer */
-footer {
-    background: #191414; /* Đổi thành màu đen đậm */
-    color: white;
-    padding: 40px 0 20px;
-}
-
-.footer-content {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 20px;
-}
-
-.footer-section {
-    flex: 1;
-    margin-right: 20px;
-}
-
-.footer-section h3 {
-    margin-bottom: 15px;
-    font-size: 1.2em;
-}
-
-.footer-section ul {
-    list-style: none;
-}
-
-.footer-section ul li {
-    margin-bottom: 10px;
-}
-
-.footer-section ul li a {
-    color: #e0e0e0;
-    text-decoration: none;
-    transition: color 0.3s ease;
-}
-
-.footer-section ul li a:hover {
-    color: #1E90FF; /* Đổi từ #1DB954 sang xanh lam */
-}
-
-.social-icons a {
-    color: white;
-    font-size: 1.5em;
-    margin-right: 15px;
-    transition: color 0.3s ease;
-}
-
-.social-icons a:hover {
-    color: #1E90FF; /* Đổi từ #1DB954 sang xanh lam */
-}
-
-.footer-bottom {
-    text-align: center;
-    padding-top: 20px;
-    border-top: 1px solid #555;
+.fade-in {
+  animation: fadeIn 0.5s ease-in;
 }
 
 /* Responsive design */
 @media (max-width: 768px) {
-    header .container {
-        flex-direction: column;
-    }
+  .header__wrapper {
+    flex-direction: column;
+  }
 
-    nav ul {
-        margin-top: 20px;
-    }
+  .header__nav ul {
+    margin-top: 20px;
+  }
 
-    nav ul li {
-        margin: 0 10px;
-    }
-
-    .footer-content {
-        flex-direction: column;
-    }
-
-    .footer-section {
-        margin-bottom: 30px;
-    }
+  .footer__grid {
+    grid-template-columns: 1fr;
+  }
 }
 
-/* Home page specific styles */
-.hero {
-    background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('/static/images/hero-bg.jpg');
-    background-size: cover;
-    background-position: center;
-    color: white;
-    text-align: center;
-    padding: 100px 0;
-    margin-bottom: 40px;
+/* Header styles */
+.header {
+  background: linear-gradient(135deg, #000000, #0000008c);
+  padding: 1rem 0;
+  position: sticky; /* Thêm thuộc tính này */
+  top: 0; /* Thêm thuộc tính này */
+  z-index: 1000; /* Đảm bảo header nằm trên các phần tử khác */
 }
 
-.hero-content {
-    max-width: 600px;
-    margin: 0 auto;
+.header__wrapper {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
-.hero h1 {
-    font-size: 3em;
-    margin-bottom: 20px;
+
+.header__logo a {
+  font-family: 'Dancing Script', cursive;
+  font-size: 1.5rem;
+  text-decoration: none;
+  font-weight: bold;
+  background: linear-gradient(135deg, #3700ff, #00d9ff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
-.hero p {
-    font-size: 1.2em;
-    margin-bottom: 30px;
+
+.header__logo img {
+  height: 70px;
 }
 
-.cta-button {
-    display: inline-block;
-    background-color: #1E90FF; /* Đổi từ #1DB954 sang xanh lam */
-    color: white;
-    padding: 12px 24px;
-    border-radius: 30px;
-    text-decoration: none;
-    font-weight: bold;
-    transition: background-color 0.3s;
+.header__nav ul {
+  display: flex;
+  list-style: none;
 }
 
-.cta-button:hover {
-    background-color: #1873CC; /* Màu xanh lam đậm hơn khi hover */
+.header__nav ul li {
+  margin-right: 20px;
 }
 
-.section-title {
-    font-size: 2em;
-    margin-bottom: 30px;
-    text-align: center;
-    color: #333;
+.header__nav ul li a {
+  color: #b3b3b3;
+  font-size: 1.2rem;
+  transition: color 0.3s;
 }
 
-.grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-    gap: 30px;
+.header__nav ul li a:hover {
+  color: var(--primary-color);
 }
 
-.grid-item {
-    background-color: white;
-    border-radius: 8px;
-    overflow: hidden;
-    transition: transform 0.3s, box-shadow 0.3s;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+.header__actions {
+  display: flex;
+  align-items: center;
 }
 
-.grid-item:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+.header__search {
+  display: flex;
+  margin-right: 20px;
 }
 
-.grid-item img {
-    width: 100%;
-    height: 200px;
-    object-fit: cover;
+.header__search input {
+  background-color: #282828;
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 20px;
+  width: 300px;
 }
 
-.grid-item-info {
-    padding: 15px;
+.header__search button {
+  background-color: transparent;
+  color: #b3b3b3;
+  border: none;
+  padding: 10px;
+  cursor: pointer;
+  position: absolute;
+  right: 5px;
+  top: 50%;
+  transform: translateY(-50%);
 }
 
-.grid-item-info h3 {
-    margin: 0 0 5px 0;
-    font-size: 1.2em;
-    color: #333;
+/* Footer styles */
+.footer {
+  background-color: var(--footer-bg);
+  color: white;
+  padding: 3rem 0 1rem;
 }
 
-.grid-item-info p {
-    margin: 0;
-    color: #666;
-    font-size: 0.9em;
+.footer__grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2rem;
 }
 
-.song-item {
-    display: flex;
-    align-items: center;
-    background-color: white;
-    border-radius: 8px;
-    padding: 10px;
-    transition: background-color 0.3s;
-    margin-bottom: 15px;
+.footer h3 {
+  margin-bottom: 1rem;
+  font-size: 1.2rem;
 }
 
-.song-item:hover {
-    background-color: #f9f9f9;
+.footer ul {
+  list-style: none;
 }
 
-.song-item img {
-    width: 60px;
-    height: 60px;
-    border-radius: 5px;
-    margin-right: 15px;
+.footer ul li {
+  margin-bottom: 0.5rem;
 }
 
-.song-info {
-    flex-grow: 1;
+.footer a {
+  color: #b3b3b3;
+  text-decoration: none;
+  transition: color 0.3s;
 }
 
-.song-info h3 {
-    margin: 0;
-    font-size: 1.1em;
-    color: #333;
+.footer a:hover {
+  color: var(--secondary-color);
 }
 
-.song-info p {
-    margin: 5px 0 0;
-    font-size: 0.9em;
-    color: #666;
+.social-icons {
+  display: flex;
 }
 
-.play-button {
-    background-color: #1E90FF; /* Đổi từ #1DB954 sang xanh lam */
-    color: white;
-    border: none;
-    border-radius: 50%;
-    width: 40px;
-    height: 40px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    transition: background-color 0.3s;
+.social-icons a {
+  margin-right: 15px;
+  font-size: 1.5rem;
+  color: #b3b3b3;
+  transition: color 0.3s;
 }
 
-.play-button:hover {
-    background-color: #1873CC; /* Màu xanh lam đậm hơn khi hover */
+.social-icons a:hover {
+  color: var(--secondary-color);
 }
+
+.newsletter-form {
+  display: flex;
+}
+
+.newsletter-form input {
+  flex-grow: 1;
+  padding: 8px 12px;
+  border: none;
+  border-radius: 20px 0 0 20px;
+  outline: none;
+}
+
+.newsletter-form button {
+  padding: 8px 16px;
+  background-color: var(--primary-color);
+  color: white;
+  border: none;
+  border-radius: 0 20px 20px 0;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.newsletter-form button:hover {
+  background-color: var(--secondary-color);
+  color: var(--primary-color);
+}
+
+.footer__bottom {
+  margin-top: 2rem;
+  padding-top: 1rem;
+  border-top: 1px solid #3f3f3f;
+  text-align: center;
+  color: #b3b3b3;
+}
+
+.no-underline {
+  text-decoration: none;
+}
+
+/* Messages */
+.messages {
+  max-width: 600px;
+  margin: 0 auto 20px;
+}
+
+.message {
+  padding: 10px;
+  margin-bottom: 10px;
+  border-radius: 5px;
+  text-align: center;
+}
+
+.message.success {
+  background-color: #d4edda;
+  color: #155724;
+}
+
+.message.error {
+  background-color: #f8d7da;
+  color: #721c24;
+}
+

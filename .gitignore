@@ -33,3 +33,6 @@ media/
 # Các thư mục của hệ điều hành
 .DS_Store
 Thumbs.db
+
+.cursor_rules
+.gitignore

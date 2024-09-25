@@ -1,0 +1,120 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ song.title }} - {{ song.artist }}{% endblock %}
+
+{% block styles %}
+    <link rel="stylesheet" href="{% static 'css/music/song_detail.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="song-detail-page">
+    <header class="sticky-header">
+        <nav class="breadcrumb">
+            <ul>
+                <li><a href="{% url 'home' %}">Nghe nhạc</a></li>
+                <li><a href="{% url 'song_list' %}">Bài hát</a></li>
+                <li>Shape of you</li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="main-content">
+        <div class="song-info">
+            <h1 class="song-title">{{ song.title }} - {{ song.artist }}</h1>
+        </div>
+
+        <div class="player-container">
+            <div class="player-content">
+                <div class="album-cover">
+                    {% if song.cover_image %}
+                        <img src="{{ song.cover_image.url }}" alt="{{ song.title }} cover">
+                    {% else %}
+                        <img src="{% static 'images/default-cover.jpg' %}" alt="Default cover">
+                    {% endif %}
+                    <button class="play-button"><i class="fas fa-play" ></i></button>
+                    <button class="pause-button" ><i class="fas fa-pause"></i></button>
+                </div>
+                <div class="lyrics-preview">
+                    <p>{{ song.lyrics|truncatewords:20 }}</p>
+                </div>
+            </div>
+            <div class="player-controls">
+                <div class="progress-bar" id="progress-bar">
+                    <div class="progress" style="width: 0%;">
+                    </div>
+                </div>
+                <div class="control-info">
+                    <span class="current-time">00:00 </span>
+                    <div class="footer-actions">
+                        <button class="action-btn"><i class="fas fa-heart"></i> Yêu thích</button>
+                        <button class="action-btn"><i class="fas fa-share-alt"></i> Chia sẻ</button>
+                        <button class="action-btn"><i class="fas fa-music"></i> Nhạc chờ</button>
+                    </div>
+                    <div class="volume-control">
+                        <i class="fas fa-volume-up"></i>
+                        <input type="range" min="0" max="100" value="70" class="volume-slider">
+                    </div>
+                        <span class="total-time">  00:00</span>
+
+                </div>
+            </div>
+                
+        </div>
+
+        <div class="content-grid">
+            <div class="lyrics-section">
+                <h2 class="section-title">
+                    Lời bài hát
+                </h2>
+                <div class="lyrics-content">
+                    {% if song.lyrics %}
+                        {{ song.lyrics|linebreaks }}
+                    {% else %}
+                        <p>Chưa có lời bài hát.</p>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <div class="song-info-section">
+                <h2 class="section-title">Thông tin bài hát</h2>
+                <ul class="song-info-list">
+                    <li><strong>Ca sĩ:</strong> {{ song.artist }}</li>
+                    <li><strong>Sáng tác:</strong> Chưa rõ</li>
+                    <li><strong>Album:</strong> Single</li>
+                    <li><strong>Thể loại:</strong> {{ song.topic.name }}</li>
+                    <li><strong>Năm phát hành:</strong> {{ song.created_at|date:"Y" }}</li>
+                    <li><strong>Lượt nghe:</strong> {{ song.likes.count }}</li>
+                </ul>
+            </div>
+            
+            <div class="related-songs-section">
+                <h2 class="section-title">Bài hát liên quan</h2>
+                <ul class="related-songs-list">
+                    {% for related_song in related_songs %}
+                        <li class="related-song">
+                            <a href="{{ related_song.get_absolute_url }}">
+                                <img src="{{ related_song.cover_image.url }}" alt="{{ related_song.title }} cover">
+                                <div>
+                                    <h3>{{ related_song.title }}</h3>
+                                    <p>{{ related_song.artist }}</p>
+                                </div>
+                            </a>
+                        </li>
+                    {% empty %}
+                        <li>Không có bài hát liên quan.</li>
+                    {% endfor %}
+                </ul>
+                <button class="view-more">Xem thêm <i class="fas fa-chevron-down"></i></button>
+            </div>
+        </div>
+    </main>
+</div>
+
+<audio id="audio-player" src="{{ song.audio_file.url }}" controls style="display: none;"></audio>
+
+{% block scripts %}
+    <script src="{% static 'js/music.js' %}"></script>
+{% endblock %}
+
+{% endblock %}
