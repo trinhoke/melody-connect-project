@@ -50,15 +50,12 @@ body {
 }
 
 .btn-login {
-  background-color: var(--primary-color);
+  background: linear-gradient(135deg, #3700ff, #00d9ff);
   color: white;
-  padding: 10px 20px;
-  text-transform: uppercase;
-  letter-spacing: 1px;
 }
 
 .btn-login:hover {
-  background-color: var(--secondary-color);
+  background: linear-gradient(135deg, #000000, #f2ff00);
 }
 
 .btn-user {
@@ -111,7 +108,6 @@ body {
   align-items: center;
 }
 
-
 .header__logo a {
   font-family: 'Dancing Script', cursive;
   font-size: 1.5rem;
@@ -122,6 +118,10 @@ body {
   -webkit-text-fill-color: transparent;
 }
 
+a{
+  text-decoration: none;
+  
+}
 
 .header__logo img {
   height: 70px;
@@ -137,9 +137,11 @@ body {
 }
 
 .header__nav ul li a {
-  color: #b3b3b3;
+  color: #dbdbdb;
   font-size: 1.2rem;
   transition: color 0.3s;
+  text-shadow: 2px 2px 4px rgb(0, 0, 0);
+  font-weight: bold;
 }
 
 .header__nav ul li a:hover {
@@ -148,13 +150,12 @@ body {
 
 .header__actions {
   display: flex;
-  align-items: center;
 }
 
 .header__search {
   display: flex;
   margin-right: 20px;
-}
+} 
 
 .header__search input {
   background-color: #282828;
@@ -171,12 +172,30 @@ body {
   border: none;
   padding: 10px;
   cursor: pointer;
-  position: absolute;
-  right: 5px;
-  top: 50%;
-  transform: translateY(-50%);
 }
 
+.header__user {
+  display: flex;
+  align-items: center;
+  border-radius: 20px;
+  padding: 5px 10px;
+  background: linear-gradient(135deg, #3700ff, #3dd7f2);
+}
+
+.header__user i {
+  margin-right: 5px;
+  color: #000000;
+}
+
+.header__user span {
+  color: #000000;
+}
+
+.header__user:hover {
+  background: linear-gradient(135deg, #000000, #0004ff);
+  color: #fbfbfb;
+}
+  
 /* Footer styles */
 .footer {
   background-color: var(--footer-bg);
@@ -267,26 +286,38 @@ body {
   text-decoration: none;
 }
 
-/* Messages */
 .messages {
-  max-width: 600px;
-  margin: 0 auto 20px;
-}
-
-.message {
   padding: 10px;
+  margin-bottom: 20px;
+}
+
+.alert {
+  padding: 15px;
   margin-bottom: 10px;
-  border-radius: 5px;
-  text-align: center;
+  border: 1px solid transparent;
+  border-radius: 4px;
 }
 
-.message.success {
-  background-color: #d4edda;
+.alert-success {
   color: #155724;
+  background-color: #d4edda;
+  border-color: #c3e6cb;
 }
 
-.message.error {
-  background-color: #f8d7da;
+.alert-info {
+  color: #0c5460;
+  background-color: #d1ecf1;
+  border-color: #bee5eb;
+}
+
+.alert-warning {
+  color: #856404;
+  background-color: #fff3cd;
+  border-color: #ffeeba;
+}
+
+.alert-error {
   color: #721c24;
+  background-color: #f8d7da;
+  border-color: #f5c6cb;
 }
-

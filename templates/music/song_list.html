@@ -12,42 +12,27 @@
 {% block content %}
 <main>
     <div class="left-content">
+        <div class="topic">
+            <h2>CHỦ ĐỀ HOT</h2>
+        </div>
         <nav class="categories">
+            {% for area in areas %}
             <div class="category">
-                <h3>VIỆT NAM</h3>
+                <h3>{{ area.name }}</h3>
                 <ul>
-                    <li><a href="#">Nhạc Trẻ</a></li>
-                    <li><a href="#">Trữ Tình</a></li>
-                    <li><a href="#">Remix Việt</a></li>
-                    <li><a href="#">Rap Việt</a></li>
-                    <li><a href="#">Tiền Chiến</a></li>
-                    <li><a href="#">Nhạc Trịnh</a></li>
-                    <li><a href="#">Rock Việt</a></li>
-                    <li><a href="#">Cách Mạng</a></li>
+                    {% for topic in area.topics.all %}
+                    <li>
+                        <a href="{% url 'topic_detail' topic.slug %}" 
+                           class="{% if current_topic.slug == topic.slug %}active-topic{% endif %}">
+                            {{ topic.name }}
+                        </a>
+                    </li>
+                    {% endfor %}
                 </ul>
             </div>
-            <div class="category">
-                <h3>ÂU MỸ</h3>
-                <ul>
-                    <li><a href="#">Pop</a></li>
-                    <li><a href="#">Rock</a></li>
-                    <li><a href="#">Electronica/Dance</a></li>
-                    <li><a href="#">R&B/Hip Hop/Rap</a></li>
-                    <li><a href="#">Blues/Jazz</a></li>
-                    <li><a href="#">Country</a></li>
-                    <li><a href="#">Latin</a></li>
-                </ul>
-            </div>
-            <div class="category">
-                <h3>CHÂU Á</h3>
-                <ul>
-                    <li><a href="#">Nhạc Hàn</a></li>
-                    <li><a href="#">Nhạc Hoa</a></li>
-                    <li><a href="#">Nhạc Nhật</a></li>
-                    <li><a href="#">Nhạc Thái</a></li>
-                </ul>
-            </div>
-            <div class="category">
+            {% endfor %}
+
+            <div class="category" >
                 <h3>KHÁC</h3>
                 <ul>
                     <li><a href="#">Thiếu Nhi</a></li>
@@ -57,7 +42,7 @@
             </div>
         </nav>
         <section class="hot-songs">
-            <h2>BÀI HÁT HOT NHẤT</h2>
+            <h2>{% if topic %}{{ topic.name }}{% else %}BÀI HÁT HOT NHẤT{% endif %}</h2>
             <ul class="song-list">
                 {% for song in songs %}
                     <li class="song-item">
@@ -71,7 +56,7 @@
                             </div>
                             <div class="song-info">
                                 <h4>{{ song.title }}</h4>
-                                <p>{{ song.artist }}</p>
+                                <p>{{ song.artist.all|join:", " }}</p>
                             </div>
                             <div class="song-actions">
                                 <button class="action-button play-button" title="Phát">
@@ -115,13 +100,9 @@
     
     <aside class="right-content">
         <h2>BXH BÀI HÁT</h2>
-        <div class="ranking-tabs">
-            <button class="active">Việt Nam</button>
-            <button>Âu Mỹ</button>
-            <button>Hàn Quốc</button>
-        </div>
         <ol class="ranking-list">
             {% for song in top_songs %}
+            <a href="{{ song.get_absolute_url }}" style="text-decoration: none; color: inherit;">
                 <li class="ranking-item">
                     <span class="ranking-number">{{ forloop.counter }}</span>
                     <div class="ranking-song-info">
@@ -132,10 +113,11 @@
                         {% endif %}
                         <div>
                             <h4>{{ song.title }}</h4>
-                            <p>{{ song.artist }}</p>
+                            <p>{{ song.artist.all|join:", " }}</p>
                         </div>
                     </div>
                 </li>
+            </a>
             {% endfor %}
         </ol>
     </aside>

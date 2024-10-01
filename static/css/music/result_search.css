@@ -1,0 +1,91 @@
+.main-content {
+    background: linear-gradient(to right, #cccccc, #a19e9e);
+}
+
+.search-results {
+    padding: 20px;
+}
+
+.search-results h1 {
+    font-size: 2.5em;
+    color: #000000;
+    margin-bottom: 30px;
+    text-align: center;
+    text-shadow: 2px 2px 4px rgba(202, 202, 202, 0.55);
+}
+
+.songs-section,
+.artists-section,
+.playlists-section {
+    margin-bottom: 40px;
+}
+
+.search-results h2 {
+    font-size: 2em;
+    color: #000000;
+    margin-bottom: 20px;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+}
+
+.grid-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 25px;
+}
+
+.grid-item {
+    background: #fff;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+}
+
+.grid-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+}
+
+.grid-item img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.grid-item:hover img {
+    transform: scale(1.05);
+}
+
+.grid-item h3 {
+    padding: 8px;
+    margin: 0;
+    font-size: 16px;
+    color: #333;
+    font-weight: 600;
+    text-shadow: 1px 1px 3px rgb(255, 255, 255);
+}
+
+.grid-item p {
+    padding: 0 15px 15px;
+    margin: 0;
+    font-size: 14px;
+    color: #666;
+    text-shadow: 1px 1px 3px rgb(255, 255, 255);
+}
+
+.no-results {
+    grid-column: 1 / -1;
+    text-align: center;
+    color: #ffffff;
+    font-size: 1.2em;
+    padding: 20px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+}
+
+@media (max-width: 768px) {
+    .grid-container {
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    }
+}

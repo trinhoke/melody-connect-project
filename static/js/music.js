@@ -8,19 +8,90 @@ document.addEventListener('DOMContentLoaded', function() {
     var totalTimeSpan = document.querySelector('.total-time');
     var isDragging = false;
     var volumeSlider = document.querySelector('.volume-slider');
+    var replayButton = document.querySelector('.replay-button');
+    var autoReplayButton = document.querySelector('.auto-replay-button');
+    var isAutoReplayEnabled = false;
 
-    
-    audio.play();
+    if(audio){
+        const songSlug = audio.dataset.slug;
+        const minPlayDuration = parseInt(audio.dataset.minPlayDuration, 10);
+
+    }
+
+    let playStartTime = 0;
+    let totalPlayTime = 0;
+    let hasIncrementedPlay = false;
+    let isPlaying = false;
+
+    function startPlayTimer() {
+        if (!isPlaying) {
+            playStartTime = Date.now();
+            isPlaying = true;
+        }
+    }
+
+    function stopPlayTimer() {
+        if (isPlaying) {
+            totalPlayTime += (Date.now() - playStartTime) / 1000; // Chuyển đổi thành giây
+            playStartTime = 0;
+            isPlaying = false;
+        }
+    }
+
+    function incrementPlayCount() {
+        if (!hasIncrementedPlay && totalPlayTime >= minPlayDuration) {
+            fetch(`/music/songs/${songSlug}/play/`, {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': getCookie('csrftoken'),
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: `play_duration=${Math.floor(totalPlayTime)}`
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('play-count').textContent = data.plays;
+                hasIncrementedPlay = true;
+            });
+        }
+    }
+
     playButton.addEventListener('click', function() {
         audio.play();
         playButton.style.display = 'none';
         pauseButton.style.display = 'block';
+        startPlayTimer();
     });
 
     pauseButton.addEventListener('click', function() {
         audio.pause();
         playButton.style.display = 'block';
         pauseButton.style.display = 'none';
+        stopPlayTimer();
+        incrementPlayCount();
+    });
+
+
+    audio.play();
+    
+
+//Replay Song--------------------------------------------------------------------------------------------------
+    replayButton.addEventListener('click', function() {
+        audio.pause();
+        audio.currentTime = 0;
+        audio.play();
+        playButton.style.display = 'none';
+        pauseButton.style.display = 'block';
+        totalPlayTime = 0;
+        hasIncrementedPlay = false;
+        startPlayTimer();
+    });
+
+//Auto Replay Song--------------------------------------------------------------------------------------------------
+    autoReplayButton.addEventListener('click', function() {
+        isAutoReplayEnabled = !isAutoReplayEnabled;
+        this.classList.toggle('active', isAutoReplayEnabled);
+        this.title = isAutoReplayEnabled ? "Tắt tự động phát lại" : "Bật tự động phát lại";
     });
 
     audio.addEventListener('timeupdate', function() {
@@ -45,9 +116,18 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     audio.addEventListener('ended', function() {
-        playButton.style.display = 'block';
-        pauseButton.style.display = 'none';
-        audio.currentTime = 0;  
+        if (isAutoReplayEnabled) {
+            audio.currentTime = 0;
+            audio.play();
+            startPlayTimer();
+        } else {
+            playButton.style.display = 'block';
+            pauseButton.style.display = 'none';
+            stopPlayTimer();
+            incrementPlayCount();
+            totalPlayTime = 0;
+            hasIncrementedPlay = false;
+        }
     });
 
     progressBarContainer.addEventListener('mousedown', function(event) {
@@ -78,4 +158,59 @@ document.addEventListener('DOMContentLoaded', function() {
         audio.volume = volumeSlider.value / 100;
     });
 
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+
+    // Xử lý sự kiện like
+    const likeButton = document.querySelector('.like-button');
+    if (likeButton) {
+        likeButton.addEventListener('click', function() {
+            const songSlug = this.dataset.songSlug;
+            fetch(`/music/songs/${songSlug}/like/`, {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': getCookie('csrftoken'),
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+            })
+            .then(response => response.json())
+            .then(data => {
+                const likeCountElement = document.getElementById('like-count');
+                likeCountElement.textContent = data.likes_count;
+                if (data.is_liked) {
+                    this.classList.add('liked');
+                } else {
+                    this.classList.remove('liked');
+                }
+            });
+        });
+    }
+// Hàm lấy CSRF token từ cookie
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+    
 });

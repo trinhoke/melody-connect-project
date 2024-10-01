@@ -1,0 +1,94 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ artist.name }} - MelodyConnect{% endblock %}
+
+{% block styles %}
+    <link rel="stylesheet" href="{% static 'css/music/artist_detail.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="artist-detail-container">
+    <div class="artist-header">
+        <div class="artist-image">
+            <img src="{{ artist.image.url }}" alt="{{ artist.name }}">
+        </div>
+        <div class="artist-info">
+            <h1>{{ artist.name }}</h1>
+            <p class="artist-nationality"><i class="fas fa-globe"></i> {{ artist.nationality }}</p>
+            <div class="artist-stats">
+                <span><i class="fas fa-users"></i> <span id="follower-count">{{ artist.follower_count }}</span> người theo dõi</span>
+            </div>
+            <button id="follow-btn" class="follow-btn" data-artist-slug="{{ artist.slug }}">
+                {% if user in artist.followers.all %}
+                    Đang theo dõi
+                {% else %}
+                    Theo dõi
+                {% endif %}
+            </button>
+        </div>
+    </div>
+
+    <div class="artist-bio">
+        <h2>Tiểu sử</h2>
+        <p>{{ artist.bio }}</p>
+    </div>
+
+    <div class="artist-featured-songs">
+        <h2>Bài hát nổi bật</h2>
+        <div class="featured-song-list">
+            {% for song in featured_songs|slice:":5" %}
+                <a href="{% url 'song_detail' song.slug %}">
+                    <div class="featured-song-item">
+                        <img src="{{ song.cover_image.url }}" alt="{{ song.title }}">
+                        <div class="featured-song-info">
+                            <h3>{{ song.title }}</h3>
+                            <p>{{ song.plays }} lượt nghe</p>
+                        </div>
+                    </div>
+                </a>
+            {% endfor %}
+        </div>
+    </div>
+    <div class="artist-songs">
+        <h2>Danh sách bài hát</h2>
+        <ul class="song-list">
+            {% for song in songs %}
+                <li class="song-item">
+                    <a href="{{ song.get_absolute_url }}" class="song-link">
+                        <div class="song-cover">
+                            {% if song.cover_image %}
+                                <img src="{{ song.cover_image.url }}" alt="{{ song.title }} cover">
+                            {% else %}
+                                <img src="{% static 'images/default-cover.jpg' %}" alt="Default cover">
+                            {% endif %}
+                        </div>
+                        <div class="song-info">
+                            <h4>{{ song.title }}</h4>
+                            <p>{{ song.plays }} lượt nghe</p>
+                        </div>
+                        <div class="song-actions">
+                            <button class="action-button play-button" title="Phát">
+                                <i class="fas fa-play"></i>
+                            </button>
+                            <button class="action-button like-button" title="Yêu thích">
+                                <i class="fas fa-heart"></i>
+                            </button>
+                            <button class="action-button more-button" title="Thêm vào playlist">
+                                <i class="fas fa-plus"></i>
+                            </button>
+                        </div>
+                    </a>
+                </li>
+            {% empty %}
+                <li class="empty-message">Không có bài hát nào.</li>
+            {% endfor %}
+        </ul>
+    </div>
+   
+</div>
+{% endblock %}
+
+{% block scripts %}
+    <script src="{% static 'js/follow.js' %}"></script>
+{% endblock %}

@@ -10,17 +10,19 @@
     <section class="featured-section">
         <h2>Nổi bật</h2>
         <div class="featured-grid">
-            {% for i in '12345'|make_list %}
+            {% for song in songs_featured %}
+            <a href="{% url 'song_detail' song.slug %}">
             <div class="featured-item">
-                <img src="https://picsum.photos/300/300?random={{ forloop.counter }}" alt="Bài hát {{ i }}">
+                <img src="{{ song.cover_image.url }}" alt="{{ song.title }}">
                 <div class="content">
-                    <h3>Bài hát nổi bật {{ i }}</h3>
-                    <p>Ca sĩ {{ i }}</p>
+                    <h3>{{ song.title }}</h3>
+                    <p>{{ song.artist.all|join:" - " }}</p>
                 </div>
                 <button class="play-button">
                     <i class="fas fa-play"></i>
                 </button>
             </div>
+            </a>
             {% endfor %}
         </div>
     </section>
@@ -28,15 +30,17 @@
     <section class="new-releases-section">
         <h2>Phát hành mới</h2>
         <div class="new-releases-grid">
-            {% for i in '12345'|make_list %}
+            {% for song in songs_new %}
+            <a href="{% url 'song_detail' song.slug %}">
             <div class="featured-item">
-                <img src="https://picsum.photos/300/300?random={{ forloop.counter|add:5 }}" alt="Bài hát mới {{ i }}">
-                <h3>Bài hát mới {{ i }}</h3>
-                <p>Ca sĩ mới {{ i }}</p>
+                <img src="{{ song.cover_image.url }}" alt="{{ song.title }}">
+                <h3>{{ song.title }}</h3>
+                <p>{{ song.artist.all|join:" - " }}</p>
                 <button class="play-button">
                     <i class="fas fa-play"></i>
                 </button>
             </div>
+            </a>
             {% endfor %}
         </div>
     </section>
@@ -44,16 +48,18 @@
     <section class="top-100-section">
         <h2>Top 100</h2>
         <div class="top-100-list">
-            {% for i in '12345'|make_list %}
+            {% for song in songs_top100 %}
+            <a href="{% url 'song_detail' song.slug %}">
             <div class="top-100-item">
                 <span class="rank">{{ forloop.counter }}</span>
-                <img src="https://picsum.photos/300/300?random={{ forloop.counter|add:10 }}" alt="Top {{ i }}">
-                <h3>Bài hát top {{ i }}</h3>
-                <p>Ca sĩ top {{ i }}</p>
+                <img src="{{ song.cover_image.url }}" alt="{{ song.title }}">
+                <h3>{{ song.title }}</h3>
+                <p>{{ song.artist.all|join:" - " }}</p>
                 <button class="play-button">
                     <i class="fas fa-play"></i>
                 </button>
             </div>
+            </a>
             {% endfor %}
         </div>
     </section>
@@ -61,14 +67,16 @@
     <section class="topic-section">
         <h2>Chủ đề hot</h2>
         <div class="topic-grid">
-            {% for i in '1234'|make_list %}
+            {% for topic in topics_featured %}
+            <a href="{% url 'topic_detail' topic.slug %}">
             <div class="topic-item">
-                <img src="https://picsum.photos/300/300?random={{ forloop.counter|add:15 }}" alt="Chủ đề {{ i }}">
-                <h3>Chủ đề {{ i }}</h3>
+                <img src="{{ topic.cover_image.url }}" alt="{{ topic.name }}">
+                <h3>{{ topic.name }}</h3>
                 <button class="play-button">
                     <i class="fas fa-play"></i>
                 </button>
             </div>
+            </a>
             {% endfor %}
         </div>
     </section>
@@ -76,14 +84,16 @@
     <section class="playlist-section">
         <h2>Playlist</h2>
         <div class="playlist-grid">
-            {% for i in '1234'|make_list %}
+            {% for playlist in playlists_featured %}
+            <a href="{% url 'playlist_detail' playlist.slug %}">
             <div class="playlist-item">
-                <img src="https://picsum.photos/300/300?random={{ forloop.counter|add:19 }}" alt="Playlist {{ i }}">
-                <h3>Playlist {{ i }}</h3>
+                <img src="{{ playlist.cover_image.url }}" alt="{{ playlist.name }}">
+                <h3>{{ playlist.name }}</h3>
                 <button class="play-button">
                     <i class="fas fa-play"></i>
                 </button>
             </div>
+            </a>
             {% endfor %}
         </div>
     </section>

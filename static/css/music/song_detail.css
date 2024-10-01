@@ -48,6 +48,7 @@
     border-radius: 8px;
     padding: 20px;
     margin-bottom: 40px;
+    box-shadow: 2px 2px 4px rgb(0, 0, 0);
   }
   
   .player-content {
@@ -55,7 +56,7 @@
     align-items: center;
     margin-bottom: 20px;
   }
-  
+        
   .album-cover {
     position: relative;
     width: 120px;
@@ -362,6 +363,12 @@
     color: white;
   }
   
+.like-button.liked {
+  background-color: var(--accent-color);
+    color: white;
+    border: 1px solid var(--accent-color);
+}
+
   @media (max-width: 768px) {
     .song-actions {
       flex-direction: row; /* Đảm bảo các nút nằm cùng một hàng trên màn hình nhỏ */
@@ -379,3 +386,28 @@
     color: #ff0000; /* Màu đỏ để làm nổi bật */
     font-weight: bold;
   }
+  
+  .replay-button,
+  .auto-replay-button {
+    background-color: transparent;
+    border: none;
+    color: var(--accent-color);
+    font-size: 1.2rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    padding: 0.5rem;
+    border-radius: 50%;
+  }
+
+  .replay-button:hover,
+  .auto-replay-button:hover {
+    background-color: rgba(59, 131, 246, 0.285);
+    transform: scale(1.1);
+  }
+
+  .auto-replay-button.active {
+    color: #ffffff;
+    background-color: var(--accent-color);
+  }
+  
+ 

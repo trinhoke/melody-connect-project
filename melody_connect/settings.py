@@ -111,3 +111,6 @@ DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 
 # Cấu hình cho static files
 STATICFILES_STORAGE = 'cloudinary_storage.storage.StaticHashedCloudinaryStorage'
+
+# Cấu hình hệ thống thông báo
+MESSAGE_STORAGE = 'django.contrib.messages.storage.session.SessionStorage'

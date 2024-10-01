@@ -14,14 +14,14 @@
             <ul>
                 <li><a href="{% url 'home' %}">Nghe nhạc</a></li>
                 <li><a href="{% url 'song_list' %}">Bài hát</a></li>
-                <li>Shape of you</li>
+                <li>{{ song.title }}</li>
             </ul>
         </nav>
     </header>
 
     <main class="main-content">
         <div class="song-info">
-            <h1 class="song-title">{{ song.title }} - {{ song.artist }}</h1>
+            <h1 class="song-title">{{ song.title }} - {{ song.artist.all|join:" - " }}</h1>
         </div>
 
         <div class="player-container">
@@ -32,8 +32,8 @@
                     {% else %}
                         <img src="{% static 'images/default-cover.jpg' %}" alt="Default cover">
                     {% endif %}
-                    <button class="play-button"><i class="fas fa-play" ></i></button>
-                    <button class="pause-button" ><i class="fas fa-pause"></i></button>
+                    <button class="play-button"><i class="fas fa-play" id="play-button"></i></button>
+                    <button class="pause-button" ><i class="fas fa-pause" id="pause-button"></i></button>
                 </div>
                 <div class="lyrics-preview">
                     <p>{{ song.lyrics|truncatewords:20 }}</p>
@@ -46,8 +46,12 @@
                 </div>
                 <div class="control-info">
                     <span class="current-time">00:00 </span>
+                    <button class="replay-button"><i class="fas fa-redo"></i></button>
                     <div class="footer-actions">
-                        <button class="action-btn"><i class="fas fa-heart"></i> Yêu thích</button>
+                        <button class="action-btn like-button {% if user in song.likes.all %}liked{% endif %}" data-song-slug="{{ song.slug }}">
+                            <i class="fas fa-heart {% if user in song.likes.all %}liked{% endif %}"></i>
+                            Yêu thích
+                        </button>
                         <button class="action-btn"><i class="fas fa-share-alt"></i> Chia sẻ</button>
                         <button class="action-btn"><i class="fas fa-music"></i> Nhạc chờ</button>
                     </div>
@@ -55,8 +59,8 @@
                         <i class="fas fa-volume-up"></i>
                         <input type="range" min="0" max="100" value="70" class="volume-slider">
                     </div>
+                    <button class="auto-replay-button" title="Tự động phát lại"><i class="fas fa-sync-alt"></i></button>
                         <span class="total-time">  00:00</span>
-
                 </div>
             </div>
                 
@@ -84,7 +88,8 @@
                     <li><strong>Album:</strong> Single</li>
                     <li><strong>Thể loại:</strong> {{ song.topic.name }}</li>
                     <li><strong>Năm phát hành:</strong> {{ song.created_at|date:"Y" }}</li>
-                    <li><strong>Lượt nghe:</strong> {{ song.likes.count }}</li>
+                    <li><strong>Lượt thích:</strong> <span id="like-count">{{ song.likes.count }}</span></li>
+                    <li><strong>Lượt nghe:</strong> <span id="play-count">{{ song.plays }}</span></li>
                 </ul>
             </div>
             
@@ -111,10 +116,11 @@
     </main>
 </div>
 
-<audio id="audio-player" src="{{ song.audio_file.url }}" controls style="display: none;"></audio>
+<audio id="audio-player" src="{{ song.audio_file.url }}" controls style="display: none;" data-slug="{{ song.slug }}" data-min-play-duration="{{ song.min_play_duration }}"></audio>
 
 {% block scripts %}
     <script src="{% static 'js/music.js' %}"></script>
 {% endblock %}
+
 
 {% endblock %}

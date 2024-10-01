@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block styles %}
+<link rel="stylesheet" href="{% static 'css/user/profile.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="profile-container">
+    <h1>{{ user.last_name }} {{ user.first_name }}</h1>
+    <div class="profile-info">
+        <div class="avatar-section">
+            {% if user.avatar %}
+                <img src="{{ user.avatar.url }}" alt="Avatar" class="avatar" id="avatar-preview">
+            {% else %}
+                <img src="https://i0.wp.com/sbcf.fr/wp-content/uploads/2018/03/sbcf-default-avatar.png?ssl=1" alt="Avatar mặc định" class="avatar">
+            {% endif %}
+            <form method="post" enctype="multipart/form-data" action="{% url 'update_avatar' %}">
+                {% csrf_token %}
+                <div class="file-input-wrapper">
+                    <input type="file" name="avatar" id="avatar-input" accept="image/*" class="file-input">
+                    <label for="avatar-input" class="file-input-label">Chọn ảnh</label>
+                </div>
+                <button type="submit" name="update_avatar" class="update-avatar-btn">Cập nhật ảnh đại diện</button>
+            </form>
+        </div>
+        <div class="user-details">
+            <form method="post" action="{% url 'update_info' %}">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="username">Tên người dùng:</label>
+                    <input type="text" id="username" name="username" value="{{ user.username }}" required>
+                </div>
+                <div class="form-group">
+                    <label for="email">Email:</label>
+                    <input type="email" id="email" name="email" value="{{ user.email }}" required>
+                </div>
+                <div class="form-group">
+                    <label for="first_name">Tên:</label>
+                    <input type="text" id="first_name" name="first_name" value="{{ user.first_name }}">
+                </div>
+                <div class="form-group">
+                    <label for="last_name">Họ:</label>
+                    <input type="text" id="last_name" name="last_name" value="{{ user.last_name }}">
+                </div>
+                <button type="submit" name="update_info" >Cập nhật thông tin</button>
+            </form>
+            <a href="{% url 'change_password' %}" class="change-password-btn">Đổi mật khẩu</a>
+            <a href="{% url 'logout' %}" class="logout-btn">Đăng xuất</a>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{% static 'js/preview_avatar.js' %}"></script>
+{% endblock %}

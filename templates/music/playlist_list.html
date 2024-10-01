@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Danh sách Playlist - MelodyConnect{% endblock %}
+
+{% block styles %}
+    <link rel="stylesheet" href="{% static 'css/music/playlist_list.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="playlist-list-content">
+    <header class="playlist-header">
+        <h1>Khám phá Playlist</h1>
+        <p>Tìm và thưởng thức các playlist đa dạng</p>
+    </header>
+
+    <div class="playlist-grid">
+        {% for playlist in playlists %}
+            <a href="{% url 'playlist_detail' playlist.slug %}" class="playlist-link">
+                <div class="playlist-item">
+                    <div class="playlist-image">
+                        {% if playlist.cover_image %}
+                            <img src="{{ playlist.cover_image.url }}" alt="{{ playlist.name }}">
+                        {% else %}
+                            <img src="{% static 'images/default-playlist-cover.jpg' %}" alt="Default playlist cover">
+                        {% endif %}
+                    </div>
+                    <div class="playlist-info">
+                        <h3>{{ playlist.name }}</h3>
+                    </div>
+                </div>
+            </a>
+        {% empty %}
+        <p class="no-playlists">Không có playlist nào.</p>
+        {% endfor %}
+    </div>
+
+    {% if is_paginated %}
+        <nav class="pagination">
+            <ul>
+                {% if page_obj.has_previous %}
+                    <li><a href="?page=1" class="page-link">&laquo; Đầu</a></li>
+                    <li><a href="?page={{ page_obj.previous_page_number }}" class="page-link">Trước</a></li>
+                {% endif %}
+
+                <li class="current">
+                    Trang {{ page_obj.number }} / {{ page_obj.paginator.num_pages }}
+                </li>
+
+                {% if page_obj.has_next %}
+                    <li><a href="?page={{ page_obj.next_page_number }}" class="page-link">Sau</a></li>
+                    <li><a href="?page={{ page_obj.paginator.num_pages }}" class="page-link">Cuối &raquo;</a></li>
+                {% endif %}
+            </ul>
+        </nav>
+    {% endif %}
+</div>
+{% endblock %}
