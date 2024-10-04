@@ -4,7 +4,7 @@
     box-sizing: border-box;
 }
 
-.notify{
+.notify {
     width: 100%;
     text-align: center;
 }
@@ -86,6 +86,7 @@ img {
     left: -35px;
     bottom: 0;
     transform: translateY(calc(100% + 10px));
+    z-index: 10;
 }
 
 .result-item {
@@ -110,7 +111,7 @@ img {
     overflow-y: auto;
 }
 
-.room {
+.room,.friend-request {
     width: 100%;
     padding: 10px;
     border-radius: 5px;
@@ -120,7 +121,7 @@ img {
     gap: 10px;
 }
 
-.room:hover {
+.room:hover,.friend-request:hover {
     background-color: #e4e4e4;
 }
 
@@ -128,15 +129,101 @@ img {
     background-color: #ebf5ff;
 }
 
-.avatar-receiver {
+.avatar-receiver,.avatar {
+    position: relative;
     width: 50px;
     height: 50px;
-    overflow: hidden;
+}
+
+.avatar-receiver img,.avatar img{
     border-radius: 50%;
 }
 
-.info {
-    /* line-height: 10px; */
+.avatar-receiver i,.avatar i{
+    position: absolute;
+    bottom: 0;
+    transform: translate(-15px,0);
+    font-size: 10px;
+    color: #6d6d6d;
+}
+
+.avatar-receiver i.online,.avatar i.online{
+    color: rgb(4, 196, 4);
+}
+
+.avatar-receiver i.hidden::before,.avatar i.hidden::before{
+    display: none;
+}
+
+.info {}
+
+.icon-friend {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+#icon {
+    display: inline-block;
+    width: 80px;
+    position: relative;
+    margin-top: 10px;
+    font-size: 12px;
+    padding: 3px 5px;
+    box-shadow: 1px 1px 3px 1px #aaa;
+    border: 1px solid transparent;
+    background-color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: 0.25s;
+}
+
+#refuse-icon {
+    display: inline-block;
+    margin-top: 10px;
+    font-size: 12px;
+    padding: 3px 5px;
+    box-shadow: 1px 1px 3px 1px #aaa;
+    border: 1px solid transparent;
+    background-color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: 0.25s;
+}
+
+
+#icon:active,.fa-xmark:active {
+    border: 1px solid #aaa;
+    box-shadow: none;
+    transform: translate(1px, 0px);
+}
+
+.add-new-friend::after {
+    position: absolute;
+    content: 'Thêm bạn bè';
+    white-space: nowrap;
+    padding: 2px 10px;
+    border-radius: 11px;
+    background-color: rgba(0, 0, 0, 0.3);
+    color: white;
+    font-weight: bold;
+    top: 0;
+    transform: translateY(130%);
+    visibility: hidden;
+    opacity: 0;
+    transition: opacity 0.3s ease, visibility 0s linear 0.3s;
+}
+
+.add-new-friend:hover::after {
+    visibility: visible;
+    opacity: 1;
+    transition-delay: 0s;
 }
 
 .name-receiver,
@@ -157,10 +244,10 @@ img {
 .content-new-mess {
     width: 200px;
     overflow: hidden;
-    overflow-wrap: break-word; 
+    overflow-wrap: break-word;
     display: -webkit-box;
     -webkit-box-orient: vertical;
-    -webkit-line-clamp: 2; 
+    -webkit-line-clamp: 2;
 }
 
 .room-chat {
@@ -169,7 +256,26 @@ img {
     overflow-y: auto;
     width: calc(100vw - 360px);
     margin-left: 360px;
-    background-color: #aaa;
+    position: relative;
+    border-left: 1px solid #aaa;
+}
+
+.notify{
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    background-color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 40px;
+}
+
+.notify.hidden{
+    display: none;
 }
 
 .content {
@@ -191,6 +297,7 @@ img {
     flex-direction: column;
     justify-content: end;
 }
+
 
 .list-messenger-container {
     padding: 20px 10px 20px 10px;
@@ -221,9 +328,9 @@ img {
 }
 
 .content-mess {
-    max-width: min(600px, 60%);
+    max-width: 100%;
     background-color: #e4e4e4;
-    overflow-wrap: break-word; 
+    overflow-wrap: break-word;
     padding: 8px 15px;
     border-radius: 18px;
     font-size: 18px;
@@ -263,9 +370,212 @@ img {
 }
 
 .box-sender {
+    padding-bottom: 10px;
     text-align: end;
 }
 
 .icon-sender {
     cursor: pointer;
+}
+
+.icon-file-audio{
+    position: relative;
+    display: inline-block;
+    padding-bottom:10px;
+    cursor: pointer;
+}
+
+.icon-file-audio::after{
+    position: absolute;
+    content: 'audio';
+    text-align: center;
+    padding: 5px;
+    left: 50%;
+    border-radius: 10px;
+    transform: translate(-35%,-130%);
+    background-color: rgba(0, 0, 0, 0.4);
+    font-weight: bold;
+    color:white;
+    z-index: 10;
+    visibility: hidden;
+    opacity: 0;
+}
+
+.icon-file-audio:hover::after {
+    visibility: visible;
+    opacity: 1;
+    transition-delay: 0s;
+}
+
+.container-content{
+    width: 100%;
+}
+
+.file-audio{
+    position: relative;
+    margin-bottom: 10px;
+    display: none;
+    align-items: center;
+    gap: 10px;
+    padding: 10px; 
+    background-color: #dddddd;
+    border-radius: 10px;
+}
+
+.icon-file{
+    padding: 10px 12px;
+    border-radius: 10px;
+    background-color: blue;
+    color: white;
+}
+
+.icon-delete-file{
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #aaa;
+    border-radius: 50%;
+    position: absolute;
+    right: 0;
+    top: 0;
+    transform: translate(30%,-30%);
+    background-color: white;
+    visibility: hidden;
+    cursor: pointer;
+}
+
+.file-audio:hover .icon-delete-file{
+    visibility: visible;
+}
+
+.container-mess{
+    width: 100%;
+    max-width: min(600px, 60%);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    gap: 10px;
+}
+
+.container-mess.sender {
+    align-items: end;
+}
+
+.options{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.options-item{
+    margin-top: 10px;
+    display: inline-block;
+    padding: 10px;
+    background-color: #dddddd;
+    font-weight: bold;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.options-item.active{
+    background-color: #4aa4f8;
+    color: white;
+}
+
+.description{
+    margin-top: 10px;
+}
+.description p{
+    color: #949494;
+}
+
+.friend-request{
+    align-items: start;
+}
+.friend-request .info{
+    flex: 1;
+}
+
+.accept-request,.refuse-request{
+    padding: 10px 20px;
+    font-weight: bold;
+    border-radius: 10px;
+    border: none;
+    outline: none;
+    cursor: pointer;
+}
+
+.accept-request{
+    background-color: #0084ff;
+    color: white;
+    margin-right: 10px;
+}
+
+.user{
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 0 10px #aaa;
+    font-size: 20px;
+    padding: 20px 30px;
+    border-radius: 10px;
+    width: 300px;
+}
+
+.user-info{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.user .options{
+    margin-top: 10px;
+}
+
+.user .options button{
+    padding: 10px;
+    outline: none;
+    border: none;
+    border-radius: 9px;
+    cursor: pointer;
+}
+
+.go-back{
+    position: absolute;
+    left: 10px;
+    top: 10px;
+    cursor: pointer;
+}
+
+.open-label-emoji {
+    position: relative;
+    padding-bottom: 10px;
+    cursor: pointer;
+}
+
+.open-label-emoji::after {
+    position: absolute;
+    content: 'emoji';
+    padding: 2px 10px;
+    border-radius: 11px;
+    background-color: rgba(0, 0, 0, 0.3);
+    color: white;
+    font-weight: bold;
+    top: 0;
+    left: 1/2;
+    transform: translate(-50%,-130%);
+    visibility: hidden;
+    opacity: 0;
+    transition: opacity 0.3s ease, visibility 0s linear 0.3s;
+}
+
+.open-label-emoji:hover::after {
+    visibility: visible;
+    opacity: 1;
+    transition-delay: 0s;
 }

@@ -5,6 +5,9 @@ const btnShowModel = $(".show-model-create-post");
 const btnCloseModel = $(".btn-close-model");
 const createPostModel = $(".create-post-model");
 
+
+console.log(isAuthenticated);
+
 // create toast
 
 const toastsIcon = {
@@ -49,6 +52,7 @@ const createNewPost = {
     isOpenEdit: false,
     isOpenInputLinks: false,
     linksAudio: "",
+    picker : new EmojiButton(),
 
     handleEvent: function () {
         const _this = this;
@@ -108,6 +112,15 @@ const createNewPost = {
             _this.isOpenInputLinks = false
             _this.showInputLink()
         }
+
+        $(".open-label-emoji").onclick = function(){
+            _this.picker.togglePicker(this);
+        }
+
+        _this.picker.on('emoji', emoji => {
+            document.querySelector('.post-content').value += emoji;
+            _this.content =  document.querySelector('.post-content').value
+        });
 
         $("#add-audio-files").onchange = function (e) {
             _this.audioFiles = [..._this.audioFiles, ...e.target.files];
@@ -764,11 +777,5 @@ const commentPost = {
 };
 
 commentPost.start();
-
-
-
-
-
-
 
 

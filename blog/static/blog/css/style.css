@@ -375,6 +375,11 @@ img {
     font-size: 20px;
 }
 
+.fa-face-smile{
+    color: rgb(255, 145, 0);
+    font-size: 20px;
+}
+
 .open-label-files {
     position: relative;
 }
@@ -420,6 +425,31 @@ img {
 }
 
 .open-label-links:hover::after {
+    visibility: visible;
+    opacity: 1;
+    transition-delay: 0s;
+}
+
+.open-label-emoji {
+    position: relative;
+}
+
+.open-label-emoji::after {
+    position: absolute;
+    content: 'emoji';
+    padding: 2px 10px;
+    border-radius: 11px;
+    background-color: rgba(0, 0, 0, 0.3);
+    color: white;
+    font-weight: bold;
+    top: 0;
+    transform: translateY(-130%);
+    visibility: hidden;
+    opacity: 0;
+    transition: opacity 0.3s ease, visibility 0s linear 0.3s;
+}
+
+.open-label-emoji:hover::after {
     visibility: visible;
     opacity: 1;
     transition-delay: 0s;
@@ -673,3 +703,19 @@ img {
 .icon-sender {
     cursor: pointer;
 }
+
+
+/* .emojionearea .emojionearea-editor {
+    width: 0 !important;
+    height: 0 !important;
+    border: none !important;
+    overflow: hidden !important;
+    padding: 0 !important;
+    min-height: 40px !important;
+}
+
+.emojionearea, .emojionearea.form-control{
+    height: 30px !important;
+    width: 30px !important;
+    border: none !important;
+} */

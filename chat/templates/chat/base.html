@@ -1,4 +1,3 @@
-
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
@@ -29,17 +28,28 @@
                         </div>
                     </div>
                 </div>
+                <div class="options">
+                    <label class="options-item open-chat-rooms active" for="tongle-show-list-room">Tin nhắn</label>
+                    <label class="options-item open-friend-request" for="tongle-show-list-room">Lời mời kết bạn</label>
+                </div>
             </div>
             <div class="list-room">
             </div>
         </div>
         <div class="room-chat">
             {% block chat %}{% endblock chat %}
+            <div class="notify hidden">
+                <div>
+                    Hãy kết bạn để thực hiện nhắn tin
+                </div>
+            </div>
         </div>
     </div>
 </body>
+<script src="https://cdn.jsdelivr.net/npm/@joeattardi/emoji-button@3.0.3/dist/index.min.js"></script>
 <script>
     const user = {
+        id: "{{ user.id }}",
         username: "{{ user.username }}",
         email: "{{ user.email }}"
     };
