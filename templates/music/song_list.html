@@ -1,0 +1,125 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Danh sách bài hát - MelodyConnect{% endblock %}
+
+{% block styles %}
+    {{ block.super }}
+    <link rel="stylesheet" href="{% static 'css/music/song_list.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+{% endblock %}
+
+{% block content %}
+<main>
+    <div class="left-content">
+        <div class="topic">
+            <h2>CHỦ ĐỀ HOT</h2>
+        </div>
+        <nav class="categories">
+            {% for area in areas %}
+            <div class="category">
+                <h3>{{ area.name }}</h3>
+                <ul>
+                    {% for topic in area.topics.all %}
+                    <li>
+                        <a href="{% url 'topic_detail' topic.slug %}" 
+                           class="{% if current_topic.slug == topic.slug %}active-topic{% endif %}">
+                            {{ topic.name }}
+                        </a>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+            {% endfor %}
+
+            <div class="category" >
+                <h3>KHÁC</h3>
+                <ul>
+                    <li><a href="#">Thiếu Nhi</a></li>
+                    <li><a href="#">Không Lời</a></li>
+                    <li><a href="#">Beat</a></li>
+                </ul>
+            </div>
+        </nav>
+        <section class="hot-songs">
+            <h2>{% if topic %}{{ topic.name }}{% else %}BÀI HÁT HOT NHẤT{% endif %}</h2>
+            <ul class="song-list">
+                {% for song in songs %}
+                    <li class="song-item">
+                        <a href="{{ song.get_absolute_url }}" class="song-link">
+                            <div class="song-cover">
+                                {% if song.cover_image %}
+                                    <img src="{{ song.cover_image.url }}" alt="{{ song.title }} cover">
+                                {% else %}
+                                    <img src="{% static 'images/default-cover.jpg' %}" alt="Default cover">
+                                {% endif %}
+                            </div>
+                            <div class="song-info">
+                                <h4>{{ song.title }}</h4>
+                                <p>{{ song.artist.all|join:", " }}</p>
+                            </div>
+                            <div class="song-actions">
+                                <button class="action-button play-button" title="Phát">
+                                    <i class="fas fa-play"></i>
+                                </button>
+                                <button class="action-button like-button" title="Yêu thích">
+                                    <i class="fas fa-heart"></i>
+                                </button>
+                                <button class="action-button more-button" title="Thêm bài hát vào danh sách yêu thích">
+                                    <i class="fas fa-plus"></i>
+                                </button>
+                            </div>
+                        </a>
+                    </li>
+                {% empty %}
+                    <li class="empty-message">Không có bài hát nào.</li>
+                {% endfor %}
+            </ul>
+        </section>
+        
+        {% if is_paginated %}
+            <nav class="pagination">
+                <ul>
+                    {% if page_obj.has_previous %}
+                        <li><a href="?page=1" class="page-link">&laquo; Đầu</a></li>
+                        <li><a href="?page={{ page_obj.previous_page_number }}" class="page-link">Trước</a></li>
+                    {% endif %}
+
+                    <li class="current">
+                        Trang {{ page_obj.number }} / {{ page_obj.paginator.num_pages }}
+                    </li>
+
+                    {% if page_obj.has_next %}
+                        <li><a href="?page={{ page_obj.next_page_number }}" class="page-link">Sau</a></li>
+                        <li><a href="?page={{ page_obj.paginator.num_pages }}" class="page-link">Cuối &raquo;</a></li>
+                    {% endif %}
+                </ul>
+            </nav>
+        {% endif %}
+    </div>
+    
+    <aside class="right-content">
+        <h2>BXH BÀI HÁT</h2>
+        <ol class="ranking-list">
+            {% for song in top_songs %}
+            <a href="{{ song.get_absolute_url }}" style="text-decoration: none; color: inherit;">
+                <li class="ranking-item">
+                    <span class="ranking-number">{{ forloop.counter }}</span>
+                    <div class="ranking-song-info">
+                        {% if song.cover_image %}
+                            <img src="{{ song.cover_image.url }}" alt="{{ song.title }} cover">
+                        {% else %}
+                            <img src="{% static 'images/default-cover.jpg' %}" alt="Default cover">
+                        {% endif %}
+                        <div>
+                            <h4>{{ song.title }}</h4>
+                            <p>{{ song.artist.all|join:", " }}</p>
+                        </div>
+                    </div>
+                </li>
+            </a>
+            {% endfor %}
+        </ol>
+    </aside>
+</main>
+{% endblock %}

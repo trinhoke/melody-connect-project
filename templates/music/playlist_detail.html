@@ -1,0 +1,105 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ playlist.name }}{% endblock %}
+
+{% block styles %}
+    <link rel="stylesheet" href="{% static 'css/music/playlist_detail.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="playlist-detail-page">
+    <header class="sticky-header">
+        <nav class="breadcrumb">
+            <ul>
+                <li><a href="{% url 'home' %}">Nghe nhạc</a></li>
+                <li><a href="{% url 'playlist_list' %}">Playlist</a></li>
+                <li>{{ playlist.name }}</li>
+                <li class="song-title"></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="main-content">
+        <div class="playlist-info">
+            <h1 class="playlist-title">{{ playlist.name }}</h1>
+        </div>
+
+        <div class="player-container">
+            <div class="player-content">
+                <div class="album-cover">
+                    {% if playlist.cover_image %}
+                        <img src="{{ playlist.cover_image.url }}" alt="{{ playlist.name }} cover">
+                    {% else %}
+                        <img src="{% static 'images/default-playlist-cover.jpg' %}" alt="Default cover">
+                    {% endif %}
+                    <button class="play-button"><i class="fas fa-play" id="play-button"></i></button>
+                    <button class="pause-button"><i class="fas fa-pause" id="pause-button"></i></button>
+                </div>
+                <div class="playlist-preview">
+                    <p class="song-preview"></p>
+                </div>
+            </div>
+            <div class="player-controls">
+                <div class="progress-bar" id="progress-bar">
+                    <div class="progress" style="width: 0%;"></div>
+                </div>
+                <div class="control-info">
+                    <span class="current-time">00:00 </span>
+                    <button class="replay-button"><i class="fas fa-redo"></i></button>
+                    <div class="footer-actions">
+                        <button class="action-btn like-button {% if user in playlist.likes.all %}liked{% endif %}" data-playlist-slug="{{ playlist.slug }}">
+                            <i class="fas fa-heart {% if user in playlist.likes.all %}liked{% endif %}"></i>
+                            Yêu thích
+                        </button>
+                        <button class="action-btn"><i class="fas fa-share-alt"></i> Chia sẻ</button>
+                    </div>
+                    <div class="volume-control">
+                        <i class="fas fa-volume-up"></i>
+                        <input type="range" min="0" max="100" value="70" class="volume-slider">
+                    </div>
+                    <button class="auto-replay-button" title="Tự động phát lại"><i class="fas fa-sync-alt"></i></button>
+                    <span class="total-time">  00:00</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="content-grid">
+            <div class="song-list-section">
+                <h2 class="section-title">Danh sách phát</h2>
+                <ul class="song-list" id="playlist-songs">
+                    {% for song in playlist.songs.all %}
+                        <li class="song-item" data-song-url="{{ song.audio_file.url }}" data-song-slug="{{ song.slug }}" data-song-title="{{ song.title }}" data-song-artist="{{ song.artist.all|join:", " }}" data-song-duration="{{ song.duration }}">
+                            <img src="{{ song.cover_image.url }}" alt="{{ song.title }} cover">
+                            <div class="song-info">
+                                <h3>{{ song.title }}</h3>
+                                <p>{{ song.artist.all|join:", " }}</p>
+                            </div>
+                            <span class="song-duration"></span>
+                        </li>
+                    {% empty %}
+                        <li>Không có bài hát trong playlist này.</li>
+                    {% endfor %}
+                </ul>
+            </div>
+            
+            <div class="playlist-info-section">
+                <h2 class="section-title">Thông tin playlist</h2>
+                <ul class="playlist-info-list">
+                    <li><strong>Tên playlist:</strong> {{ playlist.name }}</li>
+                    <li><strong>Số lượng bài hát:</strong> {{ playlist.songs.count }}</li>
+                    <li><strong>Ngày tạo:</strong> {{ playlist.created_at|date:"d/m/Y" }}</li>
+                    <li><strong>Lượt thích:</strong> <span id="like-count">{{ playlist.likes.count }}</span></li>
+                </ul>
+            </div>
+        </div>
+    </main>
+</div>
+
+<audio id="audio-player" src="" controls style="display: none;"></audio>
+
+{% endblock %}
+
+{% block scripts %}
+    <script src="{% static 'js/playlist.js' %}"></script>
+{% endblock %}

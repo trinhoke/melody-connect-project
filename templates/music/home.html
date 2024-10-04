@@ -1,0 +1,101 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Trang chủ - MelodyConnect{% endblock %}
+{% block styles %}
+    <link rel="stylesheet" href="{% static 'css/music/home.css' %}">
+{% endblock %}
+{% block content %}
+<div class="home-content">
+    <section class="featured-section">
+        <h2>Nổi bật</h2>
+        <div class="featured-grid">
+            {% for song in songs_featured %}
+            <a href="{% url 'song_detail' song.slug %}">
+            <div class="featured-item">
+                <img src="{{ song.cover_image.url }}" alt="{{ song.title }}">
+                <div class="content">
+                    <h3>{{ song.title }}</h3>
+                    <p>{{ song.artist.all|join:" - " }}</p>
+                </div>
+                <button class="play-button">
+                    <i class="fas fa-play"></i>
+                </button>
+            </div>
+            </a>
+            {% endfor %}
+        </div>
+    </section>
+
+    <section class="new-releases-section">
+        <h2>Phát hành mới</h2>
+        <div class="new-releases-grid">
+            {% for song in songs_new %}
+            <a href="{% url 'song_detail' song.slug %}">
+            <div class="featured-item">
+                <img src="{{ song.cover_image.url }}" alt="{{ song.title }}">
+                <h3>{{ song.title }}</h3>
+                <p>{{ song.artist.all|join:" - " }}</p>
+                <button class="play-button">
+                    <i class="fas fa-play"></i>
+                </button>
+            </div>
+            </a>
+            {% endfor %}
+        </div>
+    </section>
+
+    <section class="top-100-section">
+        <h2>Top 100</h2>
+        <div class="top-100-list">
+            {% for song in songs_top100 %}
+            <a href="{% url 'song_detail' song.slug %}">
+            <div class="top-100-item">
+                <span class="rank">{{ forloop.counter }}</span>
+                <img src="{{ song.cover_image.url }}" alt="{{ song.title }}">
+                <h3>{{ song.title }}</h3>
+                <p>{{ song.artist.all|join:" - " }}</p>
+                <button class="play-button">
+                    <i class="fas fa-play"></i>
+                </button>
+            </div>
+            </a>
+            {% endfor %}
+        </div>
+    </section>
+
+    <section class="topic-section">
+        <h2>Chủ đề hot</h2>
+        <div class="topic-grid">
+            {% for topic in topics_featured %}
+            <a href="{% url 'topic_detail' topic.slug %}">
+            <div class="topic-item">
+                <img src="{{ topic.cover_image.url }}" alt="{{ topic.name }}">
+                <h3>{{ topic.name }}</h3>
+                <button class="play-button">
+                    <i class="fas fa-play"></i>
+                </button>
+            </div>
+            </a>
+            {% endfor %}
+        </div>
+    </section>
+
+    <section class="playlist-section">
+        <h2>Playlist</h2>
+        <div class="playlist-grid">
+            {% for playlist in playlists_featured %}
+            <a href="{% url 'playlist_detail' playlist.slug %}">
+            <div class="playlist-item">
+                <img src="{{ playlist.cover_image.url }}" alt="{{ playlist.name }}">
+                <h3>{{ playlist.name }}</h3>
+                <button class="play-button">
+                    <i class="fas fa-play"></i>
+                </button>
+            </div>
+            </a>
+            {% endfor %}
+        </div>
+    </section>
+</div>
+{% endblock %}

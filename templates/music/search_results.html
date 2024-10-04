@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Kết quả tìm kiếm cho "{{ query }}"{% endblock %}
+
+{% block styles %}
+    <link rel="stylesheet" href="{% static 'css/music/result_search.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="search-results">
+    <h1>Kết quả tìm kiếm cho "{{ query }}"</h1>
+
+    <section class="songs-section">
+        <h2>Bài hát</h2>
+        <div class="grid-container">
+            {% if songs %}
+                {% for song in songs %}
+                    <div class="grid-item">
+                        <a href="{% url 'song_detail' song.slug %}">
+                            <img src="{{ song.cover_image.url }}" alt="{{ song.title }}">
+                            <h3>{{ song.title }}</h3>
+                            <p>{{ song.artist.all|join:", " }}</p>
+                        </a>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <p class="no-results">Không tìm thấy bài hát nào.</p>
+            {% endif %}
+        </div>
+    </section>
+
+    <section class="artists-section">
+        <h2>Nghệ sĩ</h2>
+        <div class="grid-container">
+            {% if artists %}
+                {% for artist in artists %}
+                    <div class="grid-item">
+                        <a href="{% url 'artist_detail' artist.slug %}">
+                            <img src="{{ artist.image.url }}" alt="{{ artist.name }}">
+                            <h3>{{ artist.name }}</h3>
+                        </a>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <p class="no-results">Không tìm thấy nghệ sĩ nào.</p>
+            {% endif %}
+        </div>
+    </section>
+
+    <section class="playlists-section">
+        <h2>Playlist</h2>
+        <div class="grid-container">
+            {% if playlists %}
+                {% for playlist in playlists %}
+                    <div class="grid-item">
+                        <a href="{% url 'playlist_detail' playlist.slug %}">
+                            <img src="{{ playlist.cover_image.url }}" alt="{{ playlist.name }}">
+                            <h3>{{ playlist.name }}</h3>
+                        </a>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <p class="no-results">Không tìm thấy playlist nào.</p>
+            {% endif %}
+        </div>
+    </section>
+</div>
+{% endblock %}

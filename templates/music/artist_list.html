@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Danh sách Nghệ sĩ - MelodyConnect{% endblock %}
+
+{% block styles %}
+    <link rel="stylesheet" href="{% static 'css/music/artist_list.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="artist-list-content">
+    <header class="artist-header">
+        <h1>Khám phá Nghệ sĩ</h1>
+        <p>Tìm hiểu về các nghệ sĩ tài năng và âm nhạc của họ</p>
+    </header>
+
+
+    <div class="artist-grid">
+        {% for artist in artists %}
+            <a href="{% url 'artist_detail' artist.slug %}" class="artist-link">
+                <div class="artist-item">
+                    <div class="artist-image">
+                        <img src="{{ artist.image.url }}" alt="{{ artist.name }}">
+                    </div>
+                    <div class="artist-info">
+                        <h3>{{ artist.name }}</h3>
+                    </div>
+                </div>
+            </a>
+        {% empty %}
+        <p class="no-artists">Không có nghệ sĩ nào.</p>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
