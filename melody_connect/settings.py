@@ -14,6 +14,8 @@ ALLOWED_HOSTS = []
 
 # Cấu hình ứng dụng
 INSTALLED_APPS = [
+    'channels',
+    'daphne',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -57,6 +59,14 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'melody_connect.wsgi.application'
+ASGI_APPLICATION = 'melody_connect.asgi.application'
+
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels.layers.InMemoryChannelLayer"
+    }
+}
+
 
 # Cấu hình cơ sở dữ liệu
 DATABASES = {
@@ -112,5 +122,4 @@ DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 # Cấu hình cho static files
 STATICFILES_STORAGE = 'cloudinary_storage.storage.StaticHashedCloudinaryStorage'
 
-# Cấu hình hệ thống thông báo
-MESSAGE_STORAGE = 'django.contrib.messages.storage.session.SessionStorage'
+

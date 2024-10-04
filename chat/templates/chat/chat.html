@@ -1,0 +1,54 @@
+{% extends 'chat/base.html' %}
+{% load static %}
+{% block chat %}
+<div class="content">
+    {% csrf_token %}
+    <div class="content-title">
+        <div class="avatar">
+            <img src="https://yt3.ggpht.com/LKDMK6KpGDtsV11P1opuFEwjr5U5kI5BCiNEaA_v-dgGr30wfqlFAhhAvH4_xVzIIKPnI5gU=s48-c-k-c0x00ffffff-no-rj"
+                alt="avatar" />
+                <i class="fa-solid fa-circle"></i>
+        </div>
+        <div class="info">
+            <div class="name-room">
+            </div>
+            <div class="icon-friend">
+                <!-- <i id="icon" class="fa-solid fa-user-plus"></i> -->
+            </div>
+        </div>
+    </div>
+    <div class="messenger-container">
+        <div class="list-messenger-container">
+            <div class="list-messenger">
+
+            </div>
+        </div>
+        <div class="box-sender-mess">
+            <label class="icon-file-audio" for="audio-file">
+                <i class="fa-solid fa-paperclip"></i>
+            </label>
+            <div id="emoji-btn" class="item open-label-emoji">
+                <i class="fa-regular fa-face-smile"></i>
+            </div>
+            <input id="audio-file" type="file" hidden accept="audio/*">
+            <div class="container-content">
+                <div class="file-audio">
+                    <div class="icon-file">
+                        <i class="fa-regular fa-file"></i>
+                    </div>
+                    <div class="name-file"></div>
+                    <div class="icon-delete-file">
+                        <i class="fa-solid fa-xmark"></i>
+                    </div>
+                </div>
+                <textarea placeholder="Aa" class="input-mess" rows="2"></textarea>
+            </div>
+            <div class="box-sender">
+                <div class="icon-sender">
+                    <i class="fa-solid fa-paper-plane"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock chat %}
