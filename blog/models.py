@@ -1,10 +1,10 @@
 from django.db import models
-from django.contrib.auth.models import User
+from user.models import CustomUser
 
 # Create your models here.
 
 class Post(models.Model):
-    author = models.ForeignKey(User,on_delete=models.CASCADE)
+    author = models.ForeignKey(CustomUser,on_delete=models.CASCADE)
     content = models.TextField()
     music_links = models.URLField(blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -22,7 +22,7 @@ class AudioFile(models.Model):
 
 class Comment(models.Model):
     post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='comments')
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     content = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
     parent = models.ForeignKey('self', null=True, blank=True, on_delete=models.CASCADE, related_name='replies',default='null')

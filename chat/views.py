@@ -20,57 +20,71 @@ def getHome(request):
 def search_users(request):
     query = request.GET.get('q', '')
     if query:
-        users = User.objects.filter(username__icontains=query).exclude(id=request.user.id)
-        results = [{'username': user.username, 'email': user.email,'id':user.id} for user in users]
+        users = CustomUser.objects.filter(username__icontains=query).exclude(id=request.user.id)
+        results = [{'username': user.username,'avatar':user.avatar.url if user.avatar else 'https://i0.wp.com/sbcf.fr/wp-content/uploads/2018/03/sbcf-default-avatar.png?ssl=1', 'email': user.email,'id':user.id} for user in users]
     else:
         results = []
 
     return  JsonResponse({'success':True,'data':results})
 
 def create_or_get_room(request, user_id):
-    user = get_object_or_404(User, id=user_id)
+    user = get_object_or_404(CustomUser, id=user_id)    
     room_name = generate_room_name(request.user.id, user_id)
     
     try:
         room = Room.objects.get(name=room_name)
         data = {
-            'errCode':0,
-            'id': room.id,
-            'name': room.name,
+            'errCode': 0,
+            'id': room.id,  
+            'name': room.name, 
             'other_user': room.user1.username if room.user1 != request.user else room.user2.username
         }
     except Room.DoesNotExist:
         data = {
-            'errCode':1,
-            "id": user.id,  # Trả về ID của người dùng nếu phòng không tồn tại
-            'other_user': user.username  # Trả về tên người dùng
+            'errCode': 1,
+            "id": user.id, 
+            'other_user': {
+                'id':user.id,
+                'username':user.username,
+                'avatar':user.avatar.url if user.avatar else 'https://i0.wp.com/sbcf.fr/wp-content/uploads/2018/03/sbcf-default-avatar.png?ssl=1',
+            } 
         }
-    
-    return JsonResponse({'success': True, 'data': data})
+        return JsonResponse({'success': True, 'data': data})
 
 
 def get_rooms(request):
-    user = get_object_or_404(User, id=request.user.id)
-    rooms  = Room.objects.filter(user1=user).order_by('-updated_at') | Room.objects.filter(user2=user).order_by('-updated_at')
-    data = [
-    {
-        'id': room.id,
-        'name': room.name,
-        'other_user': room.user1.username if room.user1 != user else room.user2.username,
-        'other_user_id': room.user1.id if room.user1 != request.user else room.user2.id,
-        'mess': [
-            {
-                'id': mess.id,
-                'user': mess.user.username,
-                'content': mess.content.replace('\r\n', '<br>'),
-                'timestamp': mess.timestamp.isoformat()
-            }
-            for mess in Message.objects.filter(room=room).order_by("-timestamp")[:1]
-        ]
-    }
-    for room in rooms
-]
-    return JsonResponse({'success':True, 'data':data})
+    user = get_object_or_404(CustomUser, id=request.user.id)    
+    rooms = Room.objects.filter(user1=user).order_by('-updated_at') | Room.objects.filter(user2=user).order_by('-updated_at')
+    
+    data = []
+    for room in rooms:
+        other_user = room.user1 if room.user1 != user else room.user2
+        room_data = {
+            'id': room.id,
+            'name': room.name,
+            'other_user': {
+                'id': other_user.id,
+                'username': other_user.username,
+                'avatar': other_user.avatar.url if other_user.avatar else 'https://i0.wp.com/sbcf.fr/wp-content/uploads/2018/03/sbcf-default-avatar.png?ssl=1',
+            },
+            'other_user_id': other_user.id,
+            'mess': [
+                {
+                    'id': mess.id,
+                    'user': {
+                        'id': mess.user.id,
+                        'username': mess.user.username,
+                        'avatar': mess.user.avatar.url if mess.user.avatar else 'https://i0.wp.com/sbcf.fr/wp-content/uploads/2018/03/sbcf-default-avatar.png?ssl=1',
+                    },
+                    'content': mess.content.replace('\r\n', '<br>'),
+                    'timestamp': mess.timestamp.isoformat()
+                }
+                for mess in Message.objects.filter(room=room).order_by("-timestamp")[:1]
+            ]
+        }
+        data.append(room_data)
+    return JsonResponse({'success': True, 'data': data})
+
 
 def get_room(request, name_room):
     try:
@@ -79,11 +93,16 @@ def get_room(request, name_room):
             return JsonResponse({"success": False, "message": "Unauthorized"}, status=403)
 
         messages = Message.objects.filter(room=room).order_by('timestamp')
+        other_user = room.user1 if room.user1 != request.user else room.user2
 
         messages_data = [
             {
                 'id': message.id,
-                'user': message.user.username,
+                'user': {
+                    'id':message.user.id,
+                    'username':message.user.username,
+                    'avatar':message.user.avatar.url if message.user.avatar else 'https://i0.wp.com/sbcf.fr/wp-content/uploads/2018/03/sbcf-default-avatar.png?ssl=1',
+                },
                 'content': message.content.replace('\r\n','<br>'),
                 'audioFile':message.audioFile.url if message.audioFile else None,
                 'timestamp': message.timestamp.isoformat()
@@ -93,7 +112,11 @@ def get_room(request, name_room):
         room_data = {
             'id': room.id,
             'name': room.name,
-            'other_user': room.user1.username if room.user1 != request.user else room.user2.username,
+            'other_user': {
+                'id':other_user.id,
+                'username':other_user.username,
+                'avatar':other_user.avatar.url if other_user.avatar else 'https://i0.wp.com/sbcf.fr/wp-content/uploads/2018/03/sbcf-default-avatar.png?ssl=1',
+            },
             'other_user_id': room.user1.id if room.user1 != request.user else room.user2.id,
             'description': room.description,
             'created_at': room.created_at.isoformat(),
@@ -125,12 +148,17 @@ def sender_message(request):
 
             data = {
                 'id':mess.id,
-                'user':mess.user.username,
+                'user':{
+                    'id':mess.user.id,
+                    'username':mess.user.username,
+                    'avatar':mess.user.avatar.url if mess.user.avatar else 'https://i0.wp.com/sbcf.fr/wp-content/uploads/2018/03/sbcf-default-avatar.png?ssl=1',
+                },
                 'content':mess.content.replace('\r\n','<br>'),
                 'audioFile':mess.audioFile.url if mess.audioFile else None,
                 'timestamp':mess.timestamp.isoformat(),
                 'room':mess.room.name,
             }
+            print(data)
             return JsonResponse({'success': True, 'data': data})
         else:
             return JsonResponse({'success': False, 'message': 'Please log in'})
@@ -138,13 +166,14 @@ def sender_message(request):
         return JsonResponse({'success': False, 'message': 'Invalid request method'})
     
 def get_friend_requests(request):
-    user = get_object_or_404(User, id=request.user.id)
+    user = get_object_or_404(CustomUser, id=request.user.id)
     friend_requests = NotifyFriend.objects.filter(receiver=user).exclude(status='canceled').order_by('-created_at')
     data = [
         {
             'sender':{
                 'id':friend_request.sender.id,
-                'name':friend_request.sender.username,
+                'username':friend_request.sender.username,
+                'avatar':friend_request.sender.avatar.url if friend_request.sender.avatar else 'https://i0.wp.com/sbcf.fr/wp-content/uploads/2018/03/sbcf-default-avatar.png?ssl=1',
             },
             'status':friend_request.status
         }
@@ -170,7 +199,7 @@ def send_friend_request_logic(sender, receiver):
 def send_friend_request(request, receiver_id):
     sender = request.user  
     try:
-        receiver = User.objects.get(id=receiver_id) 
+        receiver = CustomUser.objects.get(id=receiver_id) 
 
         existing_request = NotifyFriend.objects.filter(sender=sender, receiver=receiver).first()
         
@@ -184,13 +213,13 @@ def send_friend_request(request, receiver_id):
 
         message = send_friend_request_logic(sender, receiver)
         return JsonResponse({'message': message})
-    except User.DoesNotExist:
+    except CustomUser.DoesNotExist:
         return JsonResponse({'error': 'User not found.'}, status=404)
 
 def accept_friend_request(request, sender_id):
     receiver = request.user 
     try:
-        sender = User.objects.get(id=sender_id)  
+        sender = CustomUser.objects.get(id=sender_id)  
         friend_request = NotifyFriend.objects.filter(sender=sender, receiver=receiver, status='pending').first()
         room_name = generate_room_name(request.user.id, sender_id)
         if friend_request:
@@ -208,77 +237,56 @@ def accept_friend_request(request, sender_id):
             )
             return JsonResponse({'message': 'Friend request accepted.'})
         return JsonResponse({'message': 'No pending friend request found.'})
-    except User.DoesNotExist:
+    except CustomUser.DoesNotExist:
         return JsonResponse({'error': 'User not found.'}, status=404)
 
 def refuse_friend_request(request, sender_id):
     receiver = request.user 
     try:
-        sender = User.objects.get(id=sender_id) 
+        sender = CustomUser.objects.get(id=sender_id) 
         friend_request = NotifyFriend.objects.filter(sender=sender, receiver=receiver, status='pending').first()
         if friend_request:
             friend_request.status = 'refused'
             friend_request.save()
             return JsonResponse({'message': 'Friend request refused.'})
         return JsonResponse({'message': 'No pending friend request found.'})
-    except User.DoesNotExist:
+    except CustomUser.DoesNotExist:
         return JsonResponse({'error': 'User not found.'}, status=404)
     
 def cancel_friend_request(request, receiver_id):
     sender = request.user 
     try:
-        receiver = User.objects.get(id=receiver_id) 
+        receiver = CustomUser.objects.get(id=receiver_id) 
         friend_request = NotifyFriend.objects.filter(sender=sender, receiver=receiver, status='pending').first()
         if friend_request:
             friend_request.status = 'canceled'
             friend_request.save()
             return JsonResponse({'message': 'Friend request refused.'})
         return JsonResponse({'message': 'No pending friend request found.'})
-    except User.DoesNotExist:
+    except CustomUser.DoesNotExist:
         return JsonResponse({'error': 'User not found.'}, status=404)
-
-# def delete_friend_request(request, user_id):
-#     user1 = request.user 
-#     try:
-#         user2 = User.objects.get(id=user_id)  
-
-#         friend_request = Friend.objects.filter(
-#             Q(sender=user1, receiver=user2) | Q(sender=user2, receiver=user1)
-#         ).first()
-
-#         if friend_request:
-#             friend_request.delete()
-#             return JsonResponse({'message': 'delete friend success'})
-        
-#         return JsonResponse({'message': 'No friend request found.'})
-
-#     except User.DoesNotExist:
-#         return JsonResponse({'error': 'User not found.'}, status=404)
 
 def delete_friend_request(request, user_id):
     user1 = request.user
     try:
-        user2 = User.objects.get(id=user_id)
+        user2 = CustomUser.objects.get(id=user_id)
         friend = Friend.objects.filter(
             Q(user1=user1, user2=user2) | Q(user1=user2, user2=user1)
         )
 
         if friend.exists():
             friend.delete()
-            # friend_request = NotifyFriend.objects.filter( sender=user1, receiver=user2).first()
-            # friend_request.status = 'canceled'
-            # friend_request.save()
             return JsonResponse({'message': 'Friend deleted successfully'})
         
         return JsonResponse({'message': 'No friend request found.'})
 
-    except User.DoesNotExist:
+    except CustomUser.DoesNotExist:
         return JsonResponse({'error': 'User not found.'}, status=404)
 
 def check_friend_request_status(request, receiver_id):
     try:
         user1 = request.user  
-        user2 = User.objects.get(id=receiver_id) 
+        user2 = CustomUser.objects.get(id=receiver_id) 
         friend = Friend.objects.filter(
                 Q(user1=user1, user2=user2) | Q(user1=user2, user2=user1)
             )
@@ -294,5 +302,5 @@ def check_friend_request_status(request, receiver_id):
             
             return JsonResponse({'message': 'No friend request found.'})
 
-    except User.DoesNotExist:
+    except CustomUser.DoesNotExist:
         return JsonResponse({'error': 'User not found.'}, status=404)
