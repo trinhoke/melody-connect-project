@@ -46,7 +46,7 @@ img {
     background-color: black;
 }
 
-.container {
+.container-blog {
     max-width: 600px;
     padding: 10px 0 20px;
     margin: auto;
@@ -611,7 +611,7 @@ img {
 }
 
 .model-comment-post-container {
-    width: 680px;
+    width: 660px;
     position: absolute;
     top: 50%;
     left: 50%;
@@ -622,7 +622,7 @@ img {
 }
 
 .comment-post-container {
-    max-height: 80vh;
+    max-height: 70vh;
     overflow-y: auto;
 }
 

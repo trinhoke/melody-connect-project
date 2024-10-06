@@ -18,7 +18,11 @@ def format_date(date_string):
 # Create your views here.
 def blog(request):
     context = {
-        'user': request.user
+        'user': {
+            'username': request.user.username,
+            'avatar': request.user.avatar.url if request.user.avatar else 'https://i0.wp.com/sbcf.fr/wp-content/uploads/2018/03/sbcf-default-avatar.png?ssl=1',
+            'is_authenticated': request.user.is_authenticated,
+        }
     }
     return render(request,'blog/post.html',context)
 
@@ -42,7 +46,10 @@ def create_new_post(request):
                 'id': post.id,
                 'content': content.replace('\r\n', '<br>'),
                 'created_at': format_date(post.created_at.isoformat()),
-                'author': post.author.username,
+                'author': {
+                    'username': post.author.username,
+                    'avatar': post.author.avatar.url if post.author.avatar else 'https://i0.wp.com/sbcf.fr/wp-content/uploads/2018/03/sbcf-default-avatar.png?ssl=1',
+                },
                 'audio_files': [
                     {
                         'id': audio.id,
@@ -63,7 +70,8 @@ def get_all_post(request,id,page=1):
         posts = Post.objects.all().order_by('-created_at')
     else:
         posts = Post.objects.filter(author__id=id).order_by('-created_at')
-    
+
+    # Phân trang (5 bài viết mỗi trang)
     paginator = Paginator(posts, 5)
 
     try:
@@ -71,12 +79,16 @@ def get_all_post(request,id,page=1):
     except EmptyPage:
         return JsonResponse({'posts': []})
 
+    # Tạo danh sách các bài viết
     posts_list = [
         {
             'id': post.id,
-            'content':post.content.replace('\r\n', '<br>'),
-            'created_at': format_date(post.created_at.isoformat()),
-            'author': post.author.username,
+            'content': post.content.replace('\r\n', '<br>'),
+            'created_at': post.created_at.isoformat(),
+            'author': {
+                'username': post.author.username,
+                'avatar': post.author.avatar.url if post.author.avatar else 'https://i0.wp.com/sbcf.fr/wp-content/uploads/2018/03/sbcf-default-avatar.png?ssl=1',
+            },
             'audio_files': [
                 {
                     'id': audio.id,
@@ -84,10 +96,12 @@ def get_all_post(request,id,page=1):
                 } for audio in AudioFile.objects.filter(post=post)
             ],
             'music_links': post.music_links.split('\r\n') if post.music_links else [],
-            'comments_count': post.comments.count()  
+            'comments_count': post.comments.count(),
         }
         for post in posts_page
     ]
+
+    # Trả về JSON
     return JsonResponse({'posts': posts_list})
 
 
@@ -110,7 +124,10 @@ def get_post_by_id(request, id):
         'id': comment.id,
         'content': comment.content.replace('\r\n', '<br>'),
         'created_at': format_date(comment.created_at.isoformat()),
-        'author': comment.user.username,
+        'author': {
+            'username':comment.user.username,
+            'avatar':comment.user.avatar.url if comment.user.avatar else 'https://i0.wp.com/sbcf.fr/wp-content/uploads/2018/03/sbcf-default-avatar.png?ssl=1',
+        },
         'parent': comment.parent_id, 
     }
     for comment in post.comments.all()
@@ -120,7 +137,10 @@ def get_post_by_id(request, id):
         'id': post.id,
         'content': post.content.replace('\r\n', '<br>'),
         'created_at': format_date(post.created_at.isoformat()),
-        'author': post.author.username,
+        'author': {
+            'username': post.author.username,
+            'avatar': post.author.avatar.url if post.author.avatar else 'https://i0.wp.com/sbcf.fr/wp-content/uploads/2018/03/sbcf-default-avatar.png?ssl=1',
+        },
         'audio_files': audio_files_data,
         'music_links': post.music_links.split('\r\n') if post.music_links else [],
         'comments':comments_data
@@ -146,7 +166,10 @@ def comment_post(request):
             'id': comment.id,
             'content': comment.content.replace('\r\n','<br>'),
             'created_at': format_date(comment.created_at.isoformat()),
-            'author': comment.user.username,
+            'author':{
+                'username':comment.user.username,
+                'avatar':comment.user.avatar.url if comment.user.avatar else 'https://i0.wp.com/sbcf.fr/wp-content/uploads/2018/03/sbcf-default-avatar.png?ssl=1',
+            },
             'parent_id': comment.parent_id if comment.parent_id else None,
         }
 

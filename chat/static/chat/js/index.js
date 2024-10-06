@@ -15,6 +15,7 @@ function onClickOutside(element) {
     };
 }
 
+
 const chatApp = {
     content: '',
     audioFile: null,
@@ -97,6 +98,7 @@ const chatApp = {
         $('.open-chat-rooms').onclick = async function () {
             $$('.options-item').forEach(e => e.classList.remove('active'))
             this.classList.add('active')
+            await _this.connectChatSocket()
             await _this.renderRooms()
         }
 
@@ -204,7 +206,7 @@ const chatApp = {
             const listMessItem = $$(".messenger-item")
             const checkMessUser = listMessItem[listMessItem.length - 1]
             if (checkMessUser) {
-                if (checkMessUser.getAttribute('user') == data.user) {
+                if (checkMessUser.getAttribute('user') == data.user.username) {
                     checkMessUser.querySelector('.avatar-messenger').classList.add('opacity')
                 }
             }
@@ -221,12 +223,12 @@ const chatApp = {
             }
 
             const messagesItem = `
-                <div class="messenger-item ${data.user === user.username ? "sender" : ""}" user=${data.user}>
-                    <div class="avatar-messenger ${data.user === user.username ? "opacity" : ""}">
-                        <img src="https://yt3.ggpht.com/LKDMK6KpGDtsV11P1opuFEwjr5U5kI5BCiNEaA_v-dgGr30wfqlFAhhAvH4_xVzIIKPnI5gU=s48-c-k-c0x00ffffff-no-rj"
+                <div class="messenger-item ${data?.user?.id === JSON.parse(user.id) ? "sender" : ""}" user=${data.user.username}>
+                    <div class="avatar-messenger ${data?.user?.id === JSON.parse(user.id) ? "opacity" : ""}">
+                        <img src="${data.user.avatar}"
                         alt="avatar">
                     </div>
-                    <div class="container-mess ${data.user === user.username ? "sender" : ""}">
+                    <div class="container-mess ${data?.user?.id === JSON.parse(user.id) ? "sender" : ""}">
                         ${audioFile}
                         <div class="content-mess">
                             ${data.content}
@@ -331,21 +333,23 @@ const chatApp = {
                         }
                         else if (res.data.errCode === 1) {
                             $('.notify').classList.remove('hidden')
-                            const responce = await fetch(`check_friend_status/${res.data.id}/`, {
+                            const responce = await fetch(`check_friend_status/${res.data.other_user.id}/`, {
                                 method: 'GET'
                             })
                                 .then(response => response.json())
                                 .catch(error => console.error('Error:', error));
+                                console.log(res);
+                                
                             if (responce.errCode === undefined || responce.message === 'canceled' || responce.message === 'refused') {
                                 $('.notify').innerHTML = `
                                     <div class="user">
                                         <i class="fa-solid fa-arrow-left go-back"></i>
                                         <div class="user-info">
                                             <div class="avatar-receiver">
-                                                <img src="https://yt3.ggpht.com/LKDMK6KpGDtsV11P1opuFEwjr5U5kI5BCiNEaA_v-dgGr30wfqlFAhhAvH4_xVzIIKPnI5gU=s48-c-k-c0x00ffffff-no-rj"
+                                                <img src='${res.data.other_user.avatar}'
                                                 alt="avatar" />
                                             </div>
-                                            <div>${res.data.other_user}</div>
+                                            <div>${res.data.other_user.username}</div>
                                         </div>
                                         <div class='options'>
                                             <button class=" button send-friend-request-btn">Gửi lời mời kết bạn</button>
@@ -359,10 +363,10 @@ const chatApp = {
                                     <i class="fa-solid fa-arrow-left go-back"></i>
                                     <div class="user-info">
                                         <div class="avatar-receiver">
-                                            <img src="https://yt3.ggpht.com/LKDMK6KpGDtsV11P1opuFEwjr5U5kI5BCiNEaA_v-dgGr30wfqlFAhhAvH4_xVzIIKPnI5gU=s48-c-k-c0x00ffffff-no-rj"
+                                            <img src='${res.data.other_user.avatar}'
                                             alt="avatar" />
                                         </div>
-                                        <div>${res.data.other_user}</div>
+                                        <div>${res.data.other_user.username}</div>
                                     </div>
                                     <div class='options'>
                                         <button class="button delete-friend-request-btn">Xoá lời mời kết bạn</button>
@@ -386,9 +390,10 @@ const chatApp = {
                                 }
                             }
 
-                            $(".go-back").onclick = function () {
-                                $(".notify").classList.add('hidden')
+                            $(".go-back").onclick = async function () {
+                                await _this.getRoomChat()
                             }
+                            
                         }
                     }
                     $(".search-user-input").value = ''
@@ -417,16 +422,16 @@ const chatApp = {
                     return `
                     <div class="room ${idx == 0 ? 'active' : ''} " key=${e?.id} user-id= ${e?.other_user_id} name=${e?.name}>
                         <div class="avatar-receiver">
-                            <img src="https://yt3.ggpht.com/LKDMK6KpGDtsV11P1opuFEwjr5U5kI5BCiNEaA_v-dgGr30wfqlFAhhAvH4_xVzIIKPnI5gU=s48-c-k-c0x00ffffff-no-rj"
+                            <img src="${e.other_user.avatar}"
                             alt="avatar" />
                             <i class="fa-solid fa-circle ${e?.other_user_id == user.id ? 'hidden' : ''}"></i>
                         </div>
                         <div class="info">
                             <div class="name-receiver">
-                                ${e.other_user}
+                                ${e.other_user.username}
                             </div>
                             <div class="mess-new">
-                                ${e.mess.length > 0 ? (e.mess[0].user === user.username ? "<div>Bạn: </div>" + `<div class="content-new-mess">${e.mess[0].content}</div>` : `<div class="content-new-mess">${e.mess[0].content}</div>`) : ""}
+                                ${e.mess.length > 0 ? (e.mess[0].user.username === user.username ? "<div>Bạn: </div>" + `<div class="content-new-mess">${e.mess[0].content}</div>` : `<div class="content-new-mess">${e.mess[0].content}</div>`) : ""}
                             </div>
                         </div>
                     </div>
@@ -466,12 +471,12 @@ const chatApp = {
                     return `
                         <div class="friend-request">
                             <div class="avatar">
-                                <img src="https://yt3.ggpht.com/LKDMK6KpGDtsV11P1opuFEwjr5U5kI5BCiNEaA_v-dgGr30wfqlFAhhAvH4_xVzIIKPnI5gU=s48-c-k-c0x00ffffff-no-rj"
+                                <img src="${e.sender.avatar}"
                                 alt="avatar" />
                             </div>
                             <div class="info">
                                 <div class="name">
-                                    <b>${e.sender.name}</b> đã gửi cho bạn 1 lời mời kết bạn
+                                    <b>${e.sender.username}</b> đã gửi cho bạn 1 lời mời kết bạn
                                 </div>
                                 <div class='description'>
                                     <button sender_id="${e.sender.id}" class="accept-request">Đồng ý</button>
@@ -485,12 +490,12 @@ const chatApp = {
                     return `
                         <div class="friend-request">
                             <div class="avatar">
-                                <img src="https://yt3.ggpht.com/LKDMK6KpGDtsV11P1opuFEwjr5U5kI5BCiNEaA_v-dgGr30wfqlFAhhAvH4_xVzIIKPnI5gU=s48-c-k-c0x00ffffff-no-rj"
+                                <img src="${e.sender.avatar}"
                                 alt="avatar" />
                             </div>
                             <div class="info">
                                 <div class="name">
-                                    <b>${e.sender.name}</b> đã gửi cho bạn 1 lời mời kết bạn
+                                    <b>${e.sender.username}</b> đã gửi cho bạn 1 lời mời kết bạn
                                 </div>
                                 <div class='description'>
                                     <p>Bạn đã từ chối lời mời này</p>
@@ -503,12 +508,12 @@ const chatApp = {
                     return `
                         <div class="friend-request">
                             <div class="avatar">
-                                <img src="https://yt3.ggpht.com/LKDMK6KpGDtsV11P1opuFEwjr5U5kI5BCiNEaA_v-dgGr30wfqlFAhhAvH4_xVzIIKPnI5gU=s48-c-k-c0x00ffffff-no-rj"
+                                <img src="${e.sender.avatar}"
                                 alt="avatar" />
                             </div>
                             <div class="info">
                                 <div class="name">
-                                    <b>${e.sender.name}</b> đã gửi cho bạn 1 lời mời kết bạn
+                                    <b>${e.sender.username}</b> đã gửi cho bạn 1 lời mời kết bạn
                                 </div>
                                 <div class='description'>
                                     <p>Bạn đã đồng ý lời mời kết bạn</p>
@@ -582,7 +587,6 @@ const chatApp = {
                     if (data && data.length > 0) {
                         const messagesItems = data.map((e, idx) => {
                             let audioFile = ''
-
                             if (e.audioFile) {
                                 audioFile = `
                                 <audio controls>
@@ -591,14 +595,13 @@ const chatApp = {
                                 </audio>
                                 `
                             }
-
                             return `
-                            <div class="messenger-item ${e.user === user.username ? "sender" : ""}" user=${e.user}>
-                                <div class="avatar-messenger ${e.user === user.username || (data[idx + 1] && data[idx + 1].user == e.user) ? "opacity" : ""}">
-                                    <img src="https://yt3.ggpht.com/LKDMK6KpGDtsV11P1opuFEwjr5U5kI5BCiNEaA_v-dgGr30wfqlFAhhAvH4_xVzIIKPnI5gU=s48-c-k-c0x00ffffff-no-rj"
+                            <div class="messenger-item ${e.user.username === user.username ? "sender" : ""}" user=${e.user.username}>
+                                <div class="avatar-messenger ${e.user.username === user.username || (data[idx + 1] && data[idx + 1].user == e.user) ? "opacity" : ""}">
+                                    <img src="${e.user.avatar}"
                                     alt="avatar">
                                 </div>
-                               <div class="container-mess ${e.user === user.username ? "sender" : ""}">
+                               <div class="container-mess ${e.user.username === user.username ? "sender" : ""}">
                                     ${audioFile}
                                     <div class="content-mess">
                                         ${e.content}
@@ -613,8 +616,9 @@ const chatApp = {
                     }
                     $('.content-title').setAttribute('room', res.room.name)
                     $('.content-title').setAttribute("user_id", res.room.other_user_id);
-                    $(".name-room").innerHTML = res.room.other_user;
+                    $(".name-room").innerHTML = res.room.other_user.username;
                     $(".name-room").setAttribute("user_id", res.room.other_user_id);
+                    $(".avatar").querySelector('img').src = res.room.other_user.avatar
                     await this.checkFriendRequestStatus()
                     this.setupIconClickListener()
                     this.scrollToBottom()
@@ -624,6 +628,11 @@ const chatApp = {
             }
             else {
                 $('.notify').classList.remove('hidden')
+                $('.notify').innerHTML = `
+                    <div>
+                        Hãy kết bạn để thực hiện nhắn tin
+                    </div>
+                `
             }
         } catch (error) {
             console.log(error);
@@ -780,4 +789,12 @@ const chatApp = {
     }
 }
 
-chatApp.start()
+
+
+if(user.id && user.username){
+    $(".notify-login").classList.add('hidden')
+    chatApp.start()
+}
+else{
+    $(".notify-login").classList.remove('hidden')
+}

@@ -249,12 +249,12 @@ const createNewPost = {
                 const post = ` <div class="post shadow"  data-id = ${data.post.id}>
                                 <div class="header-post">
                                     <div class="avatar">
-                                        <img src="https://yt3.ggpht.com/H_spDtAzuKhbWLEFZo66W5uHSG-uKY-Uhv5wCns_4jMNNi36cNz2xzmsBdcfx3mhzS3vKx_4=s48-c-k-c0x00ffffff-no-rj"
+                                        <img src="${data.post.author.avatar}"
                                             alt="avatar" />
                                     </div>
                                     <div class="post-info">
                                         <div class="author-name">
-                                            ${data.post.author}
+                                            ${data.post.author.username}
                                         </div>
                                         <div class="time-created">
                                             ${data.post.created_at}
@@ -390,7 +390,7 @@ const getPost = {
 
     showPost: function () {
         const container = $(".main-container")
-        const post = this.data.map((e) => {
+        const post = this.data.map((e) => {            
             const audios = e.audio_files.map(e => {
                 return `
                 <audio controls>
@@ -410,12 +410,12 @@ const getPost = {
                     <div class="post shadow" data-id = ${e.id}>
                         <div class="header-post">
                             <div class="avatar">
-                                <img src="https://yt3.ggpht.com/H_spDtAzuKhbWLEFZo66W5uHSG-uKY-Uhv5wCns_4jMNNi36cNz2xzmsBdcfx3mhzS3vKx_4=s48-c-k-c0x00ffffff-no-rj"
+                                <img src="${e.author.avatar}"
                                     alt="avatar" />
                             </div>
                             <div class="post-info">
                                 <div class="author-name">
-                                    ${e.author}
+                                    ${e.author.username}
                                 </div>
                                 <div class="time-created">
                                     ${e.created_at}
@@ -449,7 +449,6 @@ const getPost = {
         try {
             const response = await fetch(`id=all/page=${this.page}`)
             const data = await response.json()
-
             if (data.posts.length < this.limit) {
                 this.hasMore = false
             }
@@ -517,15 +516,10 @@ const commentPost = {
         const inputComment = document.querySelector(".input-comment");
         if (inputComment) {
             inputComment.oninput = function (e) {
-                if (isAuthenticated) {
                     const value = e.target.value.trim();
                     _this.comment = value || ''; // Cập nhật giá trị comment
                     _this.animationIconSender();
                     _this.updatePaddingListComment();
-                } else {
-                    this.value = '';
-                    createToast('error', 'Vui lòng đăng nhập để thực hiện chức năng này');
-                }
             };
         }
 
@@ -571,6 +565,9 @@ const commentPost = {
 
             const post = data.post;
 
+            console.log(post);
+            
+
             const audios = post.audio_files.map(e => {
                 return `
                     <audio controls>
@@ -592,13 +589,13 @@ const commentPost = {
                 return `
                     <div class="comment-item" comment-id=${e.id}>
                         <div class="avatar">
-                            <img src="https://yt3.ggpht.com/H_spDtAzuKhbWLEFZo66W5uHSG-uKY-Uhv5wCns_4jMNNi36cNz2xzmsBdcfx3mhzS3vKx_4=s48-c-k-c0x00ffffff-no-rj"
-                                alt="avatar" />
+                            <img src="${e.author.avatar}"
+                                    alt="avatar" />
                         </div>
                         <div class="comment-data">
                             <div class="content-comment-box">
                                 <div class="username-comment">
-                                    ${e.author}
+                                    ${e.author.username}
                                 </div>
                                 <div class="comment-content">
                                     ${e.content}
@@ -616,7 +613,7 @@ const commentPost = {
                 <div class="model-comment-post-container">
                     <div class="header-model">
                         <div class="header-model-title">
-                            Bài viết của ${post.author}
+                            Bài viết của ${post.author.username}
                         </div>
                         <div class="btn-close-comment">
                             <i class="fa-solid fa-xmark"></i>
@@ -627,12 +624,12 @@ const commentPost = {
                         <div class="post">
                             <div class="header-post">
                                 <div class="avatar">
-                                    <img src="https://yt3.ggpht.com/H_spDtAzuKhbWLEFZo66W5uHSG-uKY-Uhv5wCns_4jMNNi36cNz2xzmsBdcfx3mhzS3vKx_4=s48-c-k-c0x00ffffff-no-rj"
+                                    <img src="${post.author.avatar}"
                                         alt="avatar" />
                                 </div>
                                 <div class="post-info">
                                     <div class="author-name">
-                                        ${post.author}
+                                        ${post.author.username}
                                     </div>
                                     <div class="time-created">
                                         ${post.created_at}
@@ -731,13 +728,13 @@ const commentPost = {
             const comment = `
                     <div class="comment-item" comment-id=${data.comment.id}>
                         <div class="avatar">
-                            <img src="https://yt3.ggpht.com/H_spDtAzuKhbWLEFZo66W5uHSG-uKY-Uhv5wCns_4jMNNi36cNz2xzmsBdcfx3mhzS3vKx_4=s48-c-k-c0x00ffffff-no-rj"
+                            <img src="${data.comment.author.avatar}"
                                 alt="avatar" />
                         </div>
                         <div class='comment-data'>
                             <div class="content-comment-box">
                                 <div class="username-comment">
-                                    ${data.comment.author}
+                                    ${data.comment.author.username}
                                 </div>
                                 <div class="comment-content">
                                     ${data.comment.content}

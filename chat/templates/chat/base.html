@@ -13,7 +13,47 @@
 </head>
 
 <body>
-    <div class="container">
+    <header class="header">
+        <div class="container">
+            <div class="header__wrapper">
+                <div class="header__logo">
+                    <a href="{% url 'home' %}">
+                        MelodyConnect
+                    </a>
+                </div>
+                <nav class="header__nav">
+                    <ul>
+                        <li><a class="no-underline" href="{% url 'home' %}"><i class="fas fa-home"></i><span>Trang chủ
+                                </span></a></li>
+                        <li><a class="no-underline" href="{% url 'song_list' %}"><i class="fas fa-music"></i> <span>Bài
+                                    hát</span></a></li>
+                        <li><a class="no-underline" href="{% url 'playlist_list' %}"><i class="fas fa-list"></i>
+                                <span>Playlist</span></a></li>
+                        <li><a class="no-underline" href="{% url 'artist_list' %}"><i class="fas fa-microphone-alt"></i>
+                                <span>Nghệ sĩ</span></a></li>
+                    </ul>
+                </nav>
+                <div class="header__actions">
+                    <div class="header__search">
+                        <form action="{% url 'search' %}" method="GET">
+                            <input type="text" name="q" placeholder="Tìm kiếm..." required>
+                            <button type="submit"><i class="fas fa-search"></i></button>
+                        </form>
+                    </div>
+                    {% if user.is_authenticated %}
+                    <div class="header__user">
+                        <a class="no-underline" href="{% url 'profile' %}">
+                            <i class="fas fa-user"></i>
+                            <span>{{ user.username }}</span>
+                        </a>
+                        {% else %}
+                        <a class="btn btn-login" href="{% url 'login' %}">Đăng nhập</a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+    </header>
+    <div class="container-chat">
         <div class="sider-bar">
             <div class="title-sider-bar">
                 <h2> Đoạn chat </h2>
@@ -45,6 +85,21 @@
             </div>
         </div>
     </div>
+    <div class="notify-login hidden">
+        <div class="notify-login-container">
+            <div class="notify-login-text">
+                Vui lòng đang nhập để thực hiện chức năng này
+            </div>
+            <div class="notify-login-option">
+               <a class="back-home" href="{% url 'home' %}">
+                Về trang chủ
+               </a>
+               <a class="back-login" href="{% url 'login' %}">
+                Đăng nhập
+               </a>
+            </div>
+        </div>
+    </div>
 </body>
 <script src="https://cdn.jsdelivr.net/npm/@joeattardi/emoji-button@3.0.3/dist/index.min.js"></script>
 <script>
@@ -55,4 +110,5 @@
     };
 </script>
 <script src="{% static 'chat/js/index.js' %}"></script>
+
 </html>

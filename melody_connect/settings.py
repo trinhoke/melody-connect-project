@@ -16,6 +16,7 @@ ALLOWED_HOSTS = []
 INSTALLED_APPS = [
     'channels',
     'daphne',
+    'user',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -24,11 +25,12 @@ INSTALLED_APPS = [
     'cloudinary_storage',  # Đặt trước django.contrib.staticfiles
     'django.contrib.staticfiles',
     'cloudinary',
-    'user',
     'music',
     'blog',
     'chat',
 ]
+
+AUTH_USER_MODEL = 'user.CustomUser'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',

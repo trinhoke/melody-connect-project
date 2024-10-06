@@ -95,7 +95,7 @@ body {
 
 /* Header styles */
 .header {
-  background: linear-gradient(135deg, #000000, #0000008c);
+  background: linear-gradient(135deg, #000000, rgba(0, 0, 0, 1));
   padding: 1rem 0;
   position: sticky; /* Thêm thuộc tính này */
   top: 0; /* Thêm thuộc tính này */
