@@ -18,7 +18,11 @@ def format_date(date_string):
 # Create your views here.
 def blog(request):
     context = {
-        'user': request.user
+        'user': {
+            'username': request.user.username,
+            'avatar': request.user.avatar.url if request.user.avatar else 'https://i0.wp.com/sbcf.fr/wp-content/uploads/2018/03/sbcf-default-avatar.png?ssl=1',
+            'is_authenticated': request.user.is_authenticated,
+        }
     }
     return render(request,'blog/post.html',context)
 

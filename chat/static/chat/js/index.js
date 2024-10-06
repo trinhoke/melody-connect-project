@@ -393,6 +393,7 @@ const chatApp = {
                             $(".go-back").onclick = async function () {
                                 await _this.getRoomChat()
                             }
+                            
                         }
                     }
                     $(".search-user-input").value = ''
@@ -627,6 +628,11 @@ const chatApp = {
             }
             else {
                 $('.notify').classList.remove('hidden')
+                $('.notify').innerHTML = `
+                    <div>
+                        Hãy kết bạn để thực hiện nhắn tin
+                    </div>
+                `
             }
         } catch (error) {
             console.log(error);

@@ -58,7 +58,7 @@
         <div class="create-post">
             {% if user.is_authenticated %}
             <div class="avatar">
-                <img src="{{ user.avatar.url }}"
+                <img src="{{ user.avatar }}"
                     alt="avatar" />
             </div>
             {% endif %}
@@ -82,7 +82,7 @@
             <div class="form-container">
                 <div class="user-creator">
                     <div class="avatar">
-                        <img src="{{ user.avatar.url }}"
+                        <img src="{{ user.avatar }}"
                             alt="avatar" />
                     </div>
                     <div class="name-user">
