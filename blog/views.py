@@ -84,7 +84,7 @@ def get_all_post(request,id,page=1):
         {
             'id': post.id,
             'content': post.content.replace('\r\n', '<br>'),
-            'created_at': post.created_at.isoformat(),
+            'created_at': format_date(post.created_at.isoformat()),
             'author': {
                 'username': post.author.username,
                 'avatar': post.author.avatar.url if post.author.avatar else 'https://i0.wp.com/sbcf.fr/wp-content/uploads/2018/03/sbcf-default-avatar.png?ssl=1',

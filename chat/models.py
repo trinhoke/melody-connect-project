@@ -1,29 +1,40 @@
 from django.db import models
 from django.utils import timezone
 from user.models import CustomUser
+from django.contrib.contenttypes.models import ContentType
+from django.contrib.contenttypes.fields import GenericForeignKey
 
-
-
-# Create your models here.
-class Room(models.Model):
+class RoomGroup(models.Model):
+    type_room = models.CharField(max_length=10, default='group', blank=True, null=True)
     name = models.CharField(max_length=100, unique=True)
-    user1 = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='rooms_as_user1', default=1) 
-    user2 = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='rooms_as_user2', default=1) 
-    description = models.TextField(blank=True, null=True)
+    users = models.ManyToManyField(CustomUser, related_name='rooms', blank=True)
+    avatar = models.FileField(upload_to='images/',blank=True,null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    isDeleted = models.BooleanField(default= False)
+
     def __str__(self):
         return self.name
-    
+
+class RoomFriend(models.Model):
+    type_room = models.CharField(max_length=10, default='friend', blank=True, null=True)
+    user1 = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='rooms_as_user1', default=1) 
+    user2 = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='rooms_as_user2', default=2) 
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    isDeleted = models.BooleanField(default= False)
+
+    def __str__(self):
+        return self.user1.username + " & " + self.user2.username
+
 class Friend(models.Model):
     user1 = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='user1', default=1) 
-    user2 = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='user2', default=1) 
+    user2 = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='user2', default=2) 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return f"{self.user1.username} - {self.user2.username} "
-    
 
 class NotifyFriend(models.Model):
     STATUS_CHOICES = [
@@ -47,10 +58,17 @@ class NotifyFriend(models.Model):
     def __str__(self):
         return f"{self.sender.username} - {self.receiver.username} ({self.status})"
 
+def get_default_content_type():
+    return ContentType.objects.get_for_model(RoomGroup).id 
+
 class Message(models.Model):
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
-    room = models.ForeignKey(Room, related_name='messages', on_delete=models.CASCADE)
-    audioFile = models.FileField(upload_to='audio_files/',default='default-audio.mp3')
+
+    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE, default=1)
+    object_id = models.PositiveIntegerField(null=True)
+    room_object = GenericForeignKey('content_type', 'object_id')
+    
+    audioFile = models.FileField(upload_to='audio_files/', default='default-audio.mp3')
     content = models.TextField()
     timestamp = models.DateTimeField(auto_now_add=True)
 
@@ -59,5 +77,8 @@ class Message(models.Model):
     
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
-        self.room.updated_at = timezone.now() 
-        self.room.save()
+
+        room = self.room_object
+        if isinstance(room, RoomGroup) or isinstance(room, RoomFriend):
+            room.updated_at = timezone.now()
+            room.save()
