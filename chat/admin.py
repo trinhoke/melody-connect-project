@@ -5,5 +5,4 @@ from .models import *
 admin.site.register(RoomGroup)
 admin.site.register(RoomFriend)
 admin.site.register(Message)
-admin.site.register(Friend)
 admin.site.register(NotifyFriend)

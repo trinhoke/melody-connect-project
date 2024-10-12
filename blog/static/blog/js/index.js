@@ -52,7 +52,7 @@ const createNewPost = {
     isOpenEdit: false,
     isOpenInputLinks: false,
     linksAudio: "",
-    picker : new EmojiButton(),
+    picker: new EmojiButton(),
 
     handleEvent: function () {
         const _this = this;
@@ -113,13 +113,13 @@ const createNewPost = {
             _this.showInputLink()
         }
 
-        $(".open-label-emoji").onclick = function(){
+        $(".open-label-emoji").onclick = function () {
             _this.picker.togglePicker(this);
         }
 
         _this.picker.on('emoji', emoji => {
             document.querySelector('.post-content').value += emoji;
-            _this.content =  document.querySelector('.post-content').value
+            _this.content = document.querySelector('.post-content').value
         });
 
         $("#add-audio-files").onchange = function (e) {
@@ -149,6 +149,39 @@ const createNewPost = {
             _this.isOpenEdit = false;
             _this.showModelEdit();
             _this.showContentContainer();
+        }
+
+        $(".input-links").oninput = async function () {
+            console.log(this.value.trim());
+            await _this.renderListSong(this.value.trim())
+        }
+    },
+
+    renderListSong: async function (query) {
+        const res = await fetch(`search_songs/?q=${query}`).then(res => res.json())
+        if (res.success) {
+            const songs = res.data.map((e) => {
+                return `
+                                 <div class="song-item">
+                                    <input type="checkbox" id="song-${e.id}" value=${e.id} class="input-song-id">
+                                    <label class="label-checkbox" for="song-${e.id}">
+                                        <div class="img-song">
+                                            <img src="${e.cover_image}" alt="img-song"/>
+                                        </div>
+                                        <div class="song-info">
+                                            <div class="song-title">
+                                                ${e.title}
+                                            </div>
+                                            <div class="song-artist">
+                                                ${e.artist}
+                                            </div>
+                                        </div>
+                                    </label>
+                                </div>
+                        `
+            })
+
+            $(".list-song").innerHTML = songs.join('')
         }
     },
 
@@ -206,18 +239,24 @@ const createNewPost = {
     },
 
     createNewPost: async function () {
-        if (!this.content && this.audioFiles.length == 0 && !this.linksAudio) {
+        if (!this.content) {
             createToast('warning', 'Vui lòng nhập nội dung bài viết');
             return
         }
         const formData = new FormData();
         formData.append('content', this.content);
-        formData.append('music_links', this.linksAudio)
         if (this.audioFiles.length > 0) {
             this.audioFiles.forEach(e => {
                 formData.append('audioFiles', e)
             })
         }
+        
+        $$(".input-song-id").forEach((e)=>{
+            if(e.checked){
+                console.log(e.value);
+                formData.append('music_links', e.value)
+            }
+        })
 
         try {
             const response = await fetch("/blog/createNewPost", {
@@ -241,9 +280,25 @@ const createNewPost = {
                 })
                 const links = data.post.music_links.map(e => {
                     return `
-                        <div class='link-audio-item'>
-                            <a href="${e}" target="_blank" >${e}</a>
-                        </div>
+                        <div class="song-item">
+                                    <audio controls hidden>
+                                        <source src=${e.url} type="audio/mpeg">
+                                        Your browser does not support the audio element.
+                                    </audio>
+                                    <div class="div-checkbox">
+                                        <div class="img-song">
+                                            <img src="${e.cover_image}" alt="img-song"/>
+                                        </div>
+                                        <div class="song-info">
+                                            <div class="song-title">
+                                                ${e.title}
+                                            </div>
+                                            <div class="song-artist">
+                                                ${e.artist}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                     `
                 })
                 const post = ` <div class="post shadow"  data-id = ${data.post.id}>
@@ -283,6 +338,7 @@ const createNewPost = {
                 container.insertAdjacentHTML('afterbegin', post);
                 createToast('success', 'Tạo bài viết mới thành công')
                 this.resetModel()
+                playAudio()
             } else {
                 createToast('error', data.message)
             }
@@ -390,7 +446,7 @@ const getPost = {
 
     showPost: function () {
         const container = $(".main-container")
-        const post = this.data.map((e) => {            
+        const post = this.data.map((e) => {
             const audios = e.audio_files.map(e => {
                 return `
                 <audio controls>
@@ -401,9 +457,25 @@ const getPost = {
             })
             const links = e.music_links.map(e => {
                 return `
-                    <div class='link-audio-item'>
-                        <a href="${e}" target="_blank" >${e}</a>
-                    </div>
+                                <div class="song-item">
+                                    <audio controls hidden>
+                                        <source src=${e.url} type="audio/mpeg">
+                                        Your browser does not support the audio element.
+                                    </audio>
+                                    <div class="div-checkbox">
+                                        <div class="img-song">
+                                            <img src="${e.cover_image}" alt="img-song"/>
+                                        </div>
+                                        <div class="song-info">
+                                            <div class="song-title">
+                                                ${e.title}
+                                            </div>
+                                            <div class="song-artist">
+                                                ${e.artist}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                 `
             })
             return `
@@ -443,6 +515,7 @@ const getPost = {
             `
         })
         container.innerHTML = post.join('')
+        playAudio()
     },
 
     getPost: async function () {
@@ -516,10 +589,10 @@ const commentPost = {
         const inputComment = document.querySelector(".input-comment");
         if (inputComment) {
             inputComment.oninput = function (e) {
-                    const value = e.target.value.trim();
-                    _this.comment = value || ''; // Cập nhật giá trị comment
-                    _this.animationIconSender();
-                    _this.updatePaddingListComment();
+                const value = e.target.value.trim();
+                _this.comment = value || ''; // Cập nhật giá trị comment
+                _this.animationIconSender();
+                _this.updatePaddingListComment();
             };
         }
 
@@ -566,7 +639,7 @@ const commentPost = {
             const post = data.post;
 
             console.log(post);
-            
+
 
             const audios = post.audio_files.map(e => {
                 return `
@@ -579,9 +652,25 @@ const commentPost = {
 
             const links = post.music_links.map(e => {
                 return `
-                    <div class='link-audio-item'>
-                        <a href="${e}" target="_blank" >${e}</a>
-                    </div>
+                    <div class="song-item">
+                                    <audio controls hidden>
+                                        <source src=${e.url} type="audio/mpeg">
+                                        Your browser does not support the audio element.
+                                    </audio>
+                                    <div class="div-checkbox">
+                                        <div class="img-song">
+                                            <img src="${e.cover_image}" alt="img-song"/>
+                                        </div>
+                                        <div class="song-info">
+                                            <div class="song-title">
+                                                ${e.title}
+                                            </div>
+                                            <div class="song-artist">
+                                                ${e.artist}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                 `
             })
 
@@ -668,6 +757,8 @@ const commentPost = {
                     </div>
                 </div>
             `;
+            
+            playAudio()
             this.updatePaddingListComment();
         } catch (error) {
             console.log(error);
@@ -774,5 +865,26 @@ const commentPost = {
 };
 
 commentPost.start();
+
+
+function playAudio() {
+    $$('.div-checkbox').forEach(e => {
+        e.addEventListener('click', function() {
+            const parent = this.parentElement;
+            const audio = parent.querySelector('audio');
+            const imgSong = this.querySelector('.img-song'); // Lấy phần tử .img-song
+
+            if (audio.paused) {
+                audio.play();
+                imgSong.classList.add('paused');
+            } else {
+                audio.pause();
+                imgSong.classList.remove('paused'); 
+            }
+        });
+    });
+}
+
+
 
 

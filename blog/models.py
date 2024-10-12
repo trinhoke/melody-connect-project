@@ -1,4 +1,5 @@
 from django.db import models
+from music.models import Song
 from user.models import CustomUser
 
 # Create your models here.
@@ -6,7 +7,7 @@ from user.models import CustomUser
 class Post(models.Model):
     author = models.ForeignKey(CustomUser,on_delete=models.CASCADE)
     content = models.TextField()
-    music_links = models.URLField(blank=True, null=True)
+    music_links = models.ManyToManyField(Song, related_name='songs')
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

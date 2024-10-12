@@ -333,10 +333,6 @@ def get_room(request,roomId,type_room):
     else:
         return JsonResponse({'success': False, 'message': 'Please log in'})
 
-def delete_room(request):
-    
-    pass
-
 def get_friend_requests(request):
     user = get_object_or_404(CustomUser, id=request.user.id)
     friend_requests = NotifyFriend.objects.filter(receiver=user).exclude(status='canceled').order_by('-created_at')
@@ -393,7 +389,6 @@ def accept_friend_request(request, sender_id):
     try:
         sender = CustomUser.objects.get(id=sender_id)  
         friend_request = NotifyFriend.objects.filter(sender=sender, receiver=receiver, status='pending').first()
-        room_name = generate_room_name(request.user.id, sender_id)
         if friend_request:
             if sender != receiver:
                 Friend.objects.create(
@@ -438,12 +433,7 @@ def delete_friend_request(request, user_id):
     user1 = request.user
     try:
         user2 = CustomUser.objects.get(id=user_id)
-        friend = Friend.objects.filter(
-            Q(user1=user1, user2=user2) | Q(user1=user2, user2=user1)
-        )
-
-        if friend.exists():
-            friend.delete()
+        if user1.is_friend(user2):
             user1.remove_friend(user2)
             user2.remove_friend(user1)
             return JsonResponse({'message': 'Friend deleted successfully'})
@@ -457,10 +447,7 @@ def check_friend_request_status(request, receiver_id):
     try:
         user1 = request.user  
         user2 = CustomUser.objects.get(id=receiver_id) 
-        friend = Friend.objects.filter(
-                Q(user1=user1, user2=user2) | Q(user1=user2, user2=user1)
-            )
-        if friend.exists():
+        if user1.is_friend(user2):
             return JsonResponse({'isFriend':True})
         else:
             friend_request_sender = NotifyFriend.objects.filter( sender=user1, receiver=user2).first()
