@@ -27,15 +27,6 @@ class RoomFriend(models.Model):
     def __str__(self):
         return self.user1.username + " & " + self.user2.username
 
-class Friend(models.Model):
-    user1 = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='user1', default=1) 
-    user2 = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='user2', default=2) 
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-
-    def __str__(self):
-        return f"{self.user1.username} - {self.user2.username} "
-
 class NotifyFriend(models.Model):
     STATUS_CHOICES = [
         ('pending', 'Pending'),

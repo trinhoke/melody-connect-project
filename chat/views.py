@@ -433,12 +433,7 @@ def delete_friend_request(request, user_id):
     user1 = request.user
     try:
         user2 = CustomUser.objects.get(id=user_id)
-        friend = Friend.objects.filter(
-            Q(user1=user1, user2=user2) | Q(user1=user2, user2=user1)
-        )
-
-        if friend.exists():
-            friend.delete()
+        if user1.is_friend(user2):
             user1.remove_friend(user2)
             user2.remove_friend(user1)
             return JsonResponse({'message': 'Friend deleted successfully'})
@@ -452,10 +447,7 @@ def check_friend_request_status(request, receiver_id):
     try:
         user1 = request.user  
         user2 = CustomUser.objects.get(id=receiver_id) 
-        friend = Friend.objects.filter(
-                Q(user1=user1, user2=user2) | Q(user1=user2, user2=user1)
-            )
-        if friend.exists():
+        if user1.is_friend(user2):
             return JsonResponse({'isFriend':True})
         else:
             friend_request_sender = NotifyFriend.objects.filter( sender=user1, receiver=user2).first()

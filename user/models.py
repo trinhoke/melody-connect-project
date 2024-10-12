@@ -23,5 +23,8 @@ class CustomUser(AbstractUser):
             return True
         return False
     
+    def is_friend(self, user):
+        return user in self.friends.all()
+    
     def __str__(self):
         return self.username
