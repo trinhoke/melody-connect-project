@@ -333,10 +333,6 @@ def get_room(request,roomId,type_room):
     else:
         return JsonResponse({'success': False, 'message': 'Please log in'})
 
-def delete_room(request):
-    
-    pass
-
 def get_friend_requests(request):
     user = get_object_or_404(CustomUser, id=request.user.id)
     friend_requests = NotifyFriend.objects.filter(receiver=user).exclude(status='canceled').order_by('-created_at')
@@ -393,7 +389,6 @@ def accept_friend_request(request, sender_id):
     try:
         sender = CustomUser.objects.get(id=sender_id)  
         friend_request = NotifyFriend.objects.filter(sender=sender, receiver=receiver, status='pending').first()
-        room_name = generate_room_name(request.user.id, sender_id)
         if friend_request:
             if sender != receiver:
                 Friend.objects.create(

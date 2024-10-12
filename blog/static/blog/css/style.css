@@ -291,7 +291,7 @@ img {
     width: 100%;
     gap: 10px;
     padding: 10px;
-    background-color: #d1d1d1;
+    background-color: #f0f0f0;
     border-radius: 10px;
 }
 
@@ -704,18 +704,46 @@ img {
     cursor: pointer;
 }
 
-
-/* .emojionearea .emojionearea-editor {
-    width: 0 !important;
-    height: 0 !important;
-    border: none !important;
-    overflow: hidden !important;
-    padding: 0 !important;
-    min-height: 40px !important;
+.label-checkbox,.div-checkbox{
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 5px 10px;
+    border-radius: 10px;
+    background-color: #e2e1e1;
+    cursor: pointer;
 }
 
-.emojionearea, .emojionearea.form-control{
-    height: 30px !important;
-    width: 30px !important;
-    border: none !important;
-} */
+.label-checkbox:hover,.div-checkbox:hover{
+    background-color: rgb(172, 218, 255);
+}
+
+.img-song{
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    overflow: hidden;
+
+}
+
+.song-item{
+    display: flex;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+
+
+@keyframes rotate {
+    from {
+        transform: rotate(0deg); /* Bắt đầu từ 0 độ */
+    }
+    to {
+        transform: rotate(360deg); /* Kết thúc ở 360 độ */
+    }
+}
+
+.img-song.paused {
+    animation: rotate 2s linear infinite;
+}

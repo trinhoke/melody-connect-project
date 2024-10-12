@@ -1,9 +1,13 @@
 from django.shortcuts import render,redirect,get_object_or_404
+
+from music.models import Artist, Song
 from .models import *
 from django.http import JsonResponse
 from django.forms.models import model_to_dict
 from django.core.paginator import Paginator,EmptyPage
 from datetime import datetime
+from django.db.models import Q
+
 
 
 
@@ -30,18 +34,22 @@ def create_new_post(request):
     if request.method == 'POST':
         if request.user.is_authenticated: 
             content = request.POST.get('content')
-            music_links = request.POST.get('music_links', None)
+            music_links = request.POST.getlist('music_links')
             audio_files = request.FILES.getlist('audioFiles') 
             post = Post.objects.create(
                 content=content.strip(),
-                music_links=music_links,
                 author=request.user
             )
+            if music_links:
+                songs = Song.objects.filter(id__in=music_links) 
+                post.music_links.set(songs)
+
             for audio_file in audio_files:
                 AudioFile.objects.create(
                     post=post,
                     audio_file=audio_file
                 )
+            post.save()
             post_dict = {
                 'id': post.id,
                 'content': content.replace('\r\n', '<br>'),
@@ -56,7 +64,15 @@ def create_new_post(request):
                         'file_url': audio.audio_file.url
                     } for audio in AudioFile.objects.filter(post=post)
                 ],
-                'music_links': post.music_links.split('\r\n') if post.music_links else [],
+                'music_links': [
+                    {
+                        'id': song.id,
+                        'title': song.title,
+                        'url':song.audio_file.url,
+                        'artist': ', '.join([artist.name for artist in song.artist.all()]),
+                        'cover_image': song.cover_image.url if song.cover_image else 'https://i0.wp.com/sbcf.fr/wp-content/uploads/2018/03/sbcf-default-avatar.png?ssl=1',
+                    } for song in post.music_links.all()
+                ],
                 'comments_count': 0
             }
             return JsonResponse({'success': True, 'post': post_dict})
@@ -84,7 +100,7 @@ def get_all_post(request,id,page=1):
         {
             'id': post.id,
             'content': post.content.replace('\r\n', '<br>'),
-            'created_at': format_date(post.created_at.isoformat()),
+            'created_at': post.created_at.strftime('%Y-%m-%d %H:%M:%S'),
             'author': {
                 'username': post.author.username,
                 'avatar': post.author.avatar.url if post.author.avatar else 'https://i0.wp.com/sbcf.fr/wp-content/uploads/2018/03/sbcf-default-avatar.png?ssl=1',
@@ -93,9 +109,17 @@ def get_all_post(request,id,page=1):
                 {
                     'id': audio.id,
                     'file_url': audio.audio_file.url
-                } for audio in AudioFile.objects.filter(post=post)
+                } for audio in post.audio_files.all()  # Truy vấn qua related_name
             ],
-            'music_links': post.music_links.split('\r\n') if post.music_links else [],
+            'music_links': [
+                {
+                    'id': song.id,
+                    'title': song.title,
+                    'url':song.audio_file.url,
+                    'artist': ', '.join([artist.name for artist in song.artist.all()]),
+                    'cover_image': song.cover_image.url if song.cover_image else 'https://i0.wp.com/sbcf.fr/wp-content/uploads/2018/03/sbcf-default-avatar.png?ssl=1',
+                } for song in post.music_links.all()
+            ], 
             'comments_count': post.comments.count(),
         }
         for post in posts_page
@@ -103,7 +127,6 @@ def get_all_post(request,id,page=1):
 
     # Trả về JSON
     return JsonResponse({'posts': posts_list})
-
 
 def get_post_by_id(request, id):
     print(id)
@@ -142,7 +165,15 @@ def get_post_by_id(request, id):
             'avatar': post.author.avatar.url if post.author.avatar else 'https://i0.wp.com/sbcf.fr/wp-content/uploads/2018/03/sbcf-default-avatar.png?ssl=1',
         },
         'audio_files': audio_files_data,
-        'music_links': post.music_links.split('\r\n') if post.music_links else [],
+        'music_links': [
+                {
+                    'id': song.id,
+                    'title': song.title,
+                    'url':song.audio_file.url,
+                    'artist': ', '.join([artist.name for artist in song.artist.all()]),
+                    'cover_image': song.cover_image.url if song.cover_image else 'https://i0.wp.com/sbcf.fr/wp-content/uploads/2018/03/sbcf-default-avatar.png?ssl=1',
+                } for song in post.music_links.all()
+            ], 
         'comments':comments_data
     }
     
@@ -174,4 +205,26 @@ def comment_post(request):
         }
 
         return JsonResponse({'success':True,'comment':response_data}, status=201)
+def search_songs(request):
+    query = request.GET.get('q', '')
+    print(query)
+    if query:
+        songs = Song.objects.filter(
+            Q(title__icontains=query) | Q(artist__name__icontains=query)
+        ).distinct()
+        results = [
+            {
+                'id': song.id,
+                 'title': song.title,
+                'artist': ', '.join([artist.name for artist in song.artist.all()]),
+                'cover_image': song.cover_image.url if song.cover_image else 'https://i0.wp.com/sbcf.fr/wp-content/uploads/2018/03/sbcf-default-avatar.png?ssl=1',
+                'audio_file': song.audio_file.url,
+                'slug': song.slug,
+                'plays': song.plays
+            } 
+            for song in songs
+        ]
+    else:
+        results = []
 
+    return  JsonResponse({'success':True,'data':results})
