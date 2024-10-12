@@ -4,6 +4,13 @@
     box-sizing: border-box;
 }
 
+
+.line {
+    width: 100%;
+    height: 1px;
+    background-color: #6d6d6d;
+}
+
 .notify {
     width: 100%;
     text-align: center;
@@ -108,11 +115,16 @@ img {
 .list-room {
     width: 100%;
     margin-top: 10px;
-    max-height: calc(100vh - 20px - 10px - 73px);
+    max-height: calc(100vh - 20px - 10px - 73px - 180px);
     overflow-y: auto;
 }
 
-.room,.friend-request {
+.room{
+    position: relative;
+}
+
+.room,
+.friend-request {
     width: 100%;
     padding: 10px;
     border-radius: 5px;
@@ -122,7 +134,8 @@ img {
     gap: 10px;
 }
 
-.room:hover,.friend-request:hover {
+.room:hover,
+.friend-request:hover {
     background-color: #e4e4e4;
 }
 
@@ -130,38 +143,70 @@ img {
     background-color: #ebf5ff;
 }
 
-.avatar-receiver,.avatar {
+.deleteRoomChat{
+    position: absolute;
+    top: 1/2;
+    right: -10px;
+    padding: 5px 10px;
+    background-color: #aaa;
+    transform: translateX(-50%);
+    border-radius: 8px;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    font-weight: bold;
+    z-index: 10;
+}
+
+.deleteRoomChat:hover{
+    background-color: red;
+    color: white;
+}
+
+.avatar-receiver,
+.avatar {
     position: relative;
     width: 50px;
     height: 50px;
 }
 
-.avatar-receiver img,.avatar img{
+.avatar-receiver img,
+.avatar img {
     border-radius: 50%;
 }
 
-.avatar-receiver i,.avatar i{
+.avatar-receiver i,
+.avatar i {
     position: absolute;
     bottom: 0;
-    transform: translate(-15px,0);
+    transform: translate(-15px, 0);
     font-size: 10px;
     color: #6d6d6d;
 }
 
-.avatar-receiver i.online,.avatar i.online{
+.avatar-receiver i.online,
+.avatar i.online {
     color: rgb(4, 196, 4);
 }
 
-.avatar-receiver i.hidden::before,.avatar i.hidden::before{
+.avatar-receiver i.hidden::before,
+.avatar i.hidden::before {
     display: none;
 }
 
-.info {}
+.info {
+    max-width: 60%;
+    overflow: hidden;
+}
 
 .icon-friend {
     display: flex;
     align-items: center;
     gap: 5px;
+}
+
+.icon-friend.hidden{
+    display: none;
 }
 
 #icon {
@@ -199,7 +244,8 @@ img {
 }
 
 
-#icon:active,.fa-xmark:active {
+#icon:active,
+.fa-xmark:active {
     border: 1px solid #aaa;
     box-shadow: none;
     transform: translate(1px, 0px);
@@ -232,6 +278,12 @@ img {
     font-weight: bold;
 }
 
+.name-receiver{
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
 .mess-new {
     font-size: 12px;
     color: #6d6d6d;
@@ -260,7 +312,7 @@ img {
     border-left: 1px solid #aaa;
 }
 
-.notify{
+.notify {
     position: absolute;
     width: 100%;
     height: 100%;
@@ -274,7 +326,7 @@ img {
     font-size: 40px;
 }
 
-.notify.hidden{
+.notify.hidden {
     display: none;
 }
 
@@ -290,9 +342,11 @@ img {
     box-shadow: 0 1px 2px rgb(146, 146, 146);
     padding: 10px;
 }
-
+ .content-title .info{
+    overflow:unset;
+ }
 .messenger-container {
-    height: calc(100vh - 70px - 70px );
+    height: calc(100vh - 70px - 70px);
     display: flex;
     flex-direction: column;
     justify-content: end;
@@ -378,24 +432,24 @@ img {
     cursor: pointer;
 }
 
-.icon-file-audio{
+.icon-file-audio {
     position: relative;
     display: inline-block;
-    padding-bottom:10px;
+    padding-bottom: 10px;
     cursor: pointer;
 }
 
-.icon-file-audio::after{
+.icon-file-audio::after {
     position: absolute;
     content: 'audio';
     text-align: center;
     padding: 5px;
     left: 50%;
     border-radius: 10px;
-    transform: translate(-35%,-130%);
+    transform: translate(-35%, -130%);
     background-color: rgba(0, 0, 0, 0.4);
     font-weight: bold;
-    color:white;
+    color: white;
     z-index: 10;
     visibility: hidden;
     opacity: 0;
@@ -407,29 +461,29 @@ img {
     transition-delay: 0s;
 }
 
-.container-content{
+.container-content {
     width: 100%;
 }
 
-.file-audio{
+.file-audio {
     position: relative;
     margin-bottom: 10px;
     display: none;
     align-items: center;
     gap: 10px;
-    padding: 10px; 
+    padding: 10px;
     background-color: #dddddd;
     border-radius: 10px;
 }
 
-.icon-file{
+.icon-file {
     padding: 10px 12px;
     border-radius: 10px;
     background-color: blue;
     color: white;
 }
 
-.icon-delete-file{
+.icon-delete-file {
     width: 20px;
     height: 20px;
     display: flex;
@@ -440,17 +494,17 @@ img {
     position: absolute;
     right: 0;
     top: 0;
-    transform: translate(30%,-30%);
+    transform: translate(30%, -30%);
     background-color: white;
     visibility: hidden;
     cursor: pointer;
 }
 
-.file-audio:hover .icon-delete-file{
+.file-audio:hover .icon-delete-file {
     visibility: visible;
 }
 
-.container-mess{
+.container-mess {
     width: 100%;
     max-width: min(600px, 60%);
     overflow: hidden;
@@ -464,13 +518,13 @@ img {
     align-items: end;
 }
 
-.options{
+.options {
     display: flex;
     align-items: center;
     gap: 10px;
 }
 
-.options-item{
+.options-item {
     margin-top: 10px;
     display: inline-block;
     padding: 10px;
@@ -480,26 +534,29 @@ img {
     cursor: pointer;
 }
 
-.options-item.active{
+.options-item.active {
     background-color: #4aa4f8;
     color: white;
 }
 
-.description{
+.description {
     margin-top: 10px;
 }
-.description p{
+
+.description p {
     color: #949494;
 }
 
-.friend-request{
+.friend-request {
     align-items: start;
 }
-.friend-request .info{
+
+.friend-request .info {
     flex: 1;
 }
 
-.accept-request,.refuse-request{
+.accept-request,
+.refuse-request {
     padding: 10px 20px;
     font-weight: bold;
     border-radius: 10px;
@@ -508,13 +565,13 @@ img {
     cursor: pointer;
 }
 
-.accept-request{
+.accept-request {
     background-color: #0084ff;
     color: white;
     margin-right: 10px;
 }
 
-.user{
+.user {
     position: relative;
     display: flex;
     flex-direction: column;
@@ -527,17 +584,17 @@ img {
     width: 300px;
 }
 
-.user-info{
+.user-info {
     display: flex;
     align-items: center;
     gap: 10px;
 }
 
-.user .options{
+.user .options {
     margin-top: 10px;
 }
 
-.user .options button{
+.user .options button {
     padding: 10px;
     outline: none;
     border: none;
@@ -545,7 +602,7 @@ img {
     cursor: pointer;
 }
 
-.go-back{
+.go-back {
     position: absolute;
     left: 10px;
     top: 10px;
@@ -568,7 +625,7 @@ img {
     font-weight: bold;
     top: 0;
     left: 1/2;
-    transform: translate(-50%,-130%);
+    transform: translate(-50%, -130%);
     visibility: hidden;
     opacity: 0;
     transition: opacity 0.3s ease, visibility 0s linear 0.3s;
@@ -580,11 +637,11 @@ img {
     transition-delay: 0s;
 }
 
-.notify-login{
+.notify-login {
     position: absolute;
     left: 0;
     top: 70px;
-    width:100%;
+    width: 100%;
     height: calc(100vh - 60px);
     background-color: wheat;
     display: flex;
@@ -592,17 +649,17 @@ img {
     justify-content: center;
 }
 
-.notify-login.hidden{
+.notify-login.hidden {
     display: none;
 }
 
-.notify-login-container{
+.notify-login-container {
     width: 500px;
     height: 300px;
     background-color: white;
     box-shadow: 0 0 10px #aaa;
     padding: 10px;
-    border-radius:10px;
+    border-radius: 10px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -611,38 +668,252 @@ img {
 }
 
 
-.notify-login-text{
+.notify-login-text {
     font-size: 26px;
     text-align: center;
     margin-bottom: 30px;
 }
 
-.notify-login-option{
+.notify-login-option {
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 30px;
 }
 
-.back-home,.back-login{
+.back-home,
+.back-login {
     padding: 10px;
     background-color: #6d6d6d;
     border-radius: 10px;
     color: white;
 }
 
-.back-login{
+.back-login {
     background-color: #0084ff;
 }
 
 @keyframes animation {
-    0%{
+    0% {
         transform: scale(0);
     }
-    80%{
+
+    80% {
         transform: scale(1.2);
     }
-    100%{
+
+    100% {
         transform: scale(1);
     }
+}
+
+.friend {
+    position: relative;
+    display: flex;
+    padding: 10px;
+    align-items: center;
+    font-weight: bold;
+    gap: 10px;
+    background-color: #ebebeb;
+    border-radius: 10px;
+    cursor: pointer;
+    margin-bottom: 10px;
+}
+
+.friend:hover {
+    background-color: #ebf5ff;
+}
+
+.delete-friend-btn {
+    position: absolute;
+    background-color: #d8d8d8;
+    padding: 5px 10px;
+    font-size: 13px;
+    border-radius: 5px;
+    top: 1/2;
+    right: 10px;
+    transform: translateX(-50%);
+}
+
+.delete-friend-btn:hover {
+    background-color: rgb(253, 46, 46);
+    color: white;
+}
+
+.title-chat {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.create-room-chat-btn {
+    padding: 5px 10px;
+    background-color: #0084ff;
+    color: white;
+    font-weight: bold;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+.model-overlay {
+    position: fixed;
+    top: 70px;
+    left: 0;
+    width: 100vw;
+    height: calc(100vh - 70px);
+    background-color: rgba(255, 255, 255, 0.4);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.form-create-room-chat {
+    position: relative;
+    background-color: white;
+    box-shadow: 0 0 10px #aaa;
+    border-radius: 10px;
+    width: 500px;
+}
+
+.form-create-room-chat-title {
+    text-align: center;
+    font-weight: bold;
+    font-size: 20px;
+    padding: 10px;
+}
+
+.form-create-room-chat {
+    max-height: 70vh;
+    overflow-y: auto;
+}
+
+.form-create-room-chat-container.hidden {
+    display: none;
+}
+
+.close-form-create-chat {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    width: 40px;
+    height: 40px;
+    background-color: #dddddd;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    font-size: 18px;
+    cursor: pointer;
+}
+
+.list-friend {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.friend-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.form-create-room-chat-content {
+    padding: 10px;
+}
+
+label.friend {
+    flex: 1;
+    padding: 5px 10px;
+}
+
+.type-room-option {
+    margin-bottom: 10px;
+}
+
+.type-room-option label {
+    font-weight: bold;
+    font-size: 19px;
+}
+
+.type-room-option select {
+    padding: 10px;
+    font-size: 16px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    background-color: #f9f9f9;
+    color: #333;
+    transition: border-color 0.3s ease;
+    outline: none;
+    width: 100%;
+    /* Độ rộng chiếm toàn bộ */
+}
+
+.type-room-option select:hover {
+    border-color: #007bff;
+    /* Màu viền khi hover */
+}
+
+.type-room-option select:focus {
+    border-color: #007bff;
+    /* Màu viền khi focus */
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+    /* Hiệu ứng đổ bóng khi focus */
+}
+
+.type-room-option option {
+    padding: 10px;
+    background-color: #fff;
+    /* Nền của các option */
+    color: #333;
+}
+
+.room-chat-name,
+.room-chat-avatar {
+    gap: 10px;
+}
+
+.room-chat-name label,
+.room-chat-avatar label {
+    font-size: 19px;
+    font-weight: bold;
+}
+
+#name-chat {
+    width: 100%;
+    padding: 10px;
+    border: none;
+    outline: none;
+    border-radius: 10px;
+    font-size: 16px;
+    background-color: #ebebeb;
+}
+
+.room-chat-avatar label {
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.room-chat-avatar label img {
+    width: 300px;
+    height: 300px;
+    margin: 0 auto;
+    border-radius: 50%;
+    border: 1px solid #aaa;
+}
+
+.btn-submit-create-room{
+    width: 100%;
+    padding: 10px;
+    border-radius: 10px;
+    background-color: #007bff;
+    color: white;
+    font-weight: bold;
+    border: none;
+    outline: none;
+    margin-top: 10px;
+    font-size: 16px;
+    cursor: pointer;
 }

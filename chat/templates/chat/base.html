@@ -56,7 +56,13 @@
     <div class="container-chat">
         <div class="sider-bar">
             <div class="title-sider-bar">
-                <h2> Đoạn chat </h2>
+                <div class="title-chat">
+                    <h2> Đoạn chat </h2>
+                    <div class="create-room-chat-btn">
+                        <i class="fa-solid fa-plus"></i>
+                        Tạo nhóm chat
+                    </div>
+                </div>
                 <div class="box-search">
                     <div class="icon-back hidden">
                         <i class="fa-solid fa-arrow-left-long"></i>
@@ -69,8 +75,9 @@
                     </div>
                 </div>
                 <div class="options">
-                    <label class="options-item open-chat-rooms active" for="tongle-show-list-room">Tin nhắn</label>
-                    <label class="options-item open-friend-request" for="tongle-show-list-room">Lời mời kết bạn</label>
+                    <label class="options-item open-chat-rooms active">Tin nhắn</label>
+                    <label class="options-item open-friend-request">Lời mời kết bạn</label>
+                    <label class="options-item open-friends">Bạn bè</label>
                 </div>
             </div>
             <div class="list-room">
@@ -91,12 +98,53 @@
                 Vui lòng đang nhập để thực hiện chức năng này
             </div>
             <div class="notify-login-option">
-               <a class="back-home" href="{% url 'home' %}">
-                Về trang chủ
-               </a>
-               <a class="back-login" href="{% url 'login' %}">
-                Đăng nhập
-               </a>
+                <a class="back-home" href="{% url 'home' %}">
+                    Về trang chủ
+                </a>
+                <a class="back-login" href="{% url 'login' %}">
+                    Đăng nhập
+                </a>
+            </div>
+        </div>
+    </div>
+    <div class="model-overlay form-create-room-chat-container hidden">
+        <div class="form-create-room-chat">
+            <div class="form-create-room-chat-title">
+                Tạo nhóm chat
+            </div>
+            <div class="line"></div>
+            <div class="form-create-room-chat-content">
+                <div class="type-room-option">
+                    <label for="type-room">Loại chat:</label>
+                    <select id="type-room" name="type-room">
+                        <option value="friend">Bạn bè</option>
+                        <option value="group">Nhóm chat</option>
+                    </select>
+                </div>
+                <div class="room-chat-info hidden">
+                    <div class="room-chat-name">
+                        <h4 for="">Tên nhóm:</h4>
+                        <input type="text" id="name-chat" placeholder="Nhập tên nhóm" required/>
+                    </div>
+                    <div class="room-chat-avatar">
+                        <h4 for="avatar-chat">Ảnh nhóm:</h4>
+                        <label for="avatar-chat">
+                            <img class="img-avatar-chat" src="https://i0.wp.com/sbcf.fr/wp-content/uploads/2018/03/sbcf-default-avatar.png?ssl=1"
+                                alt="avatar-ground">
+                        </label>
+                        <input hidden type="file" id="avatar-chat" accept="image/*" />
+                    </div>
+                </div>
+                <div>
+                    <h3>List friend:</h3>
+                    <div class="list-friend">
+
+                    </div>
+                </div>
+                <button class="btn-submit-create-room">Tạo nhóm</button>
+            </div>
+            <div class="close-form-create-chat">
+                <i class="fa-solid fa-xmark"></i>
             </div>
         </div>
     </div>

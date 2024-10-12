@@ -70,3 +70,37 @@ class OnlineCustomerConsumer(AsyncWebsocketConsumer):
         await self.send(text_data=json.dumps({
             'online_user_ids': online_user_ids
         }))
+
+class CreateRoomConsumer(AsyncWebsocketConsumer):
+    async def connect(self):
+        user_id = self.scope['user'].id
+        self.room_group_name = f"user_{user_id}"
+        
+        await self.channel_layer.group_add(
+            self.room_group_name,
+            self.channel_name
+        )
+        await self.accept()
+
+    async def disconnect(self, close_code):
+        await self.channel_layer.group_discard(
+            self.room_group_name,
+            self.channel_name
+        )
+
+    async def chat_room_created(self, event):
+        room_id = event['room']
+        errCode = event['errCode']
+        await self.send(text_data=json.dumps({
+            'type':'create_new_room',
+            'errCode':errCode,
+            'room_id': room_id,
+            'message': 'New chat room created',
+        }))
+    async def new_message(self, event):
+        message = event['message']
+        await self.send(text_data=json.dumps({
+            'type': 'new_message',  
+            'message': message,
+        }))
+
