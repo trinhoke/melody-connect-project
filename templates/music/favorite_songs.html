@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Bài hát yêu thích - MelodyConnect{% endblock %}
+
+{% block styles %}
+<link rel="stylesheet" href="{% static 'css/music/favorite_songs.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="container favorite-songs-container">
+    <h1 class="text-center mb-5">Bài hát yêu thích của bạn</h1>
+
+    {% if favorite_songs %}
+        <div class="favorite-songs-list">
+            {% for song in favorite_songs %}
+                <div class="song-item">
+                    <div class="song-cover">
+                        {% if song.cover_image %}
+                            <img src="{{ song.cover_image.url }}" alt="{{ song.title }}">
+                        {% else %}
+                            <img src="{% static 'images/default-cover.jpg' %}" alt="Default cover">
+                        {% endif %}
+                    </div>
+                    <div class="song-info">
+                        <h3 class="song-title">{{ song.title }}</h3>
+                        <p class="song-artists">
+                            {% for artist in song.artist.all %}
+                                {% if not forloop.first %}, {% endif %}
+                                {{ artist.name }}
+                            {% endfor %}
+                        </p>
+                    </div>
+                    <div class="song-actions">
+                        <a href="{% url 'song_detail' song.slug %}" class="btn-play">
+                            <i class="fas fa-play"></i>
+                        </a>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p class="text-center no-songs">Bạn chưa có bài hát yêu thích nào. Hãy khám phá và thêm vào danh sách yêu thích của bạn!</p>
+    {% endif %}
+</div>
+{% endblock %}

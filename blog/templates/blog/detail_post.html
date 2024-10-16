@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block styles %}
+<link rel="stylesheet" href="{% static 'blog/css/detail_post.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="detail-post-container">
+    <div class="post-header">
+        <div class="author-info">
+            <img src="{{ post.author.avatar.url }}" alt="{{ post.author.username }}" class="author-avatar">
+            <div class="author-name-date">
+                <h2>{{ post.author.username }}</h2>
+                <p>{{ post.created_at|date:"d/m/Y H:i" }}</p>
+            </div>
+        </div>
+    </div>
+    <div class="post-content">
+        {{ post.content|linebreaks }}
+    </div>
+    {% if post.audio_files.all %}
+    <div class="audio-files">
+        {% for audio in post.audio_files.all %}
+        <audio controls>
+            <source src="{{ audio.audio_file.url }}" type="audio/mpeg">
+            Your browser does not support the audio element.
+        </audio>
+        {% endfor %}
+    </div>
+    {% endif %}
+    {% if post.music_links.all %}
+    <div class="music-links">
+        {% for song in post.music_links.all %}
+        <div class="song-item">
+            <img src="{{ song.cover_image.url }}" alt="{{ song.title }}" class="song-cover">
+            <div class="song-info">
+                <h4>{{ song.title }}</h4>
+                <p>{{ song.artist.all|join:", " }}</p>
+            </div>
+            <audio controls>
+                <source src="{{ song.audio_file.url }}" type="audio/mpeg">
+                Your browser does not support the audio element.
+            </audio>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+    <div class="comments-section">
+        <h3>Comments ({{ post.comments.count }})</h3>
+        {% for comment in post.comments.all %}
+        <div class="comment">
+            <img src="{{ comment.user.avatar.url }}" alt="{{ comment.user.username }}" class="comment-avatar">
+            <div class="comment-content">
+                <h4>{{ comment.user.username }}</h4>
+                <p>{{ comment.content }}</p>
+                <span class="comment-date">{{ comment.created_at|date:"d/m/Y H:i" }}</span>
+            </div>
+        </div>
+        {% empty %}
+        <p>No comments yet.</p>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

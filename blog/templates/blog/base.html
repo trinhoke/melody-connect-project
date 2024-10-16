@@ -1,7 +1,7 @@
 {% load static %}
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="vi">
 
 <head>
     <meta charset="UTF-8">
@@ -28,10 +28,11 @@
                 </div>
                 <nav class="header__nav">
                     <ul>
-                        <li><a class="no-underline" href="{% url 'home' %}"><i class="fas fa-home"></i><span>Trang chủ </span></a></li>
                         <li><a class="no-underline" href="{% url 'song_list' %}"><i class="fas fa-music"></i> <span>Bài hát</span></a></li>
                         <li><a class="no-underline" href="{% url 'playlist_list' %}"><i class="fas fa-list"></i> <span>Playlist</span></a></li>
                         <li><a class="no-underline" href="{% url 'artist_list' %}"><i class="fas fa-microphone-alt"></i> <span>Nghệ sĩ</span></a></li>
+                        <li><a class="no-underline" href="{% url 'chat' %}"><i class="fas fa-comments"></i> <span>Chat</span></a></li>
+                        <li><a class="no-underline" href="{% url 'blog' %}"><i class="fas fa-blog"></i> <span>Blog</span></a></li>
                     </ul>
                 </nav>
                 <div class="header__actions">
@@ -43,7 +44,7 @@
                     </div>
                     {% if user.is_authenticated %}
                     <div class="header__user">
-                        <a class="no-underline" href="{% url 'profile' %}">
+                        <a class="no-underline" href="{% url 'my_profile' %}">
                             <i class="fas fa-user"></i>
                             <span>{{ user.username }}</span>
                         </a>
@@ -57,10 +58,12 @@
     <div class="container-blog">
         <div class="create-post">
             {% if user.is_authenticated %}
-            <div class="avatar">
-                <img src="{{ user.avatar }}"
+            <a href="{% url 'my_profile' %}">  
+                <div class="avatar">
+                    <img src="{{ user.avatar }}"
                     alt="avatar" />
             </div>
+            </a>
             {% endif %}
             <div class="show-model-create-post">
                 Tạo bài viết mới

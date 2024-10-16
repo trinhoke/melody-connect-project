@@ -1,27 +1,57 @@
 document.addEventListener('DOMContentLoaded', function() {
-    var audio = document.getElementById('audio-player');
-    var playButton = document.querySelector('.play-button');
-    var pauseButton = document.querySelector('.pause-button');
-    var progressBar = document.querySelector('.progress');
-    var progressBarContainer = document.querySelector('.progress-bar');
-    var currentTimeSpan = document.querySelector('.current-time');
-    var totalTimeSpan = document.querySelector('.total-time');
-    var isDragging = false;
-    var volumeSlider = document.querySelector('.volume-slider');
-    var replayButton = document.querySelector('.replay-button');
-    var autoReplayButton = document.querySelector('.auto-replay-button');
-    var isAutoReplayEnabled = false;
+    let audio = document.getElementById('audio-player');
+    let playButton = document.querySelector('.play-button');
+    let pauseButton = document.querySelector('.pause-button');
+    let progressBar = document.querySelector('.progress');
+    let progressBarContainer = document.querySelector('.progress-bar');
+    let currentTimeSpan = document.querySelector('.current-time');
+    let totalTimeSpan = document.querySelector('.total-time');
+    let isDragging = false;
+    let volumeSlider = document.querySelector('.volume-slider');
+    let replayButton = document.querySelector('.replay-button');
+    let autoReplayButton = document.querySelector('.auto-replay-button');
+    let isAutoReplayEnabled = false;
+    let minPlayDuration = 0;
+    let songSlug = '';
 
     if(audio){
-        const songSlug = audio.dataset.slug;
-        const minPlayDuration = parseInt(audio.dataset.minPlayDuration, 10);
-
+        songSlug = audio.dataset.slug;
+        minPlayDuration = parseInt(audio.dataset.minPlayDuration, 10);
     }
 
     let playStartTime = 0;
     let totalPlayTime = 0;
     let hasIncrementedPlay = false;
     let isPlaying = false;
+    let animationInterval = null;
+
+    function animateBars() {
+        const bars = document.querySelectorAll('.bar');
+        bars.forEach((bar) => {
+            if (!isPlaying) {
+                bar.style.height = '5px';
+            } else {
+                const height = Math.random() * 35 + 5;
+                bar.style.height = `${height}px`;
+            }
+        });
+    }
+
+    function startAnimation() {
+        isPlaying = true;
+        if (!animationInterval) {
+            animationInterval = setInterval(animateBars, 100);
+        }
+    }
+
+    function pauseAnimation() {
+        isPlaying = false;
+        if (animationInterval) {
+            clearInterval(animationInterval);
+            animationInterval = null;
+        }
+        animateBars(); // Đặt các thanh về trạng thái dừng
+    }
 
     function startPlayTimer() {
         if (!isPlaying) {
@@ -58,6 +88,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     playButton.addEventListener('click', function() {
         audio.play();
+        startAnimation();
         playButton.style.display = 'none';
         pauseButton.style.display = 'block';
         startPlayTimer();
@@ -65,6 +96,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     pauseButton.addEventListener('click', function() {
         audio.pause();
+        pauseAnimation();
         playButton.style.display = 'block';
         pauseButton.style.display = 'none';
         stopPlayTimer();
@@ -73,6 +105,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
     audio.play();
+    startAnimation();
     
 
 //Replay Song--------------------------------------------------------------------------------------------------
@@ -127,6 +160,12 @@ document.addEventListener('DOMContentLoaded', function() {
             incrementPlayCount();
             totalPlayTime = 0;
             hasIncrementedPlay = false;
+            setTimeout(() => {
+                audio.currentTime = 0;
+                audio.play();
+                startAnimation();
+                startPlayTimer();
+            }, 1000); 
         }
     });
 
@@ -209,8 +248,28 @@ function getCookie(name) {
                 break;
             }
         }
+        }
+        return cookieValue;
     }
-    return cookieValue;
-}
+    const modal = document.getElementById('friendsModal');
+    const btn = document.getElementById('showFriendsModal');
+    const span = document.getElementsByClassName('close')[0];
+    const sendRequestBtns = document.querySelectorAll('.send-request-btn');
+
+    btn.onclick = function() {
+        modal.style.display = "block";
+    }
+
+    span.onclick = function() {
+        modal.style.display = "none";
+    }
+
+    window.onclick = function(event) {
+        if (event.target == modal) {
+            modal.style.display = "none";
+        }
+    }
+    
     
 });
+

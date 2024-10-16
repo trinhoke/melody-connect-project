@@ -1,213 +1,192 @@
 .profile-container {
-    max-width: 800px;
-    margin: 0 auto;
-    padding: 30px;
-    background-color: #f8f9fa;
-    border-radius: 8px;
-    box-shadow: 0 0 20px rgba(0,0,0,0.1);
+    max-width: 900px;
+    margin: 40px auto;
+    padding: 40px;
+    background-color: #fff;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
 }
 
-.profile-container h1 {
+h1 {
     text-align: center;
-    margin-bottom: 30px;
     color: #333;
+    margin-bottom: 30px;
+    font-size: 28px;
 }
 
 .profile-info {
     display: flex;
-    flex-wrap: wrap;
+    align-items: flex-start;
     gap: 40px;
 }
 
 .avatar-section {
-    flex: 1;
-    min-width: 200px;
-    text-align: center;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 .avatar {
     width: 200px;
     height: 200px;
-    object-fit: cover;
     border-radius: 50%;
-    margin-bottom: 20px;
-    border: 5px solid #fff;
-    box-shadow: 0 0 10px rgba(0,0,0,0.1);
-    transition: transform 0.3s ease;
-}
-
-.avatar:hover {
-    transform: scale(1.05);
+    object-fit: cover;
+    border: 5px solid #f0f0f0;
+    margin-bottom: 15px;
 }
 
 .user-details {
-    flex: 2;
-    min-width: 300px;
+    flex-grow: 1;
 }
 
-.form-group {
+.info-group {
     margin-bottom: 20px;
 }
 
-label {
+.info-group label {
     display: block;
-    margin-bottom: 8px;
     font-weight: bold;
-    color: #333;
+    margin-bottom: 5px;
+    color: #555;
 }
 
-.user-details input[type="text"],
-.user-details input[type="email"] {
-    width: 100%;
-    padding: 12px;
-    border: 1px solid #ddd;
-    border-radius: 6px;
+.info-group span {
+    display: block;
     font-size: 16px;
-    transition: border-color 0.3s ease;
+    color: #333;
+    padding: 10px;
+    background-color: #f9f9f9;
+    border-radius: 5px;
 }
 
-.user-details input[type="text"]:focus,
-.user-details input[type="email"]:focus {
-    border-color: #007bff;
-    outline: none;
-    box-shadow: 0 0 0 2px rgba(0,123,255,0.25);
+.action-buttons {
+    margin-top: 30px;
+    text-align: center;
 }
 
-.user-details button {
+.btn-primary {
     background-color: #007bff;
     color: white;
-    padding: 12px 20px;
+    padding: 10px 20px;
     border: none;
-    border-radius: 6px;
-    cursor: pointer;
+    border-radius: 5px;
     font-size: 16px;
-    transition: background-color 0.3s ease;
+    cursor: pointer;
+    transition: background-color 0.3s;
 }
 
-.user-details button:hover {
+.btn-primary:hover {
     background-color: #0056b3;
 }
 
-.user-details .form-group:hover label {
-    color: #007bff;
-}
-
-.file-input-wrapper {
-    position: relative;
-    overflow: hidden;
-    display: inline-block;
-    margin-bottom: 10px;
-}
-
-.file-input {
-    position: absolute;
-    left: 0;
-    top: 0;
-    opacity: 0;
-    cursor: pointer;
-    width: 100%;
-    height: 100%;
-}
-
-.file-input-label {
-    display: inline-block;
-    padding: 10px 15px;
-    background-color: #f0f0f0;
-    color: #333;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-}
-
-.file-input-label:hover {
-    background-color: #e0e0e0;
-}
-
-.file-input:focus + .file-input-label {
-    outline: 1px dotted #000;
-    outline: -webkit-focus-ring-color auto 5px;
-}
-
-/* Cập nhật style cho nút submit */
-.user-details button[type="submit"] {
-    background-color: #007bff;
-    color: white;
-    padding: 10px 15px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 14px;
-    transition: background-color 0.3s ease;
-}
-
-.user-details button[type="submit"]:hover {
-    background-color: #0056b3;
-}
-
-/* Thêm responsive design */
-@media (max-width: 600px) {
-    .user-details .file-input-wrapper, .user-details button[type="submit"] {
-        width: 100%;
-        margin-bottom: 10px;
-    }
-}
-
-@media (max-width: 600px) {
+@media (max-width: 768px) {
     .profile-info {
         flex-direction: column;
+        align-items: center;
     }
-    
-    .avatar-section, .user-details {
-        width: 100%;
+
+    .avatar-section {
+        margin-bottom: 30px;
     }
-}
 
-.change-password-btn {
-    display: inline-block;
-    background-color: #28a745;
-    color: white;
-    padding: 10px 15px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 14px;
-    text-decoration: none;
-    transition: background-color 0.3s ease;
-    margin-top: 20px;
-}
-
-.change-password-btn:hover {
-    background-color: #218838;
-}
-
-@media (max-width: 600px) {
-    .change-password-btn {
-        width: 100%;
+    .friend-btn {
+        width: 200px;
         text-align: center;
     }
 }
 
-.update-avatar-btn {
-    background-color: #007bff;
-    color: white;
-    padding: 10px 15px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 14px;
+.user-posts {
+    margin: 40px auto;
+    padding: 40px;
+    background-color: #f9f9f9;
+    border-radius: 12px;
+    box-shadow: 0 0 20px rgba(0,0,0,0.05);
+    max-width: 900px;
 }
 
-.logout-btn {
-    background: linear-gradient(135deg, #ff0000, #7e7e7e);
+.user-posts h2 {
+    font-size: 2em;
+    color: #333;
+    margin-bottom: 30px;
+    text-align: center;
+    border-bottom: 2px solid #4a90e2;
+    padding-bottom: 15px;
+}
+
+.post {
+    background-color: #ffffff;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.post:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.15);
+}
+
+.post h3 {
+    font-size: 1.4em;
+    color: #4a90e2;
+    margin-bottom: 10px;
+}
+
+.post p {
+    color: #666;
+    margin-bottom: 15px;
+    line-height: 1.6;
+}
+
+.post p:last-of-type {
+    font-size: 0.9em;
+    color: #888;
+    margin-bottom: 20px;
+}
+
+.view-post-btn {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #4a90e2;
     color: white;
     text-decoration: none;
-    padding: 10px 15px;
-    border-radius: 4px;
+    border-radius: 6px;
     transition: background-color 0.3s ease;
-    margin-top: 20px;
+    font-weight: 600;
 }
 
-.logout-btn:hover {
-    background: linear-gradient(135deg, #000000, #f2ff00);
+.view-post-btn:hover {
+    background-color: #3a7bc8;
+}
+
+.friend-btn {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    width: auto;
+    text-align: center;
+}
+
+.friend-btn.friend {
+    background-color: #4CAF50;
+    color: white;
+}
+
+.friend-btn.friend:hover {
+    background-color: #45a049;
+}
+
+.friend-btn.add-friend {
+    background-color: #2196F3;
+    color: white;
+}
+
+.friend-btn.add-friend:hover {
+    background-color: #0b7dda;
 }

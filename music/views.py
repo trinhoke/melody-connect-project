@@ -8,8 +8,12 @@ from django.views.decorators.http import require_POST
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
 from django.contrib.auth.decorators import login_required
+from django.conf import settings
+import requests
+import json
 
 # Create your views here.
+
 def home(request):
     topics_featured = Topic.objects.filter(featured=True)
     songs_featured = Song.objects.filter(featured=True)
@@ -50,6 +54,8 @@ class SongDetailView(DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['song'] = Song.objects.get(slug=self.kwargs['slug'])
+        context['likers'] = context['song'].likes.exclude(id=self.request.user.id)
+        context['related_songs'] = Song.objects.filter(artist__in=context['song'].artist.all()).exclude(slug=self.kwargs['slug']).order_by('-plays')[:5]
         return context
 
 class ArtistListView(ListView):
@@ -94,6 +100,7 @@ class PlaylistDetailView(DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['playlist'] = Playlist.objects.get(slug=self.kwargs['slug'])
+        context['likers'] = context['playlist'].likes.exclude(id=self.request.user.id)
         return context
 
 def topic_detail(request, slug):
@@ -183,3 +190,62 @@ def search(request):
         'playlists': playlists,
     }
     return render(request, 'music/search_results.html', context)
+
+@login_required
+def favorite_song(request):
+    user = request.user
+    favorite_songs = Song.objects.filter(likes=user)
+    return render(request, 'music/favorite_songs.html', {'favorite_songs': favorite_songs})
+
+def search_song_by_lyrics(request):
+    if request.method == 'POST':
+        lyrics = request.POST.get('lyrics', '')
+        
+        # Sử dụng Hugging Face API
+        API_URL = "https://api-inference.huggingface.co/models/facebook/bart-large-mnli"
+        headers = {"Authorization": f"Bearer {settings.HUGGINGFACE_API_KEY}"}
+        
+        def query(payload):
+            response = requests.post(API_URL, headers=headers, json=payload)
+            print(f"API Response: {response.text}")  # In ra phản hồi đầy đủ
+            return response.json()
+        
+        # Chuẩn bị dữ liệu đầu vào cho mô hình
+        input_data = {
+            "inputs": lyrics,
+            "parameters": {
+                "candidate_labels": ["song title", "artist name", "genre"]
+            }
+        }
+        
+        output = query(input_data)
+        
+        # Xử lý phản hồi an toàn hơn
+        ai_suggestion = ""
+        if isinstance(output, dict) and 'labels' in output and 'scores' in output:
+            # Lấy nhãn có điểm cao nhất
+            max_score_index = output['scores'].index(max(output['scores']))
+            ai_suggestion = f"Có thể liên quan đến {output['labels'][max_score_index]}: {output['sequence']}"
+        
+        # Tìm kiếm trong cơ sở dữ liệu dựa trên lời bài hát và gợi ý của AI
+        songs = Song.objects.filter(
+            Q(lyrics__icontains=lyrics) | 
+            Q(title__icontains=lyrics) | 
+            Q(artist__name__icontains=lyrics)
+        )
+        
+        results = [{
+            'title': song.title,
+            'artist': ', '.join([artist.name for artist in song.artist.all()]),
+            'url': song.get_absolute_url(),
+            'cover_image': song.cover_image.url if song.cover_image else None
+        } for song in songs]
+        return JsonResponse({
+            'results': results,
+            'ai_suggestion': ai_suggestion
+        })
+    
+    return JsonResponse({'error': 'Yêu cầu không hợp lệ'}, status=400)
+
+def lyrics_search(request):
+    return render(request, 'music/lyrics_search.html')

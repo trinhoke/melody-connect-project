@@ -1,11 +1,14 @@
 # music/views.py
 
-from django.shortcuts import render, redirect
-from django.contrib.auth import login, authenticate, logout
+from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib.auth import login, authenticate, logout, get_user_model
 from django.contrib import messages
 from .forms import CustomUserCreationForm
 from django.contrib.auth.forms import AuthenticationForm 
 from .forms import UpdateAvatarForm, UpdateInfoForm, ChangePasswordForm
+from blog.models import Post
+
+User = get_user_model()
 
 def home(request):
     return render(request, 'music/home.html')
@@ -46,8 +49,15 @@ def user_logout(request):
     messages.info(request, "Bạn đã đăng xuất thành công.")
     return redirect("home")
 
-def profile(request):
-    return render(request, 'user/profile.html')
+def profile(request, username):
+    user = get_object_or_404(User, username=username)
+    posts = Post.objects.filter(author=user).order_by('-created_at')
+    is_friend = request.user.is_friend(user) if request.user.is_authenticated else False
+    return render(request, 'user/profile.html', {'user': user, 'posts': posts, 'is_friend': is_friend})
+
+def my_profile(request):
+    posts = Post.objects.filter(author=request.user).order_by('-created_at')
+    return render(request, 'user/my_profile.html', {'posts': posts})
 
 def update_avatar(request):
     if request.method == 'POST':
@@ -65,19 +75,16 @@ def update_avatar(request):
 
 def update_info(request):
     if request.method == 'POST':
-        form = UpdateInfoForm(request.POST)
+        form = UpdateInfoForm(request.POST, instance=request.user)
         if form.is_valid():
-            user = request.user
-            user.first_name = form.cleaned_data['first_name']
-            user.last_name = form.cleaned_data['last_name']
-            user.email = form.cleaned_data['email']
-            user.save()
+            form.save()
             messages.success(request, "Thông tin đã được cập nhật thành công.")
             return redirect('profile')
-        messages.error(request, "Có lỗi khi cập nhật thông tin.")
+        else:
+            messages.error(request, "Có lỗi khi cập nhật thông tin.")
     else:
-        form = UpdateInfoForm()
-    return render(request, 'user/update_info.html', {'form': form})
+        form = UpdateInfoForm(instance=request.user)
+    return render(request, 'user/profile.html', {'form': form})
 
 def change_password(request):
     if request.method == 'POST':

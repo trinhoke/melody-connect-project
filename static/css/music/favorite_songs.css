@@ -1,0 +1,135 @@
+h1 {
+    margin-top: 2rem;
+    margin-bottom: 2rem;
+    margin-left: 1rem;
+    font-size: 2rem;
+    font-weight: bold;
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.966);
+}
+
+.favorite-songs-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 2rem 0;
+}
+
+.favorite-songs-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.song-item {
+    display: flex;
+    align-items: center;
+    background-color: #fff;
+    border-radius: 8px;
+    padding: 1rem;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    transition: all 0.3s ease, transform 0.2s ease-in-out;
+}
+
+.song-item:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 6px 12px rgba(0,0,0,0.2);
+}
+
+.song-cover {
+    width: 80px;
+    height: 80px;
+    margin-right: 1rem;
+    overflow: hidden;
+    border-radius: 4px;
+    transition: transform 0.3s ease;
+}
+
+.song-cover img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.song-item:hover .song-cover {
+    transform: scale(1.05);
+}
+
+.song-info {
+    flex-grow: 1;
+}
+
+.song-title {
+    font-size: 1.2rem;
+    font-weight: bold;
+    margin-bottom: 0.25rem;
+    color: #333;
+}
+
+.song-artists {
+    font-size: 0.9rem;
+    color: #666;
+    margin-bottom: 0;
+}
+
+.song-actions {
+    margin-left: 1rem;
+}
+
+.btn-play {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    background-color: #1DB954;
+    color: #fff;
+    border-radius: 50%;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.btn-play:hover {
+    background-color: #1ed760;
+    transform: scale(1.1);
+}
+
+.no-songs {
+    font-size: 1.1rem;
+    color: #666;
+    text-align: center;
+    margin-top: 2rem;
+}
+
+@media (max-width: 576px) {
+    .song-cover {
+        width: 60px;
+        height: 60px;
+    }
+
+    .song-title {
+        font-size: 1rem;
+    }
+
+    .song-artists {
+        font-size: 0.8rem;
+    }
+
+    .btn-play {
+        width: 36px;
+        height: 36px;
+    }
+
+    .song-item {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .song-cover {
+        margin-bottom: 0.5rem;
+    }
+
+    .song-actions {
+        margin-left: 0;
+        margin-top: 0.5rem;
+        align-self: flex-end;
+    }
+}

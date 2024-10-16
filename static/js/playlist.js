@@ -174,5 +174,24 @@ function getCookie(name) {
     }
     return cookieValue;
 }
+const modal = document.getElementById('friendsModal');
+    const btn = document.getElementById('showFriendsModal');
+    const span = document.getElementsByClassName('close')[0];
+    const sendRequestBtns = document.querySelectorAll('.send-request-btn');
+
+    btn.onclick = function() {
+        modal.style.display = "block";
+    }
+
+    span.onclick = function() {
+        modal.style.display = "none";
+    }
+
+    window.onclick = function(event) {
+        if (event.target == modal) {
+            modal.style.display = "none";
+        }
+    }
+    
    
 });

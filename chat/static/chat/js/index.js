@@ -81,6 +81,14 @@ const chatApp = {
             _this.sendMessage();
         };
 
+        $('.input-mess').onkeydown = function(e) {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                _this.sendMessage();
+            }
+        };
+
+
         $("#audio-file").onchange = function (e) {
             _this.audioFile = e.target.files[0];
             if (_this.audioFile) {

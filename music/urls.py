@@ -14,6 +14,8 @@ urlpatterns = [
     
     path('songs/<slug:slug>/like/', music_views.like_song, name='like_song'),
 
+    path('favorite-songs/', music_views.favorite_song, name='favorite_song'),
+
     path('songs/topic/<slug:slug>/', music_views.topic_detail, name='topic_detail'),
     
     path('artists/', music_views.ArtistListView.as_view(), name='artist_list'),
@@ -27,4 +29,7 @@ urlpatterns = [
     path('playlists/<slug:slug>/like/', music_views.like_playlist, name='like_playlist'),
     
     path('artists/<slug:slug>/toggle-follow/', music_views.toggle_follow, name='toggle_follow'),
+    
+    path('search-by-lyrics/', music_views.search_song_by_lyrics, name='search_song_by_lyrics'),
+    path('lyrics-search/', music_views.lyrics_search, name='lyrics_search'),
 ]

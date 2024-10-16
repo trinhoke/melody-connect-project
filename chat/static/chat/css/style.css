@@ -4,6 +4,12 @@
     box-sizing: border-box;
 }
 
+/* Thêm font chữ sans-serif để tăng tính hiện đại */
+
+
+body {
+    font-family: Arial, sans-serif;
+}
 
 .line {
     width: 100%;
@@ -48,6 +54,8 @@ img {
     background-color: white;
     box-shadow: 0 0 2px black;
     padding: 10px;
+    /* Thêm đổ bóng nhẹ */
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
 }
 
 .box-search {
@@ -73,6 +81,8 @@ img {
     align-items: center;
     padding: 10px;
     position: relative;
+    /* Làm mượt các góc */
+    border-radius: 8px;
 }
 
 .search-user-input {
@@ -105,6 +115,11 @@ img {
     align-items: center;
     cursor: pointer;
     gap: 10px;
+    /* Làm mượt các góc */
+    border-radius: 8px;
+    /* Thêm hiệu ứng hover */
+    background-color: #f0f2f5;
+    transition: background-color 0.2s ease;
 }
 
 .result-item:hover {
@@ -117,6 +132,15 @@ img {
     margin-top: 10px;
     max-height: calc(100vh - 20px - 10px - 73px - 180px);
     overflow-y: auto;
+    /* Cải thiện thanh cuộn */
+    ::-webkit-scrollbar {
+        width: 8px;
+    }
+
+    ::-webkit-scrollbar-thumb {
+        background-color: #bbb;
+        border-radius: 4px;
+    }
 }
 
 .room{
@@ -132,6 +156,11 @@ img {
     align-items: center;
     cursor: pointer;
     gap: 10px;
+    /* Làm mượt các góc */
+    border-radius: 8px;
+    /* Thêm hiệu ứng hover */
+    background-color: #f0f2f5;
+    transition: background-color 0.2s ease;
 }
 
 .room:hover,
@@ -310,6 +339,8 @@ img {
     margin-left: 360px;
     position: relative;
     border-left: 1px solid #aaa;
+    /* Thêm đổ bóng nhẹ */
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
 }
 
 .notify {
@@ -388,6 +419,8 @@ img {
     padding: 8px 15px;
     border-radius: 18px;
     font-size: 18px;
+    /* Làm mượt các góc */
+    border-radius: 8px;
 }
 
 .messenger-item.sender {
@@ -532,6 +565,8 @@ img {
     font-weight: bold;
     border-radius: 8px;
     cursor: pointer;
+    /* Làm mượt các góc */
+    border-radius: 8px;
 }
 
 .options-item.active {
@@ -563,6 +598,13 @@ img {
     border: none;
     outline: none;
     cursor: pointer;
+    /* Cải thiện nút */
+    padding: 10px 20px;
+    border: none;
+    border-radius: 20px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
 }
 
 .accept-request {
@@ -582,6 +624,10 @@ img {
     padding: 20px 30px;
     border-radius: 10px;
     width: 300px;
+    /* Làm mượt các góc */
+    border-radius: 8px;
+    /* Thêm đổ bóng nhẹ */
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
 }
 
 .user-info {
@@ -665,6 +711,12 @@ img {
     justify-content: center;
     flex-direction: column;
     animation: animation 0.4s;
+    /* Làm mượt các góc */
+    border-radius: 8px;
+    /* Thêm đổ bóng nhẹ */
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    /* Thêm animation cho một số phần tử */
+    animation: fadeIn 0.3s ease;
 }
 
 
@@ -718,6 +770,11 @@ img {
     border-radius: 10px;
     cursor: pointer;
     margin-bottom: 10px;
+    /* Làm mượt các góc */
+    border-radius: 8px;
+    /* Thêm hiệu ứng hover */
+    background-color: #f0f2f5;
+    transition: background-color 0.2s ease;
 }
 
 .friend:hover {
@@ -753,6 +810,13 @@ img {
     font-weight: bold;
     border-radius: 10px;
     cursor: pointer;
+    /* Cải thiện nút */
+    padding: 10px 20px;
+    border: none;
+    border-radius: 20px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
 }
 
 .model-overlay {
@@ -773,6 +837,10 @@ img {
     box-shadow: 0 0 10px #aaa;
     border-radius: 10px;
     width: 500px;
+    /* Làm mượt các góc */
+    border-radius: 8px;
+    /* Thêm đổ bóng nhẹ */
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
 }
 
 .form-create-room-chat-title {
@@ -916,4 +984,16 @@ label.friend {
     margin-top: 10px;
     font-size: 16px;
     cursor: pointer;
+    /* Cải thiện nút */
+    padding: 10px 20px;
+    border: none;
+    border-radius: 20px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
 }

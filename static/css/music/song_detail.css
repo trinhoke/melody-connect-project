@@ -56,13 +56,13 @@
     align-items: center;
     margin-bottom: 20px;
   }
-        
+  
   .album-cover {
     position: relative;
     width: 120px;
     height: 120px;
     border-radius: 4px;
-    margin-right: 20px;
+    margin-right: 20px; /* Tạo khoảng cách giữa ảnh và box animation */
   }
   
   .album-cover img {
@@ -89,14 +89,39 @@
     cursor: pointer;
     color: white;
     font-size: 1.2rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   }
   
-  .lyrics-preview {
-    flex: 1;
-    font-size: 1.25rem;
-    line-height: 1.4;
-    color: var(--accent-color);
-  }
+  .animation-music {
+    flex: 1; /* Chiếm phần còn lại của không gian */
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 0.25rem;
+    box-shadow: 0 2px 0 rgb(71, 148, 235);
+    overflow: hidden;
+    margin-top: 20px;
+    margin-left: 100px;
+    margin-right: 100px;
+}
+
+.animation-music-container {
+    display: flex;
+    align-items: flex-end;
+    height: 50px;
+    width: 100%; /* Sử dụng toàn bộ chiều rộng của .animation-music */
+    justify-content: center;
+}
+
+.bar {
+    width: 4px;
+    margin: 0 2px;
+    background: linear-gradient(to top, #1690dc, #0000ff);
+    height: 5px;
+    transition: height 0.2s ease;
+    border-radius: 2px;
+}
   
   .player-controls {
     display: flex;
@@ -203,18 +228,49 @@
     color: #d1d5db;
   }
   
+  .related-songs-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1rem;
+    padding: 0;
+    list-style-type: none;
+  }
+  
   .related-song {
     display: flex;
+    flex-direction: column;
     align-items: center;
-    padding: 0.5rem 0;
-    cursor: pointer;
+    text-align: center;
+    padding: 1rem;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 0.5rem;
+    transition: transform 0.3s ease;
+  }
+  
+  .related-song:hover {
+    transform: translateY(-5px);
   }
   
   .related-song img {
-    width: 48px;
-    height: 48px;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
     border-radius: 0.25rem;
-    margin-right: 1rem;
+    margin-bottom: 0.5rem;
+  }
+  
+  .related-song h3 {
+    font-size: 1rem;
+    margin: 0.5rem 0 0.25rem;
+    color: var(--text-color);
+  }
+  
+  .related-song p {
+    font-size: 0.875rem;
+    color: var(--text-color);
+    opacity: 0.8;
+    margin: 0;
   }
   
   .footer {
@@ -410,4 +466,119 @@
     background-color: var(--accent-color);
   }
   
- 
+  .modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0,0,0,0.6);
+  }
+  
+  .modal-content {
+    background-color: #fff;
+    margin: 10% auto;
+    padding: 30px;
+    border: none;
+    width: 90%;
+    max-width: 500px;
+    border-radius: 15px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+  }
+  
+  .modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 15px;
+  }
+  
+  .modal-title {
+    font-size: 1.5em;
+    color: #333;
+    margin: 0;
+  }
+  
+  .close {
+    color: #aaa;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: color 0.3s ease;
+  }
+  
+  .close:hover,
+  .close:focus {
+    color: #333;
+  }
+  
+  .user-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    padding: 10px;
+    background-color: #f9f9f9;
+    border-radius: 10px;
+    transition: background-color 0.3s ease;
+  }
+  
+  .user-item:hover {
+    background-color: #f0f0f0;
+  }
+  
+  .user-info {
+    display: flex;
+    align-items: center;
+  }
+  
+  .user-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-right: 15px;
+    border: 2px solid #fff;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  }
+  
+  .user-name {
+    font-size: 16px;
+    color: #333;
+    font-weight: 500;
+  }
+  
+  .send-request-btn {
+    font-size: 0.9em;
+    padding: 8px 15px;
+    background-color: var(--accent-color);
+    color: white;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .send-request-btn:hover {
+    background-color: #2a6ddb;
+  }
+  
+  .custom-alert {
+    background-color: #f8d7da;
+    color: #721c24;
+    padding: 15px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    margin-top: 20px;
+  }
+  
+  .custom-alert i {
+    margin-right: 10px;
+    font-size: 1.2em;
+  }

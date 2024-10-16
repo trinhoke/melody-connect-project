@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Tìm kiếm bài hát - MelodyConnect{% endblock %}
+
+{% block styles %}
+    <link rel="stylesheet" href="{% static 'css/music/lyrics_search.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="lyrics-search-container">
+    <h1>Tìm kiếm bài hát bằng lời</h1>
+    <div class="search-box">
+        <input type="text" id="lyrics-input" placeholder="Nhập lời bài hát...">
+        <button id="send-lyrics">Tìm kiếm</button>
+    </div>
+    <div class="results-container">
+        <div class="ai-suggestion" id="ai-suggestion"></div>
+        <div class="search-results" id="search-results"></div>
+    </div>
+</div>
+
+<script src="{% static 'js/lyrics_search.js' %}"></script>
+{% endblock %}

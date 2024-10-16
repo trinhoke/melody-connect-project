@@ -303,19 +303,20 @@ const createNewPost = {
                 })
                 const post = ` <div class="post shadow"  data-id = ${data.post.id}>
                                 <div class="header-post">
-                                    <div class="avatar">
-                                        <img src="${data.post.author.avatar}"
-                                            alt="avatar" />
-                                    </div>
-                                    <div class="post-info">
-                                        <div class="author-name">
-                                            ${data.post.author.username}
+                                    <a href="/user/profile/${data.post.author.username}">
+                                        <div class="avatar">
+                                            <img src="${data.post.author.avatar}"
+                                                alt="avatar" />
                                         </div>
-                                        <div class="time-created">
-                                            ${data.post.created_at}
+                                        <div class="post-info">
+                                            <div class="author-name">
+                                                ${data.post.author.username}
+                                            </div>
+                                            <div class="time-created">
+                                                ${data.post.created_at}
+                                            </div>
                                         </div>
-                                    </div>
-                                </div>
+                                    </a>
                                 <div class="content-post">
                                     <div class="content">
                                         ${data.post.content}
@@ -481,14 +482,18 @@ const getPost = {
             return `
                     <div class="post shadow" data-id = ${e.id}>
                         <div class="header-post">
+                        <a href="/user/profile/${e.author.username}">
                             <div class="avatar">
-                                <img src="${e.author.avatar}"
-                                    alt="avatar" />
-                            </div>
+                                    <img src="${e.author.avatar}"
+                                        alt="avatar" />
+                                </div>
+                            </a>
                             <div class="post-info">
+                            <a href="/user/profile/${e.author.username}">
                                 <div class="author-name">
                                     ${e.author.username}
                                 </div>
+                            </a>
                                 <div class="time-created">
                                     ${e.created_at}
                                 </div>
@@ -610,7 +615,24 @@ const commentPost = {
                 _this.commentPost();
             };
         }
+        if (inputComment) {
+            inputComment.onkeydown = function(e) {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    if (!isAuthenticated) {
+                        createToast('error', 'Vui lòng đăng nhập để thực hiện chức năng này');
+                        return;
+                    }
+                    if (!_this.comment || !_this.postId) {
+                        createToast('error', 'Vui lòng nhập comment');
+                        return;
+                    }
+                    _this.commentPost();
+                }
+            };
+        }
     },
+
 
     showModelComment: function () {
         const commentModel = document.querySelector(".comment-post-model");
@@ -677,10 +699,12 @@ const commentPost = {
             const comments = post.comments.map(e => {
                 return `
                     <div class="comment-item" comment-id=${e.id}>
+                        <a href="/user/profile/${e.author.username}">
                         <div class="avatar">
                             <img src="${e.author.avatar}"
                                     alt="avatar" />
                         </div>
+                        </a>
                         <div class="comment-data">
                             <div class="content-comment-box">
                                 <div class="username-comment">
@@ -818,10 +842,12 @@ const commentPost = {
 
             const comment = `
                     <div class="comment-item" comment-id=${data.comment.id}>
+                    <a href="/user/profile/${data.comment.author.username}">
                         <div class="avatar">
                             <img src="${data.comment.author.avatar}"
                                 alt="avatar" />
                         </div>
+                        </a>
                         <div class='comment-data'>
                             <div class="content-comment-box">
                                 <div class="username-comment">

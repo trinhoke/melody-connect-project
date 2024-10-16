@@ -1,0 +1,131 @@
+
+.main-content {
+    background: linear-gradient(to right, #fefeff, #323232);
+}
+.lyrics-search-container {
+    max-width: 800px;
+    margin: 2rem auto;
+    padding: 2rem;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.562);
+}
+
+h1 {
+    text-align: center;
+    color: #333;
+    margin-bottom: 2rem;
+    font-size: 2.5rem;
+}
+
+.search-box {
+    display: flex;
+    margin-bottom: 2rem;
+}
+
+#lyrics-input {
+    flex-grow: 1;
+    padding: 1rem;
+    font-size: 1rem;
+    border: 2px solid #ddd;
+    border-radius: 5px 0 0 5px;
+    transition: border-color 0.3s ease;
+}
+
+#lyrics-input:focus {
+    outline: none;
+    border-color: #3280d3;
+}
+
+#send-lyrics {
+    padding: 1rem 2rem;
+    font-size: 1rem;
+    background: linear-gradient(to right, #0367d1, #033b77);
+    color: white;
+    border: none;
+    border-radius: 0 5px 5px 0;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+#send-lyrics:hover {
+    background: linear-gradient(to right, #0367d1, #033b77);
+}
+
+.results-container {
+    background-color: #f8f9fa;
+    border-radius: 5px;
+    padding: 1rem;
+}
+
+.ai-suggestion {
+    background-color: #e9ecef;
+    padding: 1rem;
+    border-radius: 5px;
+    margin-bottom: 1rem;
+    font-style: italic;
+}
+
+.search-results {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1rem;
+}
+
+.song-item {
+    background-color: #fff;
+    border-radius: 5px;
+    overflow: hidden;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.477);
+    transition: transform 0.3s ease;
+}
+
+.song-item:hover {
+    transform: translateY(-5px);
+}
+
+.song-item img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+}
+
+.song-info {
+    padding: 1rem;
+}
+
+.song-info h3 {
+    margin: 0 0 0.5rem;
+    font-size: 1.1rem;
+    color: #060000;
+    text-shadow: 1px 1px 3px rgb(255, 255, 255);
+}
+
+.song-info p {
+    margin: 0;
+    font-size: 0.9rem;
+    color: #666;
+}
+
+@media (max-width: 768px) {
+    .lyrics-search-container {
+        padding: 1rem;
+    }
+
+    h1 {
+        font-size: 2rem;
+    }
+
+    .search-box {
+        flex-direction: column;
+    }
+
+    #lyrics-input, #send-lyrics {
+        width: 100%;
+        border-radius: 5px;
+    }
+
+    #send-lyrics {
+        margin-top: 1rem;
+    }
+}

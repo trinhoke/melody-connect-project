@@ -11,6 +11,10 @@
 <div class="search-results">
     <h1>Kết quả tìm kiếm cho "{{ query }}"</h1>
 
+    <div class="search-options">
+        <a href="{% url 'lyrics_search' %}" class="btn btn-lyrics-search">Tìm kiếm nâng cao </a>
+    </div>
+
     <section class="songs-section">
         <h2>Bài hát</h2>
         <div class="grid-container">

@@ -52,7 +52,9 @@
                             <i class="fas fa-heart {% if user in playlist.likes.all %}liked{% endif %}"></i>
                             Yêu thích
                         </button>
-                        <button class="action-btn"><i class="fas fa-share-alt"></i> Chia sẻ</button>
+                        <button type="button" class="action-btn" id="showFriendsModal">
+                            <i class="fas fa-user-friends"></i> Kết nối bạn bè
+                        </button>
                     </div>
                     <div class="volume-control">
                         <i class="fas fa-volume-up"></i>
@@ -95,7 +97,40 @@
         </div>
     </main>
 </div>
-
+<!-- Modal -->
+<div id="friendsModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Người dùng đã thích playlist này</h5>
+        <span class="close">&times;</span>
+      </div>
+      <div class="modal-body">
+        <div class="user-list" id="friendsList">
+          {% if likers %}
+            {% for user in likers %}
+              <div class="user-item">
+                <div class="user-info">
+                  {% if user.avatar %}
+                    <img class="user-avatar" src="{{ user.avatar.url }}" alt="{{ user.username }}">
+                  {% else %}
+                    <img class="user-avatar" src="https://images.squarespace-cdn.com/content/v1/54b7b93ce4b0a3e130d5d232/1519987020970-8IQ7F6Z61LLBCX85A65S/icon.png?format=1000w" alt="{{ user.username }}">
+                  {% endif %}
+                  <span class="user-name">{{ user.username }}</span>
+                </div>
+                <button class="action-btn send-request-btn" data-user-id="{{ user.id }}">Gửi lời mời kết bạn</button>
+              </div>
+            {% endfor %}
+          {% else %}
+            <div class="custom-alert">
+              <i class="fas fa-info-circle"></i>
+              <span>Không có người dùng nào khác đã thích playlist này.</span>
+            </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+  
 <audio id="audio-player" src="" controls style="display: none;"></audio>
 
 {% endblock %}

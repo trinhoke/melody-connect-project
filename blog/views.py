@@ -23,8 +23,8 @@ def format_date(date_string):
 def blog(request):
     context = {
         'user': {
-            'username': request.user.username,
-            'avatar': request.user.avatar.url if request.user.avatar else 'https://i0.wp.com/sbcf.fr/wp-content/uploads/2018/03/sbcf-default-avatar.png?ssl=1',
+            'username': request.user.username if request.user.is_authenticated else 'Khách',
+            'avatar': request.user.avatar.url if request.user.is_authenticated and hasattr(request.user, 'avatar') and request.user.avatar else 'https://i0.wp.com/sbcf.fr/wp-content/uploads/2018/03/sbcf-default-avatar.png?ssl=1',
             'is_authenticated': request.user.is_authenticated,
         }
     }
@@ -228,3 +228,11 @@ def search_songs(request):
         results = []
 
     return  JsonResponse({'success':True,'data':results})
+
+
+def detail_post(request,id):
+    post = get_object_or_404(Post,id=id)
+    return render(request,'blog/detail_post.html',{'post':post})
+
+
+
