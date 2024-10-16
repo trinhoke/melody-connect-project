@@ -5,9 +5,6 @@ const btnShowModel = $(".show-model-create-post");
 const btnCloseModel = $(".btn-close-model");
 const createPostModel = $(".create-post-model");
 
-
-console.log(isAuthenticated);
-
 // create toast
 
 const toastsIcon = {

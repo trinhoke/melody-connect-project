@@ -3,6 +3,7 @@
 
 {% block styles %}
 <link rel="stylesheet" href="{% static 'blog/css/detail_post.css' %}">
+<link rel="stylesheet" href="{% static 'blog/css/toast.css' %}">
 {% endblock %}
 
 {% block content %}
@@ -47,19 +48,40 @@
     </div>
     {% endif %}
     <div class="comments-section">
-        <h3>Comments ({{ post.comments.count }})</h3>
-        {% for comment in post.comments.all %}
-        <div class="comment">
-            <img src="{{ comment.user.avatar.url }}" alt="{{ comment.user.username }}" class="comment-avatar">
-            <div class="comment-content">
-                <h4>{{ comment.user.username }}</h4>
-                <p>{{ comment.content }}</p>
-                <span class="comment-date">{{ comment.created_at|date:"d/m/Y H:i" }}</span>
+        <h3 class="length-comment">Comments ({{ post.comments.count }})</h3>
+        <div class="list-comment">
+            {% for comment in post.comments.all %}
+            <div class="comment">
+                <img src="{{ comment.user.avatar.url }}" alt="{{ comment.user.username }}" class="comment-avatar">
+                <div class="comment-content">
+                    <h4>{{ comment.user.username }}</h4>
+                    <p>{{ comment.content }}</p>
+                    <span class="comment-date">{{ comment.created_at|date:"d/m/Y H:i" }}</span>
+                </div>
+            </div>
+            {% empty %}
+            <p>No comments yet.</p>
+            {% endfor %}
+        </div>
+    </div>
+    <div class="">
+        <div class="box-sender-comment" data-post-id="{{post.id}}">
+            <div class="box-comment">
+                <textarea placeholder="Nhập comment..." class="input-comment" rows="2"></textarea>
+                <div class="box-sender">
+                    <div class="icon-sender">
+                        <i class="fa-solid fa-paper-plane"></i>
+                    </div>
+                </div>
             </div>
         </div>
-        {% empty %}
-        <p>No comments yet.</p>
-        {% endfor %}
     </div>
+    <div id="toasts"></div>
 </div>
+{% endblock %}
+{% block scripts %}
+<script>
+    const isAuthenticated = {{ user.is_authenticated|yesno:"true,false" }};
+</script>
+<script src="{% static 'blog/js/detail_post.js' %}"></script>
 {% endblock %}

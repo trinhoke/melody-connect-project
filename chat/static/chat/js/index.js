@@ -81,7 +81,7 @@ const chatApp = {
             _this.sendMessage();
         };
 
-        $('.input-mess').onkeydown = function(e) {
+        $('.input-mess').onkeydown = function (e) {
             if (e.key === 'Enter' && !e.shiftKey) {
                 e.preventDefault();
                 _this.sendMessage();
@@ -375,7 +375,16 @@ const chatApp = {
                                 ${e.name}
                             </div>
                             <div class="mess-new">
-                                ${e?.mess?.length > 0 ? (e.mess[0].user.id == user.id ? "<div>Bạn: </div>" + `<div class="content-new-mess">${e.mess[0].content}</div>` : `<div class="content-new-mess">${e.mess[0].content}</div>`) : ""}
+                                ${e?.mess?.length > 0 ?
+                                    (e.mess[0].user.id == user.id ?
+                                        "<div>Bạn: </div>" + `<div class="content-new-mess">${e.mess[0].content}</div>`
+                                        :
+                                        (e.type === 'group' ?
+                                            `<div>${e?.mess[0]?.user?.username}: </div><div class="content-new-mess">${e.mess[0].content}</div>`
+                                            :
+                                            `<div class="content-new-mess">${e.mess[0].content}</div>`))
+                                    :
+                                    ""}
                             </div>
                         </div>
                     </div>
@@ -551,13 +560,23 @@ const chatApp = {
             $(".list-room").prepend($$(".room")[idx]);
 
             $(`div.room[id="${data.room_id}"][type="${data.room_type}"]`).querySelector(".mess-new").innerHTML =
-                `${data.user.id == user.id ? "<div>Bạn: </div>" + `<div class="content-new-mess">${data.content}</div>` : `<div class="content-new-mess">${data.content}</div>`}`;
+                `${data.user.id == user.id ?
+                    "<div>Bạn: </div>" + `<div class="content-new-mess">${data.content}</div>`
+                    :
+                    (data.room_type === 'group' ?
+                        `<div>${data?.user?.username}: </div><div class="content-new-mess">${data.content}</div>`
+                        :
+                        `<div class="content-new-mess">${data.content}</div>`)}`;
+                
 
             const listMessItem = $$(".messenger-item");
             const checkMessUser = listMessItem[listMessItem.length - 1];
             if (checkMessUser) {
-                if (checkMessUser.getAttribute('user') == data.user.username) {
+                if (checkMessUser.getAttribute('data-user-id') == data.user.id) {
                     checkMessUser.querySelector('.avatar-messenger').classList.add('opacity');
+                    if(checkMessUser.querySelector('.container-mess .content-mess small')){
+                        checkMessUser.querySelector('.container-mess .content-mess small').classList.add('hidden')
+                    }
                 }
             }
 
@@ -571,16 +590,22 @@ const chatApp = {
                 `;
             }
             const messagesItem = `
-                <div class="messenger-item ${data.user.id === JSON.parse(user.id) ? "sender" : ""}" user=${data.user.username}>
+                <div class="messenger-item ${data.user.id === JSON.parse(user.id) ? "sender" : ""}" user=${data.user.username} data-user-id=${data.user.id}>
                     <div class="avatar-messenger ${data.user.id === JSON.parse(user.id) ? "opacity" : ""}">
                         <img src="${data.user.avatar}" alt="avatar">
                     </div>
                     <div class="container-mess ${data.user.id === JSON.parse(user.id) ? "sender" : ""}">
                         ${audioFile}
-                        <div class="content-mess">${data.content}</div>
+                        <div class="content-mess">
+                        ${data.content}
+                        <small class="${data.user.id === JSON.parse(user.id) || data.room_type === 'friend' ? "hidden" : ""}">${data.user.username}</small>
+                        </div>
                     </div>
                 </div>
             `;
+
+            // <small class="${data.user.id === JSON.parse(user.id) || res.room.type === 'friend' ? "hidden" : ""}">${e.user.username}</small>
+
 
             $('.list-messenger').insertAdjacentHTML('beforeend', messagesItem);
             _this.scrollToBottom();
@@ -603,14 +628,17 @@ const chatApp = {
                     const iconOnline = $('.avatar').querySelector('i');
                     if (iconOnline) {
                         if (res.room.type === 'friend') {
-                            iconOnline.classList.remove('hidden');
-                            $(".icon-friend").classList.remove('hidden');
+                            $(".icon-friend").innerHTML = `<i id='icon' class="fa-solid fa-user"></i>`
+                            iconOnline.classList.remove("hidden");
+                            if (this.userIdOnline) {
+                                iconOnline.classList.toggle('online', this.userIdOnline.includes(res.room.other_user_id));
+                            }
                         } else {
-                            iconOnline.classList.add('hidden');
-                            $(".icon-friend").classList.add('hidden');
-                        }
-                        if (this.userIdOnline) {
-                            iconOnline.classList.toggle('online', this.userIdOnline.includes(res.room.other_user_id));
+                            $(".icon-friend").innerHTML = `<i id='icon' class="fa-solid fa-users"></i>`
+                            iconOnline.classList.add("hidden");
+                            if (this.userIdOnline) {
+                                iconOnline.classList.toggle('online', this.userIdOnline.includes(res.room.other_user_id));
+                            }
                         }
                     }
 
@@ -626,7 +654,7 @@ const chatApp = {
                                 `;
                             }
                             return `
-                            <div class="messenger-item ${e.user.id === JSON.parse(user.id) ? "sender" : ""}" user=${e.user.username}>
+                            <div class="messenger-item ${e.user.id === JSON.parse(user.id) ? "sender" : ""}" user=${e.user.username} data-user-id=${e.user.id}>
                                 <div class="avatar-messenger ${e.user.id === JSON.parse(user.id) || (data[idx + 1] && data[idx + 1].user.id == e.user.id) ? "opacity" : ""}">
                                     <img src="${e.user.avatar}"
                                     alt="avatar">
@@ -634,7 +662,8 @@ const chatApp = {
                                <div class="container-mess ${e.user.id === JSON.parse(user.id) ? "sender" : ""}">
                                     ${audioFile}
                                     <div class="content-mess">
-                                        ${e.content}
+                                        <p>${e.content}</p>
+                                        <small class="${e.user.id === JSON.parse(user.id) || res.room.type === 'friend' || (data[idx + 1] && data[idx + 1].user.id == e.user.id) ? "hidden" : ""}">${e.user.username}</small>
                                     </div>
                                </div>
                             </div>
@@ -707,29 +736,6 @@ const chatApp = {
             const res = await fetch(`check_friend_status/${receiverId}/`, { method: 'GET' })
                 .then(response => response.json())
                 .catch(error => console.error('Error:', error));
-
-            this.updateIconFriend(res);
-        }
-    },
-
-    updateIconFriend: function (status) {
-        const iconElement = document.querySelector(".icon-friend");
-        if (status?.isFriend) {
-            iconElement.innerHTML = `<i id="icon" class="fa-solid fa-user-minus"></i>`;
-        } else {
-            if (status?.errCode === undefined) {
-                iconElement.innerHTML = `<i id="icon" class="fa-solid fa-user-plus"></i>`;
-            } else if (status.message === 'pending') {
-                if (status?.errCode === 0) {
-                    iconElement.innerHTML = `<i id="icon" class="fa-solid fa-user-xmark"></i>`;
-                } else if (status.errCode === 1) {
-                    iconElement.innerHTML = `<i id="icon" class="fa-solid fa-user-check"></i> <i id="refuse-icon" class="fa-solid fa-xmark"></i>`;
-                }
-            } else if (status.message === 'canceled' || status.message === 'refused') {
-                iconElement.innerHTML = `<i id="icon" class="fa-solid fa-user-plus"></i>`;
-            } else {
-                iconElement.innerHTML = `<i id="icon" class="fa-solid fa-user-plus"></i>`;
-            }
         }
     },
 
