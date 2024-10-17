@@ -96,6 +96,11 @@
     color: #666;
 }
 
+.list-comment{
+    max-height: 500px;
+    overflow-y: auto;
+}
+
 .comments-section {
     margin-top: 50px;
     padding: 20px;
@@ -149,4 +154,44 @@ audio {
     width: 100%;
     margin-top: 10px;
     border-radius: 20px;
+}
+
+.box-sender-comment {
+    margin-top: 20px;
+    width: 100%;
+    background-color: white;
+    left: 0;
+    bottom: 0;
+    display: flex;
+    gap: 10px;
+}
+
+.box-comment {
+    flex: 1;
+    background-color: #d8d8d8;
+    padding: 5px 10px;
+    gap: 10px;
+    overflow: hidden;
+}
+
+.input-comment {
+    width: 100%;
+    field-sizing: content;
+    resize: none;
+    outline: none;
+    border: none;
+    font-size: 16px;
+    background-color: transparent;
+    overflow-wrap: break-word;
+    max-height: 200px;
+    overflow-y: overlay;
+}
+
+.box-sender {
+    width: 100%;
+    text-align: end;
+}
+
+.icon-sender {
+    cursor: pointer;
 }

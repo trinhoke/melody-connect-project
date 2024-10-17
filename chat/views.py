@@ -368,9 +368,11 @@ def send_friend_request(request, receiver_id):
     sender = request.user  
     try:
         receiver = CustomUser.objects.get(id=receiver_id) 
-
-        existing_request = NotifyFriend.objects.filter(sender=sender, receiver=receiver).first()
+        if sender.is_friend(receiver):
+            return JsonResponse({'message': 'were friends.'})
         
+        existing_request = NotifyFriend.objects.filter(sender=sender, receiver=receiver).first()
+
         if existing_request:
             if existing_request.status == 'pending':
                 return JsonResponse({'message': 'Friend request already sent.'})
@@ -391,10 +393,6 @@ def accept_friend_request(request, sender_id):
         friend_request = NotifyFriend.objects.filter(sender=sender, receiver=receiver, status='pending').first()
         if friend_request:
             if sender != receiver:
-                Friend.objects.create(
-                user1=sender,
-                user2=receiver,
-                )
                 receiver.add_friend(sender)
                 sender.add_friend(receiver)
                 friend_request.status = 'accepted'

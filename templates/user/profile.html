@@ -19,7 +19,7 @@
             {% if is_friend %}
                 <button class="friend-btn friend" >Bạn bè</button>
             {% else %}
-                <button class="friend-btn add-friend">Gửi lời mời kết bạn</button>
+                <button class="friend-btn add-friend" data-user-id="{{user.id}}">Gửi lời mời kết bạn</button>
             {% endif %}
         </div>
         <div class="user-details">
@@ -51,4 +51,7 @@
         {% endfor %}
     </div>
 </div>
+{% endblock %}
+{% block scripts %}
+    <script src="{% static 'js/profile.js' %}"></script>
 {% endblock %}
