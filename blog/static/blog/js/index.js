@@ -314,16 +314,17 @@ const createNewPost = {
                                             </div>
                                         </div>
                                     </a>
+                                </div>   
                                 <div class="content-post">
                                     <div class="content">
                                         ${data.post.content}
-                                        </div>
-                                        <div class="list-links">
+                                    </div>
+                                    <div class="list-links">
                                             ${links.join('')}
-                                        </div>
-                                        <div class="list-audios">
+                                    </div>
+                                    <div class="list-audios">
                                             ${audios.join('')}
-                                        </div>
+                                    </div>
                                     <div class="comment-post">
                                         <div class="comments-count">${data.post.comments_count} Comment</div>
                                     </div>

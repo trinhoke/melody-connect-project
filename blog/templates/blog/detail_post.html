@@ -52,7 +52,9 @@
         <div class="list-comment">
             {% for comment in post.comments.all %}
             <div class="comment">
-                <img src="{{ comment.user.avatar.url }}" alt="{{ comment.user.username }}" class="comment-avatar">
+                <a href="/user/profile/{{comment.user.username}}">
+                    <img src="{{ comment.user.avatar.url }}" alt="{{ comment.user.username }}" class="comment-avatar">
+                </a>
                 <div class="comment-content">
                     <h4>{{ comment.user.username }}</h4>
                     <p>{{ comment.content }}</p>

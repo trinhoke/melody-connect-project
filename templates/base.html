@@ -7,6 +7,7 @@
         <title>{% block title %}Melody Stream{% endblock %}</title>
         <link rel="stylesheet" href="{% static 'css/style.css' %}">
         <link rel="stylesheet" href="{% static 'chat/css/style.css' %}">
+        <link rel="stylesheet" href="{% static 'blog/css/toast.css' %}">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
         <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
@@ -65,7 +66,8 @@
                 {% block content %}{% endblock %}
             </div>
         </main>
-
+        <div id="toasts"></div>
+        
         <footer class="footer">
             <div class="container">
                 <div class="footer__grid">
