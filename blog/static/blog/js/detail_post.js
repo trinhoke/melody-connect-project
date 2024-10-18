@@ -1,5 +1,3 @@
-console.log('0000');
-
 const toastsIcon = {
     success: {
         icon: '<i class="fas fa-check-circle"></i>',
@@ -12,7 +10,6 @@ const toastsIcon = {
     },
 }
 
-//toast
 function createToast(status, mess) {
     let toast = document.createElement('div')
     toast.className = `toast ${status}`
@@ -133,6 +130,7 @@ const commentApp = {
     updateLengthComment:function(){
         const comments= document.querySelectorAll('.comment')
         document.querySelector('.length-comment').innerHTML = `Comments (${comments?.length})`
+        document.querySelector(".list-comment p").style.display = 'none'
     },
 
     connectWebSocket: function () {
@@ -150,7 +148,9 @@ const commentApp = {
 
                 const comment = `
                             <div class="comment">
+                                <a href="/user/profile/${data.comment.author.username}">
                                 <img src="${data.comment.author.avatar}" alt="admin" class="comment-avatar">
+                                </a>
                                 <div class="comment-content">
                                     <h4>${data.comment.author.username}</h4>
                                     <p>${data.comment.content}</p>

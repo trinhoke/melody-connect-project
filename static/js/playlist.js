@@ -1,4 +1,4 @@
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     const audioPlayer = document.getElementById('audio-player');
     const playButton = document.querySelector('.play-button');
     const pauseButton = document.querySelector('.pause-button');
@@ -89,18 +89,18 @@ document.addEventListener('DOMContentLoaded', function() {
     audioPlayer.addEventListener('timeupdate', updateProgress);
     progressBar.addEventListener('click', setProgress);
 
-    volumeSlider.addEventListener('input', function() {
+    volumeSlider.addEventListener('input', function () {
         audioPlayer.volume = this.value / 100;
     });
 
-    autoReplayButton.addEventListener('click', function() {
+    autoReplayButton.addEventListener('click', function () {
         isAutoReplay = !isAutoReplay;
         this.classList.toggle('active', isAutoReplay);
     });
 
     replayButton.addEventListener('click', replaySong);
 
-    audioPlayer.addEventListener('ended', function() {
+    audioPlayer.addEventListener('ended', function () {
         const playDuration = (Date.now() - playStartTime) / 1000;
         const minPlayDuration = parseInt(audioPlayer.dataset.minPlayDuration, 10);
 
@@ -121,7 +121,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    playlistSongs.addEventListener('click', function(e) {
+    playlistSongs.addEventListener('click', function (e) {
         const songItem = e.target.closest('.song-item');
         if (songItem) {
             currentSongIndex = Array.from(songItems).indexOf(songItem);
@@ -134,11 +134,11 @@ document.addEventListener('DOMContentLoaded', function() {
     loadSong(currentSongIndex);
     playSong();
 
-  
+
     // Xử lý sự kiện like
     const likeButton = document.querySelector('.like-button');
     if (likeButton) {
-        likeButton.addEventListener('click', function() {
+        likeButton.addEventListener('click', function () {
             const playlistSlug = this.dataset.playlistSlug;
             fetch(`/music/playlists/${playlistSlug}/like/`, {
                 method: 'POST',
@@ -147,61 +147,98 @@ document.addEventListener('DOMContentLoaded', function() {
                     'Content-Type': 'application/x-www-form-urlencoded',
                 },
             })
-            .then(response => response.json())
-            .then(data => {
-                const likeCountElement = document.getElementById('like-count');
-                likeCountElement.textContent = data.likes_count;
-                if (data.is_liked) {
-                    this.classList.add('liked');
-                } else {
-                    this.classList.remove('liked');
-                }
-            });
+                .then(response => response.json())
+                .then(data => {
+                    const likeCountElement = document.getElementById('like-count');
+                    likeCountElement.textContent = data.likes_count;
+                    if (data.is_liked) {
+                        this.classList.add('liked');
+                    } else {
+                        this.classList.remove('liked');
+                    }
+                });
         });
     }
-// Hàm lấy CSRF token từ cookie
-function getCookie(name) {
-    let cookieValue = null;
-    if (document.cookie && document.cookie !== '') {
-        const cookies = document.cookie.split(';');
-        for (let i = 0; i < cookies.length; i++) {
-            const cookie = cookies[i].trim();
-            if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                break;
+    // Hàm lấy CSRF token từ cookie
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
             }
         }
+        return cookieValue;
     }
-    return cookieValue;
-}
-const modal = document.getElementById('friendsModal');
+    const modal = document.getElementById('friendsModal');
     const btn = document.getElementById('showFriendsModal');
     const span = document.getElementsByClassName('close')[0];
     const sendRequestBtns = document.querySelectorAll('.send-request-btn');
 
-    btn.onclick = function() {
+    btn.onclick = function () {
         modal.style.display = "block";
     }
 
-    span.onclick = function() {
+    span.onclick = function () {
         modal.style.display = "none";
     }
 
-    window.onclick = function(event) {
+    window.onclick = function (event) {
         if (event.target == modal) {
             modal.style.display = "none";
         }
     }
-    sendRequestBtns.forEach(sendRequestBtn=>{
-        sendRequestBtn.onclick = async function(){
+    sendRequestBtns.forEach(sendRequestBtn => {
+        sendRequestBtn.onclick = async function () {
             const receiverId = this.getAttribute("data-user-id")
-            await sendFriendRequest(receiverId)
+            const data = await sendFriendRequest(receiverId)
+            if(data.errCode==0){
+                createToast("success","Gửi lời mời kết bạn thành công!")
+            }
+            else{
+                createToast("error","Gửi lời mời kết bạn không thành công!")
+            }
         }
     })
+    async function sendFriendRequest (receiverId) {
+        const res = await fetch(`http://localhost:8000/chat/send_friend_request/${receiverId}/`, { method: 'GET' })
+            .then(response => response.json())
+            .catch(error => console.error('Error:', error));
+            return res
+    }
+    const toastsIcon = {
+        success: {
+            icon: '<i class="fas fa-check-circle"></i>',
+        },
+        error: {
+            icon: '<i class="fas fa-exclamation-triangle"></i>',
+        },
+        warning: {
+            icon: '<i class="fas fa-exclamation-circle"></i>',
+        },
+    }
+    
+    //toast
+    function createToast(status, mess) {
+        let toast = document.createElement('div')
+        toast.className = `toast ${status}`
+    
+        toast.innerHTML = `
+        ${toastsIcon[status].icon}
+        <span class="msg">${mess}</span>
+        <span class="countdown"></span>
+        `
+        document.querySelector('#toasts').appendChild(toast)
+    
+        setTimeout(() => {
+            toast.style.animation = 'hide_slide 1s ease forwards'
+        }, 4000)
+        setTimeout(() => {
+            toast.remove()
+        }, 6000)
+    }
 });
-
-async function sendFriendRequest (receiverId) {
-    await fetch(`http://localhost:8000/chat/send_friend_request/${receiverId}/`, { method: 'GET' })
-        .then(response => response.json())
-        .catch(error => console.error('Error:', error));
-}
