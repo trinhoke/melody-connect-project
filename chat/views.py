@@ -5,6 +5,7 @@ from django.shortcuts import get_object_or_404,Http404
 from django.db.models import Q
 from asgiref.sync import async_to_sync
 from channels.layers import get_channel_layer
+from django.contrib.auth.decorators import login_required
 
 import hashlib
 from .models import *
@@ -364,6 +365,8 @@ def send_friend_request_logic(sender, receiver):
     else:
         return f"Friend request already exists between {sender.username} and {receiver.username}."
 
+
+@login_required
 def send_friend_request(request, receiver_id):
     sender = request.user  
     try:
@@ -459,3 +462,4 @@ def check_friend_request_status(request, receiver_id):
 
     except CustomUser.DoesNotExist:
         return JsonResponse({'error': 'User not found.'}, status=404)
+

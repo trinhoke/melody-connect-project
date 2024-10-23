@@ -16,6 +16,7 @@ ALLOWED_HOSTS = []
 INSTALLED_APPS = [
     'channels',
     'daphne',
+    'corsheaders',
     'user',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -40,8 +41,19 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
 ]
 
+CORS_ALLOW_ALL_ORIGINS = True  # Chỉ sử dụng trong môi trường phát triển
+# Hoặc chỉ định các nguồn cụ thể:
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:8000",
+    "http://127.0.0.1:8000",
+]
+CSRF_TRUSTED_ORIGINS = [
+    "http://localhost:8000",
+    "http://127.0.0.1:8000",
+]
 ROOT_URLCONF = 'melody_connect.urls'
 
 TEMPLATES = [
@@ -108,6 +120,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 AUTH_USER_MODEL = 'user.CustomUser'
 
 # Cấu hình đăng nhập và đăng xuất
+LOGIN_URL = '/user/login/'
 LOGIN_REDIRECT_URL = 'home'
 LOGOUT_REDIRECT_URL = 'home'
 

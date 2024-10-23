@@ -106,13 +106,18 @@ const commentApp = {
         formData.append('post_id', this.postId);
 
         try {
-            const response = await fetch('http://localhost:8000/blog/comment_post', {
+            const response = await fetch('/blog/comment_post', {
                 method: 'POST',
                 body: formData,
                 headers: {
                     "X-CSRFToken": document.querySelector("[name=csrfmiddlewaretoken]").value
-                }
+                },
+                credentials: 'include'
             });
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
 
             const data = await response.json();
 
@@ -121,9 +126,12 @@ const commentApp = {
                     'data': data
                 }));
                 _this.resetInput();
+            } else {
+                createToast('error', data.message || 'Có lỗi xảy ra khi gửi bình luận');
             }
         } catch (error) {
-            console.log(error);
+            console.error('Error:', error);
+            createToast('error', 'Có lỗi xảy ra khi gửi bình luận');
         }
     },
 

@@ -283,45 +283,28 @@ function getCookie(name) {
         }
     })
 
-    async function sendFriendRequest (receiverId) {
-        const res = await fetch(`http://localhost:8000/chat/send_friend_request/${receiverId}/`, { method: 'GET' })
-            .then(response => response.json())
-            .catch(error => console.error('Error:', error));
-            return res
-    }
-    
-    const toastsIcon = {
-        success: {
-            icon: '<i class="fas fa-check-circle"></i>',
-        },
-        error: {
-            icon: '<i class="fas fa-exclamation-triangle"></i>',
-        },
-        warning: {
-            icon: '<i class="fas fa-exclamation-circle"></i>',
-        },
-    }
-    
-    //toast
-    function createToast(status, mess) {
-        let toast = document.createElement('div')
-        toast.className = `toast ${status}`
-    
-        toast.innerHTML = `
-        ${toastsIcon[status].icon}
-        <span class="msg">${mess}</span>
-        <span class="countdown"></span>
-        `
-        document.querySelector('#toasts').appendChild(toast)
-    
-        setTimeout(() => {
-            toast.style.animation = 'hide_slide 1s ease forwards'
-        }, 4000)
-        setTimeout(() => {
-            toast.remove()
-        }, 6000)
-    }
-});
+async function sendFriendRequest(receiverId) {
+    try {
+        const response = await fetch(`/chat/send_friend_request/${receiverId}/`, {
+            method: 'GET',
+            credentials: 'include'
+        });
 
+        if (!response.ok) {
+            if (response.status === 401) {
+                window.location.href = '/user/login/';
+                return;
+            }
+            throw new Error('Network response was not ok');
+        }
 
-
+        const data = await response.json();
+        // Xử lý dữ liệu phản hồi ở đây
+        console.log(data);
+        return data;
+    } catch (error) {
+        console.error('Error:', error);
+        // Hiển thị thông báo lỗi cho người dùng
+        alert('Có lỗi xảy ra khi gửi lời mời kết bạn. Vui lòng thử lại sau.');
+    }
+}
