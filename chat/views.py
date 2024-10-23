@@ -369,20 +369,20 @@ def send_friend_request(request, receiver_id):
     try:
         receiver = CustomUser.objects.get(id=receiver_id) 
         if sender.is_friend(receiver):
-            return JsonResponse({'message': 'were friends.'})
+            return JsonResponse({'message': 'were friends.','errCode':0})
         
         existing_request = NotifyFriend.objects.filter(sender=sender, receiver=receiver).first()
 
         if existing_request:
             if existing_request.status == 'pending':
-                return JsonResponse({'message': 'Friend request already sent.'})
+                return JsonResponse({'message': 'Friend request already sent.','errCode':0})
             else:
                 existing_request.status = 'pending'
                 existing_request.save()
-                return JsonResponse({'message': 'Friend request resent.'})
+                return JsonResponse({'message': 'Friend request resent.','errCode':0})
 
         message = send_friend_request_logic(sender, receiver)
-        return JsonResponse({'message': message})
+        return JsonResponse({'message': message,'errCode':0})
     except CustomUser.DoesNotExist:
         return JsonResponse({'error': 'User not found.'}, status=404)
 
