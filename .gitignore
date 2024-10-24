@@ -23,7 +23,6 @@ db.sqlite3
 */migrations/
 
 # Static files
-staticfiles/
 media/
 
 # VS Code files

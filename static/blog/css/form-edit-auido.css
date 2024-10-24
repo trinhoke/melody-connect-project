@@ -1,0 +1,102 @@
+.form-edit-auido{
+    width: 700px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    background-color: white;
+    border-radius: 8px;
+    overflow: hidden;
+    z-index: 10;
+    transition: 0.25s all;
+}
+
+.list-audio-edit{
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+    padding: 10px;
+    min-height: 300px;
+    max-height: 700px;
+    overflow-y: auto;
+    background: #aaa;
+}
+
+
+.audio-item-edit{
+    position: relative;
+    background-color: white;
+    padding: 10px;
+    border-radius: 10px;
+}
+
+.file-audio-edit{
+    width: 100%;
+    height: 200px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #aaa;
+    border-radius: 5px;
+}
+
+.delete-audio-file{
+    position: absolute;
+    padding: 3px 7px;
+    background-color: white;
+    border-radius: 30px;
+    right: 20px;
+    top: 20px;
+    cursor: pointer;
+    visibility: hidden;
+}
+.audio-item-edit:hover .delete-audio-file{
+    visibility: visible;
+}
+.description-audio{
+    width: 100%;
+    border: 1px solid black;
+    border-radius: 5px;
+    margin-top: 10px;
+    padding: 5px;
+    max-height: 150px;
+    overflow-y: auto;
+}
+
+.description-content{
+    width: 100%;
+    field-sizing: content;
+    resize: none;
+    outline: none;
+    border: none;
+    font-size: 16px;
+}
+
+.options-edit-audio{
+    width: 100%;
+    text-align: end;
+    padding: 15px;
+}
+
+.options-edit-audio label {
+    padding: 8px 12px;
+    font-weight: bold;
+    border-radius: 5px;
+    cursor: pointer;
+    color: rgb(0, 119, 255);
+}
+.options-edit-audio label:hover {
+    text-decoration: underline;
+    background-color: rgba(0, 0, 0, 0.1);
+}
+
+.animation-hidden{
+    transform: translate(-100%,-100%);
+    visibility: hidden;
+    opacity: 0;
+}
+
+.animation-show{
+    transform: translate(-50%,-50%);
+    visibility: visible;
+    opacity: 1;
+}
