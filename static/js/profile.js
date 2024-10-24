@@ -3,23 +3,42 @@ document.addEventListener("DOMContentLoaded", function () {
 
     if (sendRequestBtn) {
         sendRequestBtn.onclick = async function () {
-            const receiverId = this.getAttribute("data-user-id")
-            const data = await sendFriendRequest(receiverId)
-            if (data.errCode == 0) {
-                createToast("success", "Gửi lời mời kết bạn thành công!")
-            }
-            else {
-                createToast("error", "Gửi lời mời kết bạn không thành công!")
+            const receiverId = this.getAttribute("data-user-id");
+            const data = await sendFriendRequest(receiverId);
+            if (data.errCode === 0) {
+                createToast("success", "Gửi lời mời kết bạn thành công!");
+            } else {
+                createToast("error", data.message || "Gửi lời mời kết bạn không thành công!");
             }
         }
     }
 
 
     async function sendFriendRequest(receiverId) {
-        const res = await fetch(`http://localhost:8000/chat/send_friend_request/${receiverId}/`, { method: 'GET' })
-            .then(response => response.json())
-            .catch(error => console.error('Error:', error));
-        return res
+        try {
+            const response = await fetch(`/chat/send_friend_request/${receiverId}/`, {
+                method: 'GET',
+                credentials: 'include'
+            });
+
+            if (!response.ok) {
+                if (response.status === 401) {
+                    window.location.href = '/user/login/';
+                    return { errCode: 1, message: 'Unauthorized' };
+                }
+                throw new Error('Network response was not ok');
+            }
+
+            const contentType = response.headers.get("content-type");
+            if (contentType && contentType.indexOf("application/json") !== -1) {
+                return await response.json();
+            } else {
+                throw new Error("Received non-JSON response from server");
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            return { errCode: 1, message: error.message };
+        }
     }
     const toastsIcon = {
         success: {
